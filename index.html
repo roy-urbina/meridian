@@ -260,222 +260,121 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 .help-note{font-size:11px;color:var(--text-light);background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin-top:14px;border-left:3px solid var(--purple)}
 .help-section.hidden{display:none}
 /* ═══════════════════════════════════════════
-   MOBILE LAYOUT — screens 768px and under
+   MOBILE — completely separate UI under 768px
+   Desktop layout is completely hidden on mobile
 ═══════════════════════════════════════════ */
-@media (max-width: 768px) {
-
-  /* Hide desktop sidebar */
-  .sidebar { display: none !important; }
-
-  /* Main takes full width, add bottom padding for tab bar */
-  .main {
-    margin-left: 0 !important;
-    padding: 16px 14px 90px !important;
-    min-height: 100vh;
-  }
-
-  /* Compact page headers */
-  .page-header {
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .page-heading h1 { font-size: 22px !important; }
-  .page-heading p { font-size: 12px !important; }
-  .btn-row { flex-wrap: wrap; }
-
-  /* Stat grid — 2 columns on mobile */
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-    margin-bottom: 14px !important;
-  }
-  .stat-card { padding: 12px 14px !important; }
-  .stat-value { font-size: 18px !important; }
-
-  /* Tables — horizontal scroll */
-  .sheet-scroll { max-height: 60vh !important; }
-  .sheet-wrap { border-radius: 10px !important; }
-  .sheet { font-size: 12px !important; }
-  .sheet thead th { font-size: 9px !important; padding: 0 8px !important; }
-  .sheet td { height: 30px !important; }
-  .cell { font-size: 12px !important; padding: 0 6px !important; }
-
-  /* Sheet toolbar — wrap filters */
-  .sheet-toolbar { flex-wrap: wrap; gap: 6px !important; padding: 8px 10px !important; }
-  .filter-bar { flex-wrap: wrap; gap: 6px !important; }
-  .filter-bar input, .filter-bar select { font-size: 12px !important; padding: 5px 8px !important; }
-
-  /* Modals — full width */
-  .modal { width: 96% !important; max-width: 100% !important; padding: 18px 16px !important; }
-  .form-row-2 { grid-template-columns: 1fr !important; }
-
-  /* Dashboard cards side by side */
-  #dash-grid-row2 { grid-template-columns: 1fr !important; }
-  #dash-grid-row3 { grid-template-columns: 1fr !important; }
-
-  /* Budget — stack income/expense tables */
-  #budget-monthly-view > div[style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Funds — inline history table scrollable */
-  #fund-inline-log-wrap { overflow-x: auto; }
-
-  /* Yearly budget grid — scrollable */
-  #yearly-grid-wrap { overflow-x: auto !important; }
-  #yearly-grid { font-size: 11px !important; }
-
-  /* Reports charts — full width */
-  #trend-chart { height: 140px !important; }
-  #acct-trend-list > div { flex-wrap: wrap !important; }
-
-  /* Autocomplete — wider on mobile */
-  .autocomplete-list { min-width: 240px !important; max-width: 90vw !important; }
-
-  /* Toast — full width bottom */
-  .toast {
-    left: 14px !important;
-    right: 14px !important;
-    text-align: center !important;
-    bottom: 80px !important;
-  }
-
-  /* Search results — full width */
-  .search-results-dropdown {
-    left: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    position: fixed !important;
-    top: 60px !important;
-    max-height: 60vh !important;
-    border-radius: 0 0 16px 16px !important;
-  }
-
-  /* Help page */
-  .help-section-body { padding: 14px 14px !important; }
-  .help-table-row { flex-wrap: wrap; gap: 8px; }
-
-  /* Buttons — larger tap targets */
-  .btn { padding: 10px 16px !important; font-size: 13px !important; }
-  .btn.sm { padding: 8px 12px !important; font-size: 12px !important; }
-  .icon-btn { width: 34px !important; height: 34px !important; font-size: 15px !important; }
+/* ═══════════════════════════════════
+   MOBILE — hide desktop, show mobile UI
+═══════════════════════════════════ */
+/* Mobile: touch device with narrow screen */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  /* Hide ALL desktop elements */
+  .sidebar, .main, nav.sidebar { display: none !important; }
+  /* Show mobile UI */
+  #m-topbar { display: flex !important; }
+  #m-tabbar { display: flex !important; }
+  #m-add-btn { display: flex !important; }
+  #m-app { display: block !important; }
+}
+/* Desktop or non-touch: always hide mobile UI */
+@media (min-width: 769px), (hover: hover), (pointer: fine) {
+  #m-topbar { display: none !important; }
+  #m-app { display: none !important; }
+  #m-tabbar { display: none !important; }
+  #m-add-btn { display: none !important; }
+  #m-add-modal { display: none !important; }
+  #m-search-overlay { display: none !important; }
 }
 
-/* ── MOBILE TOP BAR ─────────────────────────── */
-.mobile-topbar {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 56px;
-  background: var(--sidebar-bg);
-  z-index: 100;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-}
-.mobile-topbar-logo {
-  display: flex; align-items: center; gap: 8px;
-}
-.mobile-topbar-logo-mark {
-  width: 30px; height: 30px;
-  background: linear-gradient(135deg,#0F4C75,#00B4D8);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 800; color: #fff; font-style: italic;
-  font-family: Georgia, serif;
-}
-.mobile-topbar-name { font-size: 16px; font-weight: 700; color: #fff; }
-.mobile-topbar-actions { display: flex; gap: 8px; align-items: center; }
-.mobile-search-btn {
-  width: 36px; height: 36px; border-radius: 8px;
-  background: rgba(255,255,255,0.1); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-size: 16px;
-}
-.mobile-sync-indicator {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--teal); flex-shrink: 0;
-}
-
-/* ── MOBILE BOTTOM TAB BAR ──────────────────── */
-.mobile-tabbar {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 72px;
-  background: #0A1628;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  z-index: 100;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 4px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.mobile-tab {
+/* Mobile tab styles */
+.m-tab {
   display: flex; flex-direction: column; align-items: center;
-  gap: 3px; padding: 8px 6px; border-radius: 10px;
-  cursor: pointer; transition: all .15s; flex: 1;
-  border: none; background: transparent;
-  -webkit-tap-highlight-color: transparent;
-  min-width: 0;
+  gap: 3px; padding: 8px 4px; border-radius: 10px;
+  cursor: pointer; flex: 1; border: none;
+  background: transparent; -webkit-tap-highlight-color: transparent;
+  transition: all .15s;
 }
-.mobile-tab:active { transform: scale(0.92); }
-.mobile-tab.active .mobile-tab-icon { color: #00B4D8; }
-.mobile-tab.active .mobile-tab-label { color: #00B4D8; font-weight: 700; }
-.mobile-tab-icon { font-size: 20px; line-height: 1; position: relative; }
-.mobile-tab-label { font-size: 9px; color: rgba(255,255,255,0.45); font-weight: 500; white-space: nowrap; }
-.mobile-tab.active { background: rgba(0,180,216,0.1); }
-.mobile-tab-badge {
-  position: absolute; top: -4px; right: -8px;
-  background: var(--coral); color: #fff;
-  font-size: 8px; font-weight: 700;
-  padding: 1px 4px; border-radius: 8px;
-  min-width: 14px; text-align: center;
-}
+.m-tab:active { transform: scale(0.9); }
+.m-tab-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 500; }
+.m-tab.active .m-tab-lbl { color: #00B4D8; font-weight: 700; }
+.m-tab.active { background: rgba(0,180,216,0.12); }
 
-/* ── MOBILE SEARCH OVERLAY ──────────────────── */
-.mobile-search-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  backdrop-filter: blur(4px);
-}
-.mobile-search-box {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  background: #0A1628;
-  padding: 16px;
-  z-index: 201;
-  display: flex; gap: 10px; align-items: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-}
-.mobile-search-input {
-  flex: 1; padding: 12px 16px;
-  background: rgba(255,255,255,0.1);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 12px; color: #fff;
+/* Mobile pages — only active one visible */
+.m-page { display: none; }
+.m-page.active { display: block; }
+
+/* Mobile more buttons */
+.m-more-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-solid);
+  border-radius: 12px; cursor: pointer;
   font-family: inherit; font-size: 15px;
+  color: var(--text); text-align: left; width: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
-.mobile-search-input::placeholder { color: rgba(255,255,255,0.4); }
-.mobile-search-input:focus { outline: none; border-color: #00B4D8; }
-.mobile-search-results {
-  position: fixed;
-  top: 72px; left: 0; right: 0; bottom: 0;
-  background: #0F1117;
-  overflow-y: auto;
-  z-index: 201;
-  padding: 8px 0;
+.m-more-btn:active { background: rgba(255,255,255,0.08); }
+
+/* Mobile transaction card */
+.m-tx-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-solid);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-tx-card:active { background: rgba(255,255,255,0.06); }
+
+/* Mobile fund card */
+.m-fund-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-solid);
+  border-radius: 14px; padding: 16px;
 }
 
-/* ── MOBILE PAGE ADJUSTMENTS ────────────────── */
-@media (max-width: 768px) {
-  .mobile-topbar { display: flex; }
-  .mobile-tabbar { display: flex; }
-  .main { padding-top: 72px !important; }
-  body { overflow-x: hidden; }
+/* Mobile budget row */
+.m-budget-row {
+  background: var(--card-bg);
+  border: 1px solid var(--border-solid);
+  border-radius: 10px; padding: 12px 14px;
 }
+
+/* Mobile account pill */
+.m-account-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-solid);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Mobile payee suggest */
+.m-suggest-item {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-solid);
+  cursor: pointer; font-size: 14px; color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+.m-suggest-item:active { background: rgba(56,189,248,0.1); }
+.m-suggest-item:last-child { border-bottom: none; }
+
+/* Mobile search result */
+.m-search-result {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.m-search-result:active { background: rgba(56,189,248,0.08); }
+
+/* Toast on mobile */
+@media (max-width: 768px) {
+  .toast {
+    left: 16px !important; right: 16px !important;
+    bottom: 82px !important; text-align: center !important;
+  }
+}
+
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 16px;border-radius:9px;font-size:13px;z-index:300;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 .acct-balance-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-solid);font-size:12.5px}
@@ -489,6 +388,336 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 .budget-dash-bar{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
 .budget-dash-fill{height:100%;border-radius:3px}
 .budget-dash-amounts{font-size:11px;font-family:'Courier New',Courier,monospace;min-width:80px;text-align:right;white-space:nowrap}
+
+/* ═══ MOBILE — screens 768px and under ═══════════
+   Desktop is completely unchanged.
+   Mobile is a ground-up redesign for phone use.
+══════════════════════════════════════════════════ */
+
+/* ── Hide desktop, show mobile chrome ── */
+@media (max-width: 768px) {
+  .sidebar { display: none !important; }
+  .main { margin-left: 0 !important; padding: 0 0 80px 0 !important; }
+  /* Hide ALL desktop pages — mobile renders its own UI */
+  .page { display: none !important; }
+  .page.active { display: none !important; }
+  /* Show mobile shell */
+  #mobile-shell { display: flex !important; }
+  body { overflow-x: hidden; background: #0F1117; }
+}
+
+/* ── Mobile shell — full screen flex column ── */
+#mobile-shell {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #0F1117;
+  font-family: 'Times New Roman', Times, serif;
+  color: #E8EAF0;
+}
+
+/* ── Mobile header ── */
+.m-header {
+  background: linear-gradient(180deg, #080B12 0%, #0D1321 100%);
+  padding: 52px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.m-header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.m-logo { display: flex; align-items: center; gap: 8px; }
+.m-logo-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg,#0F4C75,#00B4D8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff; font-style: italic;
+  font-family: Georgia, serif;
+}
+.m-logo-name { font-size: 15px; font-weight: 700; color: #fff; }
+.m-header-actions { display: flex; gap: 8px; }
+.m-icon-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-icon-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.15); }
+
+/* ── Mobile content area ── */
+.m-content {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 0;
+}
+
+/* ── Mobile screens (shown/hidden) ── */
+.m-screen { display: none; }
+.m-screen.active { display: block; }
+
+/* ── Section label ── */
+.m-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: rgba(255,255,255,0.35);
+  margin-bottom: 8px; margin-top: 20px;
+}
+.m-section-label:first-child { margin-top: 0; }
+
+/* ── Summary card (home big card) ── */
+.m-summary-card {
+  background: linear-gradient(135deg, #0F4C75, #00B4D8);
+  border-radius: 16px; padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 32px rgba(0,180,216,0.25);
+}
+.m-summary-date { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+.m-summary-networth { font-size: 32px; font-weight: 700; color: #fff; font-family: 'Courier New', monospace; line-height: 1; margin-bottom: 4px; }
+.m-summary-label { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+.m-summary-row { display: flex; gap: 12px; }
+.m-summary-stat { flex: 1; background: rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 12px; }
+.m-summary-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,0.6); margin-bottom: 3px; }
+.m-summary-stat-value { font-size: 15px; font-weight: 700; color: #fff; font-family: 'Courier New', monospace; }
+
+/* ── Due banner ── */
+.m-due-banner {
+  background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.4);
+  border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.m-due-banner-text { font-size: 13px; font-weight: 600; color: #F87171; }
+.m-due-banner-sub { font-size: 11px; color: rgba(248,113,113,0.7); margin-top: 1px; }
+.m-due-btn {
+  background: #F87171; color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-family: inherit; font-size: 12px; font-weight: 700;
+  cursor: pointer; flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-due-btn:active { transform: scale(0.95); }
+
+/* ── Account/fund/transaction cards ── */
+.m-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
+  cursor: pointer; transition: background .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-card:active { background: rgba(255,255,255,0.09); }
+.m-card-row { display: flex; align-items: center; justify-content: space-between; }
+.m-card-title { font-size: 14px; font-weight: 600; color: #E8EAF0; }
+.m-card-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+.m-card-amount { font-size: 16px; font-weight: 700; font-family: 'Courier New', monospace; }
+.m-card-amount.pos { color: #34D399; }
+.m-card-amount.neg { color: #F87171; }
+.m-card-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+  background: rgba(56,189,248,0.15); color: #38BDF8; margin-left: 8px;
+}
+.m-card-progress { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.m-card-progress-fill { height: 100%; border-radius: 2px; transition: width .3s; }
+
+/* ── Transaction card ── */
+.m-tx-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; margin-bottom: 6px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-tx-card:active { background: rgba(255,255,255,0.08); }
+.m-tx-icon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.m-tx-icon.payment { background: rgba(248,113,113,0.15); }
+.m-tx-icon.deposit { background: rgba(52,211,153,0.15); }
+.m-tx-icon.transfer { background: rgba(56,189,248,0.12); }
+.m-tx-info { flex: 1; min-width: 0; }
+.m-tx-payee { font-size: 14px; font-weight: 600; color: #E8EAF0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-tx-meta { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-tx-amount { font-size: 15px; font-weight: 700; font-family: 'Courier New', monospace; flex-shrink: 0; }
+
+/* ── Budget category row ── */
+.m-budget-row {
+  padding: 12px 14px; margin-bottom: 6px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+}
+.m-budget-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.m-budget-name { font-size: 13px; font-weight: 600; color: #E8EAF0; }
+.m-budget-amounts { font-size: 12px; font-family: 'Courier New', monospace; }
+.m-budget-bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.m-budget-fill { height: 100%; border-radius: 3px; }
+.m-budget-diff { font-size: 11px; margin-top: 5px; font-family: 'Courier New', monospace; }
+
+/* ── Bottom tab bar ── */
+.m-tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: #080B12;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: none; /* shown only on mobile */
+  align-items: center; justify-content: space-around;
+  padding: 0 4px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 100;
+}
+.m-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  flex: 1; padding: 8px 4px; border-radius: 10px;
+  cursor: pointer; border: none; background: transparent;
+  -webkit-tap-highlight-color: transparent; position: relative;
+}
+.m-tab:active { transform: scale(0.9); }
+.m-tab-icon { font-size: 22px; line-height: 1; }
+.m-tab-label { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 500; }
+.m-tab.active .m-tab-icon { filter: brightness(1); }
+.m-tab.active .m-tab-label { color: #00B4D8; font-weight: 700; }
+.m-tab.active { background: rgba(0,180,216,0.1); }
+.m-tab-badge {
+  position: absolute; top: 4px; right: calc(50% - 18px);
+  background: #F87171; color: #fff; font-size: 8px; font-weight: 700;
+  padding: 1px 4px; border-radius: 8px; min-width: 14px; text-align: center;
+}
+
+/* ── Floating + button ── */
+.m-fab {
+  position: fixed; bottom: 84px; right: 20px;
+  width: 58px; height: 58px; border-radius: 29px;
+  background: linear-gradient(135deg, #0F4C75, #00B4D8);
+  display: none; /* shown only on mobile */
+  align-items: center; justify-content: center;
+  font-size: 28px; color: #fff; font-weight: 300;
+  box-shadow: 0 6px 24px rgba(0,180,216,0.5);
+  cursor: pointer; z-index: 99; border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-fab:active { transform: scale(0.92); box-shadow: 0 3px 12px rgba(0,180,216,0.4); }
+
+/* ── Quick-add modal ── */
+.m-quick-add {
+  position: fixed; inset: 0; z-index: 200;
+  background: #0F1117; display: none; flex-direction: column;
+}
+.m-quick-add.open { display: flex; }
+.m-qa-header {
+  padding: 52px 20px 16px;
+  background: #080B12;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.m-qa-title { font-size: 18px; font-weight: 700; color: #fff; }
+.m-qa-cancel {
+  font-size: 15px; color: #00B4D8; background: none; border: none;
+  cursor: pointer; font-family: inherit; padding: 8px;
+}
+.m-qa-body { flex: 1; overflow-y: auto; padding: 20px 20px 20px; }
+.m-qa-amount-wrap {
+  text-align: center; margin-bottom: 24px;
+  padding: 20px; background: rgba(255,255,255,0.04); border-radius: 16px;
+}
+.m-qa-amount-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+.m-qa-amount-input {
+  width: 100%; background: none; border: none; outline: none;
+  font-size: 42px; font-weight: 700; color: #fff; text-align: center;
+  font-family: 'Courier New', monospace; caret-color: #00B4D8;
+}
+.m-qa-amount-input::placeholder { color: rgba(255,255,255,0.2); }
+.m-qa-type-row {
+  display: flex; gap: 8px; margin-bottom: 20px;
+}
+.m-qa-type-btn {
+  flex: 1; padding: 10px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5);
+  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all .15s;
+}
+.m-qa-type-btn.active-payment { border-color: #F87171; background: rgba(248,113,113,0.12); color: #F87171; }
+.m-qa-type-btn.active-deposit { border-color: #34D399; background: rgba(52,211,153,0.12); color: #34D399; }
+.m-qa-field { margin-bottom: 14px; }
+.m-qa-field label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+.m-qa-input {
+  width: 100%; padding: 13px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.1);
+  color: #fff; font-family: inherit; font-size: 15px;
+  -webkit-appearance: none; outline: none;
+}
+.m-qa-input:focus { border-color: #00B4D8; background: rgba(0,180,216,0.08); }
+.m-qa-input option { background: #1A1F2E; color: #fff; }
+.m-qa-footer {
+  padding: 16px 20px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: #080B12; border-top: 1px solid rgba(255,255,255,0.08);
+}
+.m-qa-save {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #0F4C75, #00B4D8);
+  border: none; border-radius: 14px; color: #fff;
+  font-family: inherit; font-size: 16px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,180,216,0.3);
+}
+.m-qa-save:active { transform: scale(0.98); }
+
+/* ── More screen ── */
+.m-more-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; margin-bottom: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-more-item:active { background: rgba(255,255,255,0.09); }
+.m-more-icon { font-size: 24px; width: 40px; text-align: center; flex-shrink: 0; }
+.m-more-text { }
+.m-more-title { font-size: 15px; font-weight: 600; color: #E8EAF0; }
+.m-more-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+/* ── Search overlay ── */
+.m-search-wrap {
+  position: fixed; inset: 0; z-index: 200;
+  background: #0F1117; display: none; flex-direction: column;
+}
+.m-search-wrap.open { display: flex; }
+.m-search-header {
+  padding: 52px 16px 12px;
+  background: #080B12;
+  display: flex; gap: 10px; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.m-search-inp {
+  flex: 1; padding: 12px 16px; border-radius: 12px;
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.15);
+  color: #fff; font-family: inherit; font-size: 16px; outline: none;
+}
+.m-search-inp:focus { border-color: #00B4D8; }
+.m-search-cancel { color: #00B4D8; background: none; border: none; font-family: inherit; font-size: 15px; cursor: pointer; padding: 8px; white-space: nowrap; }
+.m-search-results { flex: 1; overflow-y: auto; padding: 8px 16px; }
+.m-search-section { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,0.3); padding: 12px 0 6px; }
+.m-search-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+.m-search-item:active { opacity: 0.7; }
+.m-search-item-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.m-search-item-text { flex: 1; min-width: 0; }
+.m-search-item-title { font-size: 14px; font-weight: 500; color: #E8EAF0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-search-item-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.m-search-item-right { font-size: 13px; font-weight: 700; font-family: 'Courier New', monospace; flex-shrink: 0; }
+
+/* ── Autocomplete dropdown in quick-add ── */
+.m-autocomplete {
+  background: #1A1F2E; border: 1.5px solid rgba(56,189,248,0.3);
+  border-radius: 10px; margin-top: 4px; overflow: hidden; max-height: 180px; overflow-y: auto;
+}
+.m-autocomplete-item {
+  padding: 12px 14px; font-size: 14px; color: #E8EAF0; cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.m-autocomplete-item:last-child { border-bottom: none; }
+.m-autocomplete-item:active { background: rgba(56,189,248,0.1); }
+
+@media (max-width: 768px) {
+  .m-tabbar { display: flex; }
+  .m-fab { display: flex; }
+}
+
 </style>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -501,89 +730,228 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 </head>
 <body>
 
-<!-- MOBILE TOP BAR -->
-<div class="mobile-topbar" id="mobile-topbar">
-  <div class="mobile-topbar-logo">
-    <div class="mobile-topbar-logo-mark">M</div>
-    <span class="mobile-topbar-name">Meridian</span>
-  </div>
-  <div class="mobile-topbar-actions">
-    <div id="mobile-sync-dot" class="mobile-sync-indicator" title="Sync status"></div>
-    <button class="mobile-search-btn" onclick="openMobileSearch()" title="Search">🔍</button>
-  </div>
-</div>
+<!-- ═══ MOBILE SHELL ═══════════════════════════════════
+  This is the entire mobile UI. Desktop pages are hidden on mobile.
+  Same data, completely separate interface.
+════════════════════════════════════════════════════════ -->
+<div id="mobile-shell">
 
-<!-- MOBILE BOTTOM TAB BAR -->
-<div class="mobile-tabbar" id="mobile-tabbar">
-  <button class="mobile-tab active" onclick="showPage('dashboard');setMobileTab('dashboard')" id="mtab-dashboard">
-    <span class="mobile-tab-icon">📊</span>
-    <span class="mobile-tab-label">Dashboard</span>
-  </button>
-  <button class="mobile-tab" onclick="showPage('transactions');setMobileTab('transactions')" id="mtab-transactions">
-    <span class="mobile-tab-icon">↕️<span id="mtab-badge-tx" class="mobile-tab-badge" style="display:none"></span></span>
-    <span class="mobile-tab-label">Transactions</span>
-  </button>
-  <button class="mobile-tab" onclick="showPage('accounts');setMobileTab('accounts')" id="mtab-accounts">
-    <span class="mobile-tab-icon">🏦</span>
-    <span class="mobile-tab-label">Accounts</span>
-  </button>
-  <button class="mobile-tab" onclick="showPage('funds');setMobileTab('funds')" id="mtab-funds">
-    <span class="mobile-tab-icon">💼</span>
-    <span class="mobile-tab-label">Funds</span>
-  </button>
-  <button class="mobile-tab" onclick="showPage('budget');setMobileTab('budget')" id="mtab-budget">
-    <span class="mobile-tab-icon">🎯</span>
-    <span class="mobile-tab-label">Budget</span>
-  </button>
-  <button class="mobile-tab" onclick="showPage('recurring');setMobileTab('recurring')" id="mtab-recurring">
-    <span class="mobile-tab-icon">🔁<span id="mtab-badge-rec" class="mobile-tab-badge" style="display:none"></span></span>
-    <span class="mobile-tab-label">Recurring</span>
-  </button>
-  <button class="mobile-tab" onclick="openMobileMore()" id="mtab-more">
-    <span class="mobile-tab-icon">⋯</span>
-    <span class="mobile-tab-label">More</span>
-  </button>
-</div>
-
-<!-- MOBILE SEARCH OVERLAY -->
-<div class="mobile-search-overlay" id="mobile-search-overlay" onclick="closeMobileSearch()"></div>
-<div class="mobile-search-box" id="mobile-search-box" style="display:none">
-  <input class="mobile-search-input" id="mobile-search-input" type="text"
-    placeholder="Search everything…"
-    oninput="onGlobalSearch(this)"
-    onkeydown="if(event.key==='Escape')closeMobileSearch()"
-    autocomplete="off">
-  <button onclick="closeMobileSearch()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:15px;cursor:pointer;padding:8px">Cancel</button>
-</div>
-<div class="mobile-search-results" id="mobile-search-results" style="display:none"></div>
-
-<!-- MOBILE MORE MENU -->
-<div class="modal-overlay" id="mobile-more-modal" style="display:none">
-  <div class="modal" onclick="event.stopPropagation()" style="max-width:320px;padding:16px">
-    <div class="modal-header" style="margin-bottom:14px">
-      <h3 style="font-size:15px">More</h3>
-      <button class="icon-btn" onclick="closeMobileMore()">✕</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <button onclick="closeMobileMore();showPage('reports');setMobileTab('')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-solid);border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--text);text-align:left">
-        <span style="font-size:20px">📈</span> Reports
-      </button>
-      <button onclick="closeMobileMore();openTemplatesPanel()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-solid);border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--text);text-align:left">
-        <span style="font-size:20px">📋</span> Templates
-      </button>
-      <button onclick="closeMobileMore();openSyncModal()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-solid);border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--text);text-align:left">
-        <span style="font-size:20px">☁️</span> Sync Data
-      </button>
-      <button onclick="closeMobileMore();showPage('help');setMobileTab('')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-solid);border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;color:var(--text);text-align:left">
-        <span style="font-size:20px">❓</span> Help &amp; Guide
-      </button>
-      <button onclick="closeMobileMore();addTxRow();showPage('transactions');setMobileTab('transactions')" style="display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,#0F4C75,#00B4D8);border:none;border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;color:#fff;font-weight:700;text-align:left">
-        <span style="font-size:20px">＋</span> New Transaction
-      </button>
+  <!-- ── HEADER ── -->
+  <div class="m-header">
+    <div class="m-header-top">
+      <div class="m-logo">
+        <div class="m-logo-mark">M</div>
+        <span class="m-logo-name">Meridian</span>
+      </div>
+      <div class="m-header-actions">
+        <button class="m-icon-btn" onclick="openMobileSearch()" aria-label="Search">🔍</button>
+        <button class="m-icon-btn" onclick="openSyncModal()" aria-label="Sync">
+          <span id="m-sync-dot" style="width:10px;height:10px;border-radius:50%;background:var(--amber);display:inline-block"></span>
+        </button>
+      </div>
     </div>
   </div>
+
+  <!-- ── CONTENT ── -->
+  <div class="m-content" id="m-content">
+
+    <!-- HOME SCREEN -->
+    <div class="m-screen active" id="m-screen-home">
+      <!-- Summary card -->
+      <div class="m-summary-card" id="m-summary-card">
+        <div class="m-summary-date" id="m-date"></div>
+        <div class="m-summary-networth" id="m-networth">—</div>
+        <div class="m-summary-label">Net Worth</div>
+        <div class="m-summary-row">
+          <div class="m-summary-stat">
+            <div class="m-summary-stat-label">Income</div>
+            <div class="m-summary-stat-value" id="m-income">—</div>
+          </div>
+          <div class="m-summary-stat">
+            <div class="m-summary-stat-label">Expenses</div>
+            <div class="m-summary-stat-value" id="m-expenses">—</div>
+          </div>
+          <div class="m-summary-stat">
+            <div class="m-summary-stat-label">Net</div>
+            <div class="m-summary-stat-value" id="m-net">—</div>
+          </div>
+        </div>
+      </div>
+      <!-- Due banner -->
+      <div class="m-due-banner" id="m-due-banner" style="display:none">
+        <div>
+          <div class="m-due-banner-text" id="m-due-text">Recurring due</div>
+          <div class="m-due-banner-sub">Tap to review and post</div>
+        </div>
+        <button class="m-due-btn" onclick="mobilePostAllDue()">Post All</button>
+      </div>
+      <!-- Accounts -->
+      <div class="m-section-label">Accounts</div>
+      <div id="m-accounts-list"></div>
+      <!-- Recent transactions -->
+      <div class="m-section-label">Recent Transactions</div>
+      <div id="m-recent-list"></div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- TRANSACTIONS SCREEN -->
+    <div class="m-screen" id="m-screen-transactions">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:20px;font-weight:700;color:#fff">Transactions</div>
+        <button onclick="openMobileSearch()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 12px;color:rgba(255,255,255,0.6);font-family:inherit;font-size:12px;cursor:pointer">🔍 Search</button>
+      </div>
+      <div id="m-tx-list"></div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- FUNDS SCREEN -->
+    <div class="m-screen" id="m-screen-funds">
+      <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:14px">Funds</div>
+      <div id="m-funds-list"></div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- BUDGET SCREEN -->
+    <div class="m-screen" id="m-screen-budget">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:20px;font-weight:700;color:#fff">Budget</div>
+        <select id="m-budget-month-sel" onchange="renderMobileBudget()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;color:#fff;font-family:inherit;font-size:12px;-webkit-appearance:none"></select>
+      </div>
+      <div id="m-budget-summary" style="display:flex;gap:8px;margin-bottom:14px"></div>
+      <div class="m-section-label">Income</div>
+      <div id="m-budget-income"></div>
+      <div class="m-section-label">Expenses</div>
+      <div id="m-budget-expense"></div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- MORE SCREEN -->
+    <div class="m-screen" id="m-screen-more">
+      <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:16px">More</div>
+      <div class="m-more-item" onclick="mobileGoDesktopPage('accounts')">
+        <span class="m-more-icon">🏦</span>
+        <div class="m-more-text"><div class="m-more-title">Accounts</div><div class="m-more-sub">View and manage your accounts</div></div>
+      </div>
+      <div class="m-more-item" onclick="mobileGoDesktopPage('recurring')">
+        <span class="m-more-icon">🔁</span>
+        <div class="m-more-text">
+          <div class="m-more-title">Recurring <span id="m-more-rec-badge" style="display:none;background:#F87171;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px"></span></div>
+          <div class="m-more-sub">Scheduled transactions</div>
+        </div>
+      </div>
+      <div class="m-more-item" onclick="mobileGoDesktopPage('reports')">
+        <span class="m-more-icon">📈</span>
+        <div class="m-more-text"><div class="m-more-title">Reports</div><div class="m-more-sub">Trends, statements, PDF export</div></div>
+      </div>
+      <div class="m-more-item" onclick="openTemplatesPanel()">
+        <span class="m-more-icon">📋</span>
+        <div class="m-more-text"><div class="m-more-title">Templates</div><div class="m-more-sub">Saved transaction recipes</div></div>
+      </div>
+      <div class="m-more-item" onclick="openSyncModal()">
+        <span class="m-more-icon">☁️</span>
+        <div class="m-more-text"><div class="m-more-title">Sync Data</div><div id="m-sync-label" class="m-more-sub">Configure cloud sync</div></div>
+      </div>
+      <div class="m-more-item" onclick="mobileGoDesktopPage('help')">
+        <span class="m-more-icon">❓</span>
+        <div class="m-more-text"><div class="m-more-title">Help &amp; Guide</div><div class="m-more-sub">Full documentation</div></div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+
+  </div><!-- end m-content -->
+
+  <!-- ── BOTTOM TAB BAR ── -->
+  <div class="m-tabbar">
+    <button class="m-tab active" id="m-tab-home" onclick="switchMobileTab('home')">
+      <span class="m-tab-icon">🏠</span>
+      <span class="m-tab-label">Home</span>
+    </button>
+    <button class="m-tab" id="m-tab-transactions" onclick="switchMobileTab('transactions')">
+      <span class="m-tab-icon">↕️</span>
+      <span class="m-tab-label">Transactions</span>
+    </button>
+    <button class="m-tab" id="m-tab-funds" onclick="switchMobileTab('funds')">
+      <span class="m-tab-icon">💼</span>
+      <span class="m-tab-label">Funds</span>
+    </button>
+    <button class="m-tab" id="m-tab-budget" onclick="switchMobileTab('budget')">
+      <span class="m-tab-icon">🎯</span>
+      <span class="m-tab-label">Budget</span>
+    </button>
+    <button class="m-tab" id="m-tab-more" onclick="switchMobileTab('more')">
+      <span class="m-tab-icon">⋯</span>
+      <span class="m-tab-label">More</span>
+    </button>
+  </div>
+
+</div><!-- end mobile-shell -->
+
+<!-- ── FLOATING + BUTTON ── -->
+<button class="m-fab" onclick="openQuickAdd()" aria-label="Add transaction">＋</button>
+
+<!-- ── QUICK-ADD MODAL ── -->
+<div class="m-quick-add" id="m-quick-add">
+  <div class="m-qa-header">
+    <button class="m-qa-cancel" onclick="closeQuickAdd()">Cancel</button>
+    <div class="m-qa-title">New Transaction</div>
+    <button class="m-qa-cancel" onclick="saveQuickAdd()" style="font-weight:700">Save</button>
+  </div>
+  <div class="m-qa-body">
+    <!-- Amount -->
+    <div class="m-qa-amount-wrap">
+      <div class="m-qa-amount-label">Amount</div>
+      <input class="m-qa-amount-input" id="qa-amount" type="number" placeholder="0.00" step="0.01" min="0" inputmode="decimal">
+    </div>
+    <!-- Payment / Deposit toggle -->
+    <div class="m-qa-type-row">
+      <button class="m-qa-type-btn active-payment" id="qa-type-payment" onclick="setQaType('payment')">💸 Payment</button>
+      <button class="m-qa-type-btn" id="qa-type-deposit" onclick="setQaType('deposit')">💰 Deposit</button>
+    </div>
+    <!-- Fields -->
+    <div class="m-qa-field">
+      <label>Payee</label>
+      <input class="m-qa-input" id="qa-payee" type="text" placeholder="Who did you pay?" autocomplete="off" oninput="showQaPayeeSuggest(this)">
+      <div id="qa-payee-suggest" class="m-autocomplete" style="display:none"></div>
+    </div>
+    <div class="m-qa-field">
+      <label>Account</label>
+      <select class="m-qa-input" id="qa-account"></select>
+    </div>
+    <div class="m-qa-field">
+      <label>Category</label>
+      <input class="m-qa-input" id="qa-category" type="text" placeholder="Type code or name…" autocomplete="off" oninput="showQaCategorySuggest(this)">
+      <div id="qa-category-suggest" class="m-autocomplete" style="display:none"></div>
+    </div>
+    <div class="m-qa-field">
+      <label>Fund</label>
+      <select class="m-qa-input" id="qa-fund">
+        <option value="">— No fund —</option>
+      </select>
+    </div>
+    <div class="m-qa-field">
+      <label>Date</label>
+      <input class="m-qa-input" id="qa-date" type="date">
+    </div>
+    <div class="m-qa-field">
+      <label>Memo (optional)</label>
+      <input class="m-qa-input" id="qa-memo" type="text" placeholder="Add a note…">
+    </div>
+  </div>
+  <div class="m-qa-footer">
+    <button class="m-qa-save" onclick="saveQuickAdd()">Save Transaction</button>
+  </div>
 </div>
 
+<!-- ── SEARCH OVERLAY ── -->
+<div class="m-search-wrap" id="m-search-wrap">
+  <div class="m-search-header">
+    <input class="m-search-inp" id="m-search-inp" type="text" placeholder="Search everything…" oninput="runMobileSearch(this.value)" autocomplete="off">
+    <button class="m-search-cancel" onclick="closeMobileSearch()">Cancel</button>
+  </div>
+  <div class="m-search-results" id="m-search-results">
+    <div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:14px">Start typing to search</div>
+  </div>
+</div>
 <nav class="sidebar">
   <div class="logo"><div class="logo-icon">M</div><span class="logo-name">Meridian</span><span style="font-size:9px;color:rgba(255,255,255,0.35);margin-left:4px;letter-spacing:.05em">by Roy</span></div>
   <div class="search-bar-wrap" style="margin-top:16px">
@@ -1490,6 +1858,230 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     </div><!-- end help-content -->
   </div>
 
+
+<!-- MOBILE UI — completely separate from desktop -->
+
+<!-- MOBILE TOP BAR -->
+<div id="m-topbar" style="position:fixed;top:0;left:0;right:0;height:54px;background:#0A1628;z-index:100;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid rgba(255,255,255,0.08)">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:28px;height:28px;background:linear-gradient(135deg,#0F4C75,#00B4D8);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;font-style:italic;font-family:Georgia,serif">M</div>
+    <span style="font-size:16px;font-weight:700;color:#fff">Meridian</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="m-sync-dot" style="width:8px;height:8px;border-radius:50%;background:var(--amber)" title="Sync status"></div>
+    <button onclick="openMobileSearch()" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;color:rgba(255,255,255,0.7)">🔍</button>
+  </div>
+</div>
+
+<!-- MOBILE PAGES CONTAINER -->
+<div id="m-app" style="position:fixed;inset:0;top:54px;bottom:70px;overflow-y:auto;background:var(--bg);-webkit-overflow-scrolling:touch">
+
+  <!-- HOME PAGE -->
+  <div id="m-page-home" class="m-page" style="padding:16px">
+    <!-- Due banner -->
+    <div id="m-due-banner" style="display:none;background:rgba(248,113,113,0.15);border:1px solid var(--coral);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">⚠️</span>
+        <div>
+          <div id="m-due-text" style="font-size:13px;font-weight:700;color:var(--coral)">transactions due</div>
+          <div style="font-size:11px;color:var(--text-light)">Tap to review and post</div>
+        </div>
+      </div>
+      <button onclick="setMobileTab('recurring');renderMobileRecurring()" style="background:var(--coral);border:none;color:#fff;padding:8px 14px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">Review</button>
+    </div>
+    <!-- Summary card -->
+    <div style="background:linear-gradient(135deg,#0F4C75,#00B4D8);border-radius:16px;padding:20px;margin-bottom:14px">
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Net Worth</div>
+      <div id="m-net-worth" style="font-size:32px;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:-1px">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Month Income</div>
+          <div id="m-month-income" style="font-size:16px;font-weight:700;color:#4ADE80;font-family:'Courier New',monospace">—</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Month Expenses</div>
+          <div id="m-month-expenses" style="font-size:16px;font-weight:700;color:#FCA5A5;font-family:'Courier New',monospace">—</div>
+        </div>
+      </div>
+    </div>
+    <!-- Accounts -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:8px">Accounts</div>
+    <div id="m-accounts-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+    <!-- Recent transactions -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light)">Recent</div>
+      <button onclick="setMobileTab('transactions');renderMobileTransactions()" style="background:none;border:none;color:var(--purple);font-size:12px;cursor:pointer;font-family:inherit">See all →</button>
+    </div>
+    <div id="m-recent-list" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+
+  <!-- TRANSACTIONS PAGE -->
+  <div id="m-page-transactions" class="m-page" style="display:none;padding:16px">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input id="m-tx-search" type="text" placeholder="Search transactions…" oninput="renderMobileTransactions()"
+        style="flex:1;padding:10px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px">
+      <select id="m-tx-acct" onchange="renderMobileTransactions()"
+        style="padding:10px 10px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px">
+        <option value="">All</option>
+      </select>
+    </div>
+    <div id="m-tx-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"></div>
+    <div id="m-tx-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <!-- FUNDS PAGE -->
+  <div id="m-page-funds" class="m-page" style="display:none;padding:16px">
+    <div id="m-funds-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- BUDGET PAGE -->
+  <div id="m-page-budget" class="m-page" style="display:none;padding:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light)">Budget</div>
+      <select id="m-budget-month" onchange="renderMobileBudget()"
+        style="padding:7px 10px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px"></select>
+    </div>
+    <div id="m-budget-summary" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(52,211,153,0.8);margin-bottom:8px">Income</div>
+    <div id="m-budget-income" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(248,113,113,0.8);margin-bottom:8px">Expenses</div>
+    <div id="m-budget-expenses" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+
+  <!-- RECURRING PAGE -->
+  <div id="m-page-recurring" class="m-page" style="display:none;padding:16px">
+    <div id="m-recurring-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- MORE PAGE -->
+  <div id="m-page-more" class="m-page" style="display:none;padding:16px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:12px">More Options</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="setMobileTab('home');openMobileSearch()" class="m-more-btn">🔍 <span>Search Everything</span></button>
+      <button onclick="mobileOpenAccounts()" class="m-more-btn">🏦 <span>Accounts</span></button>
+      <button onclick="openTemplatesPanel()" class="m-more-btn">📋 <span>Templates</span></button>
+      <button onclick="openSyncModal()" class="m-more-btn">☁️ <span>Sync Data</span></button>
+      <button onclick="setMobileTab('home');showPage('reports')" class="m-more-btn">📈 <span>Reports (Desktop)</span></button>
+      <button onclick="setMobileTab('home');showPage('help')" class="m-more-btn">❓ <span>Help &amp; Guide</span></button>
+    </div>
+    <!-- Account balances detail -->
+    <div style="margin-top:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:10px">All Accounts</div>
+      <div id="m-more-accounts" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MOBILE TAB BAR -->
+<div id="m-tabbar" style="position:fixed;bottom:0;left:0;right:0;height:70px;background:#0A1628;border-top:1px solid rgba(255,255,255,0.1);z-index:100;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom,0)">
+  <button class="m-tab active" id="m-tab-home" onclick="setMobileTab('home');renderMobileHome()">
+    <span style="font-size:22px">🏠</span>
+    <span class="m-tab-lbl">Home</span>
+  </button>
+  <button class="m-tab" id="m-tab-transactions" onclick="setMobileTab('transactions');renderMobileTransactions()">
+    <span style="font-size:22px">↕️</span>
+    <span class="m-tab-lbl">Transactions</span>
+  </button>
+  <button class="m-tab" id="m-tab-funds" onclick="setMobileTab('funds');renderMobileFunds()">
+    <span style="font-size:22px">💼</span>
+    <span class="m-tab-lbl">Funds</span>
+  </button>
+  <button class="m-tab" id="m-tab-budget" onclick="setMobileTab('budget');renderMobileBudget()">
+    <span style="font-size:22px">🎯</span>
+    <span class="m-tab-lbl">Budget</span>
+  </button>
+  <button class="m-tab" id="m-tab-recurring" onclick="setMobileTab('recurring');renderMobileRecurring()">
+    <span style="font-size:22px" style="position:relative">🔁<span id="m-rec-badge" style="display:none;position:absolute;top:-4px;right:-8px;background:var(--coral);color:#fff;font-size:8px;font-weight:700;padding:1px 4px;border-radius:8px;min-width:14px;text-align:center"></span></span>
+    <span class="m-tab-lbl">Due</span>
+  </button>
+  <button class="m-tab" id="m-tab-more" onclick="setMobileTab('more');renderMobileMore()">
+    <span style="font-size:22px">⋯</span>
+    <span class="m-tab-lbl">More</span>
+  </button>
+</div>
+
+<!-- FLOATING + BUTTON -->
+<button id="m-add-btn" onclick="openMobileAddTx()" style="position:fixed;bottom:82px;right:20px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#0F4C75,#00B4D8);border:none;color:#fff;font-size:28px;cursor:pointer;z-index:101;box-shadow:0 6px 24px rgba(0,180,216,0.5);-webkit-tap-highlight-color:transparent;align-items:center;justify-content:center">＋</button>
+
+<!-- MOBILE ADD TRANSACTION MODAL -->
+<div id="m-add-modal" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto">
+  <div style="padding:16px;min-height:100vh">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-top:env(safe-area-inset-top,0)">
+      <button onclick="closeMobileAddTx()" style="background:none;border:none;color:var(--text-mid);font-size:15px;cursor:pointer;font-family:inherit;padding:8px">Cancel</button>
+      <div style="font-size:16px;font-weight:700;color:var(--text)">New Transaction</div>
+      <button onclick="saveMobileAddTx()" style="background:var(--purple);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;padding:8px 16px;border-radius:8px">Save</button>
+    </div>
+
+    <!-- Payment / Deposit toggle -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--border-solid);border-radius:12px;overflow:hidden;margin-bottom:20px">
+      <button id="m-type-payment" onclick="setMobileType('payment')" style="padding:12px;font-family:inherit;font-size:14px;font-weight:700;border:none;cursor:pointer;background:var(--coral);color:#fff;transition:all .15s">💸 Payment</button>
+      <button id="m-type-deposit" onclick="setMobileType('deposit')" style="padding:12px;font-family:inherit;font-size:14px;font-weight:700;border:none;cursor:pointer;background:var(--card-bg);color:var(--text-mid);transition:all .15s">💰 Deposit</button>
+    </div>
+
+    <!-- Amount — BIG -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Amount</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:4px">
+        <span style="font-size:28px;color:var(--text-mid);font-family:'Courier New',monospace">$</span>
+        <input id="m-amount" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal"
+          style="font-size:42px;font-weight:700;font-family:'Courier New',monospace;color:var(--text);background:none;border:none;outline:none;width:200px;text-align:center;-webkit-appearance:none">
+      </div>
+      <div style="height:2px;background:var(--purple);width:180px;margin:8px auto 0;border-radius:1px"></div>
+    </div>
+
+    <!-- Form fields -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Payee</div>
+        <input id="m-payee" type="text" placeholder="Who did you pay?" autocomplete="off"
+          oninput="showMobilePayeeSuggest(this)"
+          style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px">
+        <div id="m-payee-suggest" style="display:none;background:var(--card-bg);border:1.5px solid var(--purple);border-top:none;border-radius:0 0 10px 10px;max-height:160px;overflow-y:auto"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Account</div>
+        <select id="m-account" style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px"></select>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Category</div>
+        <input id="m-category" type="text" placeholder="Type code or name…" autocomplete="off"
+          oninput="showMobileCatSuggest(this)"
+          style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px">
+        <div id="m-cat-suggest" style="display:none;background:var(--card-bg);border:1.5px solid var(--purple);border-top:none;border-radius:0 0 10px 10px;max-height:200px;overflow-y:auto"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Fund <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
+        <select id="m-fund" style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px">
+          <option value="">— no fund —</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Date</div>
+        <input id="m-date" type="date" style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Memo <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
+        <input id="m-memo" type="text" placeholder="Optional note…"
+          style="width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border-solid);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px">
+      </div>
+    </div>
+
+    <!-- Save button at bottom too -->
+    <button onclick="saveMobileAddTx()" style="width:100%;margin-top:24px;padding:16px;background:linear-gradient(135deg,#0F4C75,#00B4D8);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer">Save Transaction</button>
+  </div>
+</div>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div id="m-search-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg)">
+  <div style="padding:16px;display:flex;gap:10px;align-items:center;background:#0A1628;border-bottom:1px solid rgba(255,255,255,0.08)">
+    <input id="m-search-input" type="text" placeholder="Search everything…" oninput="renderMobileSearch(this.value)"
+      style="flex:1;padding:12px 16px;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:#fff;font-family:inherit;font-size:15px">
+    <button onclick="closeMobileSearch()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:15px;cursor:pointer;font-family:inherit;white-space:nowrap">Cancel</button>
+  </div>
+  <div id="m-search-results" style="overflow-y:auto;height:calc(100vh - 64px);padding:8px 0"></div>
+</div>
 </main>
 
 <!-- TRANSFER MODAL -->
@@ -1936,6 +2528,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 <div class="toast" id="toast"></div>
 
 <script>
+
 const today=new Date().toISOString().split('T')[0];
 const STORAGE_KEY='fintrack_v1';
 
@@ -5685,147 +6278,465 @@ async function syncPull(){
   }
 }
 
-/* ═══ MOBILE NAVIGATION ═══ */
-function setMobileTab(page){
-  document.querySelectorAll('.mobile-tab').forEach(t=>t.classList.remove('active'));
-  const tab=document.getElementById('mtab-'+page);
-  if(tab)tab.classList.add('active');
+/* ═══ MOBILE UI ═══════════════════════════════════════
+  Complete mobile interface — separate from desktop.
+  Reads same state, renders completely differently.
+════════════════════════════════════════════════════ */
+
+function isMobile(){ return window.innerWidth <= 768; }
+
+/* ── Tab switching ── */
+function switchMobileTab(tab){
+  document.querySelectorAll('.m-screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+  const screen=document.getElementById('m-screen-'+tab);
+  const tabBtn=document.getElementById('m-tab-'+tab);
+  if(screen)screen.classList.add('active');
+  if(tabBtn)tabBtn.classList.add('active');
+  document.getElementById('m-content').scrollTop=0;
+  // Render the screen
+  const renders={
+    home:renderMobileHome,
+    transactions:renderMobileTransactions,
+    funds:renderMobileFunds,
+    budget:renderMobileBudget,
+    more:renderMobileMore
+  };
+  if(renders[tab])renders[tab]();
 }
 
-function openMobileMore(){
-  document.getElementById('mobile-more-modal').style.display='flex';
-}
-function closeMobileMore(){
-  document.getElementById('mobile-more-modal').style.display='none';
+/* ── Desktop page fallback (for More menu items) ── */
+function mobileGoDesktopPage(page){
+  // On mobile, switch to more tab then open full-screen overlay with desktop page
+  // For now just show a notice — the desktop pages are accessible by rotating
+  // or the user can use the desktop. These are complex pages.
+  // We show them as overlays using the existing desktop page markup.
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#0F1117;z-index:300;overflow-y:auto;padding-top:60px';
+  const closeBtn=document.createElement('div');
+  closeBtn.style.cssText='position:fixed;top:0;left:0;right:0;height:56px;background:#080B12;display:flex;align-items:center;padding:0 16px;z-index:301;border-bottom:1px solid rgba(255,255,255,0.08)';
+  closeBtn.innerHTML=`<button onclick="this.closest('[data-overlay]').remove()" style="background:none;border:none;color:#00B4D8;font-size:15px;font-family:inherit;cursor:pointer;padding:8px">← Back</button><span style="font-size:15px;font-weight:600;color:#fff;margin-left:12px">${page.charAt(0).toUpperCase()+page.slice(1)}</span>`;
+  overlay.setAttribute('data-overlay','1');
+  overlay.appendChild(closeBtn);
+  const inner=document.createElement('div');
+  inner.style.cssText='padding:16px;min-height:100vh';
+  overlay.appendChild(inner);
+  document.body.appendChild(overlay);
+  // Clone the desktop page content into overlay
+  const desktopPage=document.getElementById('page-'+page);
+  if(desktopPage){
+    const clone=desktopPage.cloneNode(true);
+    clone.style.display='block';
+    clone.style.cssText='display:block;';
+    inner.appendChild(clone);
+    // Re-run the render for this page
+    const renders={accounts:renderAccounts,recurring:renderRecurring,reports:renderReports,help:()=>{}};
+    if(renders[page])renders[page]();
+  }
 }
 
+/* ── HOME ── */
+function renderMobileHome(){
+  // Summary card
+  const now=new Date();
+  document.getElementById('m-date').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const totalAssets=state.accounts.filter(a=>a.type!=='loan'&&a.type!=='credit').reduce((s,a)=>s+acctBalance(a.id),0);
+  const totalDebts=state.accounts.filter(a=>a.type==='loan'||a.type==='credit').reduce((s,a)=>s+Math.abs(Math.min(0,acctBalance(a.id))),0);
+  const netWorth=totalAssets-totalDebts;
+  document.getElementById('m-networth').textContent=fmt(netWorth);
+  document.getElementById('m-networth').style.color=netWorth>=0?'#fff':'#F87171';
+  // Month income/expenses
+  const mo=String(now.getMonth()+1).padStart(2,'0');
+  const yr=now.getFullYear();
+  const start=`${yr}-${mo}-01`,end=`${yr}-${mo}-31`;
+  const mTxs=state.transactions.filter(t=>t.date>=start&&t.date<=end&&t.type!=='transfer');
+  const mIncome=mTxs.reduce((s,t)=>s+t.deposit,0);
+  const mExpenses=mTxs.reduce((s,t)=>s+t.payment,0);
+  const mNet=mIncome-mExpenses;
+  document.getElementById('m-income').textContent=fmt(mIncome);
+  document.getElementById('m-expenses').textContent=fmt(mExpenses);
+  document.getElementById('m-net').textContent=fmt(mNet);
+  document.getElementById('m-net').style.color=mNet>=0?'#34D399':'#F87171';
+
+  // Due banner
+  const due=(state.recurring||[]).filter(isDue);
+  const banner=document.getElementById('m-due-banner');
+  if(due.length){
+    banner.style.display='flex';
+    document.getElementById('m-due-text').textContent=`${due.length} recurring transaction${due.length!==1?'s':''} due`;
+  } else banner.style.display='none';
+
+  // Accounts list
+  const acctEl=document.getElementById('m-accounts-list');
+  acctEl.innerHTML='';
+  state.accounts.forEach(a=>{
+    const bal=acctBalance(a.id);
+    const isDebt=a.type==='credit'||a.type==='loan';
+    const div=document.createElement('div');
+    div.className='m-card';
+    div.innerHTML=`<div class="m-card-row">
+      <div>
+        <div class="m-card-title">${a.name}</div>
+        <div class="m-card-sub">${a.type.charAt(0).toUpperCase()+a.type.slice(1)}</div>
+      </div>
+      <div class="m-card-amount ${bal>=0?'pos':'neg'}">${fmt(bal)}</div>
+    </div>`;
+    div.onclick=()=>switchMobileTab('transactions');
+    acctEl.appendChild(div);
+  });
+
+  // Recent transactions (last 8)
+  const recentEl=document.getElementById('m-recent-list');
+  recentEl.innerHTML='';
+  const recent=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  if(!recent.length){
+    recentEl.innerHTML='<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:13px">No transactions yet — tap ＋ to add one</div>';
+  }
+  recent.forEach(tx=>{
+    const icons={payment:'💸',deposit:'💰',transfer:'↔️'};
+    const amt=tx.payment?`-${fmt(tx.payment)}`:`+${fmt(tx.deposit)}`;
+    const col=tx.deposit?'#34D399':'#F87171';
+    const div=document.createElement('div');
+    div.className='m-tx-card';
+    div.innerHTML=`
+      <div class="m-tx-icon ${tx.type}">${icons[tx.type]||'💳'}</div>
+      <div class="m-tx-info">
+        <div class="m-tx-payee">${tx.payee||'—'}</div>
+        <div class="m-tx-meta">${tx.date}${tx.category?' · '+tx.category:''}</div>
+      </div>
+      <div class="m-tx-amount" style="color:${col}">${amt}</div>`;
+    recentEl.appendChild(div);
+  });
+}
+
+/* ── TRANSACTIONS ── */
+function renderMobileTransactions(){
+  const el=document.getElementById('m-tx-list');
+  el.innerHTML='';
+  const txs=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!txs.length){
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:14px">No transactions yet.<br>Tap ＋ to add your first one.</div>';
+    return;
+  }
+  // Group by date
+  const groups={};
+  txs.forEach(tx=>{if(!groups[tx.date])groups[tx.date]=[];groups[tx.date].push(tx);});
+  Object.entries(groups).forEach(([date,list])=>{
+    const dateLabel=document.createElement('div');
+    dateLabel.style.cssText='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.3);padding:12px 2px 6px';
+    const d=new Date(date+'T00:00:00');
+    dateLabel.textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    el.appendChild(dateLabel);
+    list.forEach(tx=>{
+      const icons={payment:'💸',deposit:'💰',transfer:'↔️'};
+      const amt=tx.payment?`-${fmt(tx.payment)}`:`+${fmt(tx.deposit)}`;
+      const col=tx.deposit?'#34D399':tx.type==='transfer'?'#38BDF8':'#F87171';
+      const div=document.createElement('div');
+      div.className='m-tx-card';
+      div.innerHTML=`
+        <div class="m-tx-icon ${tx.type}">${icons[tx.type]||'💳'}</div>
+        <div class="m-tx-info">
+          <div class="m-tx-payee">${tx.payee||'—'}</div>
+          <div class="m-tx-meta">${tx.category||''}${tx.fund?(' · '+((state.funds.find(f=>f.id===tx.fund)||{name:''}).name)):''}${tx.cleared?' · '+tx.cleared:''}</div>
+        </div>
+        <div class="m-tx-amount" style="color:${col}">${amt}</div>`;
+      el.appendChild(div);
+    });
+  });
+}
+
+/* ── FUNDS ── */
+function renderMobileFunds(){
+  const el=document.getElementById('m-funds-list');
+  el.innerHTML='';
+  if(!state.funds.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);font-size:14px">No funds set up yet.</div>';
+    return;
+  }
+  state.funds.forEach(f=>{
+    const bal=fundBalanceWithContribs(f.id,'','');
+    const goal=f.goal||0;
+    const pct=goal>0?Math.min(1,Math.max(0,bal/goal)):0;
+    const col=bal<0?'#F87171':pct>.8?'#FBBF24':'#34D399';
+    const div=document.createElement('div');
+    div.className='m-card';
+    div.innerHTML=`
+      <div class="m-card-row">
+        <div><div class="m-card-title">${f.name}</div>
+        <div class="m-card-sub">${f.category?'Linked: '+f.category:'No linked category'}</div></div>
+        <div class="m-card-amount" style="color:${col}">${fmt(bal)}</div>
+      </div>
+      ${goal>0?`<div class="m-card-progress"><div class="m-card-progress-fill" style="width:${pct*100}%;background:${col}"></div></div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:6px;display:flex;justify-content:space-between"><span>Goal: ${fmt(goal)}</span><span>${Math.round(pct*100)}%</span></div>`:''}`;
+    el.appendChild(div);
+  });
+}
+
+/* ── BUDGET ── */
+function renderMobileBudget(){
+  const sel=document.getElementById('m-budget-month-sel');
+  if(!sel.options.length){
+    for(let m=0;m<12;m++){
+      const d=new Date(2026,m,1);
+      sel.add(new Option(d.toLocaleString('default',{month:'short',year:'numeric'}),`2026-${String(m+1).padStart(2,'0')}`));
+    }
+    const saved=localStorage.getItem('meridian_budget_month')||localStorage.getItem('flair_budget_month');
+    sel.value=saved||('2026-'+String(new Date().getMonth()+1).padStart(2,'0'));
+  }
+  const monthKey=sel.value;
+  const [yr,mo]=monthKey.split('-');
+  const start=`${yr}-${mo}-01`,end=`${yr}-${mo}-31`;
+  const txs=state.transactions.filter(t=>t.date>=start&&t.date<=end&&t.type!=='transfer');
+
+  // Summary stats
+  const totalBudgIncome=state.budgetCategories.filter(b=>b.type==='income').reduce((s,b)=>s+getMonthBudget(b,monthKey),0);
+  const totalBudgExpense=state.budgetCategories.filter(b=>b.type==='expense').reduce((s,b)=>s+getMonthBudget(b,monthKey),0);
+  const actIncome=txs.reduce((s,t)=>s+t.deposit,0);
+  const actExpense=txs.reduce((s,t)=>s+t.payment,0);
+  const summaryEl=document.getElementById('m-budget-summary');
+  summaryEl.innerHTML=`
+    <div style="flex:1;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);border-radius:10px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(52,211,153,0.7);margin-bottom:4px">Income</div>
+      <div style="font-size:14px;font-weight:700;color:#34D399;font-family:'Courier New',monospace">${fmt(actIncome)}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px">of ${fmt(totalBudgIncome)}</div>
+    </div>
+    <div style="flex:1;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(248,113,113,0.7);margin-bottom:4px">Expenses</div>
+      <div style="font-size:14px;font-weight:700;color:#F87171;font-family:'Courier New',monospace">${fmt(actExpense)}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px">of ${fmt(totalBudgExpense)}</div>
+    </div>`;
+
+  function buildBudgetSection(type,elId){
+    const el=document.getElementById(elId);
+    el.innerHTML='';
+    const cats=state.budgetCategories.filter(b=>b.type===type);
+    const isIncome=type==='income';
+    cats.forEach(cat=>{
+      const budget=getMonthBudget(cat,monthKey);
+      const actual=isIncome
+        ?txs.filter(t=>t.category===cat.name).reduce((s,t)=>s+t.deposit,0)
+        :txs.filter(t=>t.category===cat.name).reduce((s,t)=>s+t.payment,0);
+      const diff=isIncome?actual-budget:budget-actual;
+      const pct=budget>0?Math.min(1,actual/budget):0;
+      const over=actual>budget&&budget>0;
+      const barCol=isIncome?(actual>=budget?'#34D399':pct>.5?'#FBBF24':'#F87171'):(over?'#F87171':pct>.8?'#FBBF24':'#38BDF8');
+      if(budget===0&&actual===0)return; // skip empty categories
+      const div=document.createElement('div');
+      div.className='m-budget-row';
+      div.innerHTML=`
+        <div class="m-budget-top">
+          <div class="m-budget-name">${cat.name}</div>
+          <div class="m-budget-amounts" style="color:${barCol}">${fmt(actual)}</div>
+        </div>
+        ${budget>0?`<div class="m-budget-bar"><div class="m-budget-fill" style="width:${pct*100}%;background:${barCol}"></div></div>
+        <div class="m-budget-diff" style="color:${diff>=0?'rgba(52,211,153,0.8)':'#F87171'}">${diff>=0?'✓ '+fmt(diff)+' remaining':'⚠ '+fmt(Math.abs(diff))+' over budget'}</div>`:'<div style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:4px">No budget set</div>'}`;
+      el.appendChild(div);
+    });
+    if(!el.children.length)el.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:13px;padding:10px 0">No categories with activity this month</div>';
+  }
+  buildBudgetSection('income','m-budget-income');
+  buildBudgetSection('expense','m-budget-expense');
+}
+
+/* ── MORE ── */
+function renderMobileMore(){
+  const dueCount=(state.recurring||[]).filter(isDue).length;
+  const badge=document.getElementById('m-more-rec-badge');
+  if(badge){badge.textContent=dueCount;badge.style.display=dueCount>0?'inline-block':'none';}
+  // Sync label
+  const autoOn=localStorage.getItem('meridian_auto_sync')==='true';
+  const hasGist=!!localStorage.getItem('meridian_sync_gist_id');
+  const lbl=document.getElementById('m-sync-label');
+  if(lbl)lbl.textContent=autoOn&&hasGist?'Auto-sync ON ✓':'Configure cloud sync';
+}
+
+/* ── QUICK-ADD TRANSACTION ── */
+let _qaType='payment';
+function openQuickAdd(){
+  // Populate dropdowns
+  const acctSel=document.getElementById('qa-account');
+  while(acctSel.options.length)acctSel.remove(0);
+  state.accounts.forEach(a=>acctSel.add(new Option(a.name,a.id)));
+  const fundSel=document.getElementById('qa-fund');
+  while(fundSel.options.length>1)fundSel.remove(1);
+  state.funds.forEach(f=>fundSel.add(new Option(f.name,f.id)));
+  // Reset form
+  document.getElementById('qa-amount').value='';
+  document.getElementById('qa-payee').value='';
+  document.getElementById('qa-category').value='';
+  document.getElementById('qa-memo').value='';
+  document.getElementById('qa-date').value=today;
+  setQaType('payment');
+  document.getElementById('m-quick-add').classList.add('open');
+  setTimeout(()=>document.getElementById('qa-amount').focus(),150);
+}
+function closeQuickAdd(){
+  document.getElementById('m-quick-add').classList.remove('open');
+  document.getElementById('qa-payee-suggest').style.display='none';
+  document.getElementById('qa-category-suggest').style.display='none';
+}
+function setQaType(type){
+  _qaType=type;
+  document.getElementById('qa-type-payment').className='m-qa-type-btn'+(type==='payment'?' active-payment':'');
+  document.getElementById('qa-type-deposit').className='m-qa-type-btn'+(type==='deposit'?' active-deposit':'');
+}
+function saveQuickAdd(){
+  const amount=parseFloat(document.getElementById('qa-amount').value)||0;
+  const payee=document.getElementById('qa-payee').value.trim();
+  if(!amount){alert('Please enter an amount.');document.getElementById('qa-amount').focus();return;}
+  const txId='t'+state.txCounter++;
+  const num=String(nextTxNum());
+  state.transactions.push({
+    id:txId,
+    account:document.getElementById('qa-account').value,
+    date:document.getElementById('qa-date').value||today,
+    num,payee,
+    memo:document.getElementById('qa-memo').value.trim(),
+    fund:document.getElementById('qa-fund').value,
+    category:document.getElementById('qa-category').value.trim(),
+    cleared:'',
+    payment:_qaType==='payment'?amount:0,
+    deposit:_qaType==='deposit'?amount:0,
+    type:_qaType,
+  });
+  saveState();
+  closeQuickAdd();
+  toast(`${payee||'Transaction'} saved ✓`);
+  // Refresh current mobile screen
+  if(document.getElementById('m-screen-home').classList.contains('active'))renderMobileHome();
+  if(document.getElementById('m-screen-transactions').classList.contains('active'))renderMobileTransactions();
+  // Trigger replenishment check for deposits
+  if(_qaType==='deposit')setTimeout(()=>checkReplenishment(txId),300);
+}
+
+/* ── QUICK-ADD AUTOCOMPLETE ── */
+function showQaPayeeSuggest(input){
+  const val=input.value.toLowerCase();
+  const el=document.getElementById('qa-payee-suggest');
+  if(!val){el.style.display='none';return;}
+  const seen=new Set();
+  const matches=state.transactions.map(t=>t.payee).filter(p=>p&&p.toLowerCase().includes(val)&&!seen.has(p)&&seen.add(p)).slice(0,5);
+  if(!matches.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=matches.map(p=>`<div class="m-autocomplete-item" onmousedown="document.getElementById('qa-payee').value='${p.replace(/'/g,"\'")}';document.getElementById('qa-payee-suggest').style.display='none'">${p}</div>`).join('');
+}
+function showQaCategorySuggest(input){
+  const val=input.value.toLowerCase();
+  const el=document.getElementById('qa-category-suggest');
+  if(!val){el.style.display='none';return;}
+  const matches=state.budgetCategories.filter(b=>b.name.toLowerCase().includes(val)).slice(0,6);
+  if(!matches.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=matches.map(b=>`<div class="m-autocomplete-item" onmousedown="document.getElementById('qa-category').value='${b.name.replace(/'/g,"\'")}';document.getElementById('qa-category-suggest').style.display='none'">${b.name}</div>`).join('');
+}
+
+/* ── SEARCH ── */
 function openMobileSearch(){
-  const overlay=document.getElementById('mobile-search-overlay');
-  const box=document.getElementById('mobile-search-box');
-  const results=document.getElementById('mobile-search-results');
-  overlay.style.display='block';
-  box.style.display='flex';
-  results.innerHTML='';
-  results.style.display='none';
-  setTimeout(()=>document.getElementById('mobile-search-input').focus(),100);
+  document.getElementById('m-search-wrap').classList.add('open');
+  setTimeout(()=>document.getElementById('m-search-inp').focus(),100);
 }
 function closeMobileSearch(){
-  document.getElementById('mobile-search-overlay').style.display='none';
-  document.getElementById('mobile-search-box').style.display='none';
-  document.getElementById('mobile-search-results').style.display='none';
-  document.getElementById('mobile-search-input').value='';
+  document.getElementById('m-search-wrap').classList.remove('open');
+  document.getElementById('m-search-inp').value='';
+  document.getElementById('m-search-results').innerHTML='<div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:14px">Start typing to search</div>';
 }
-
-// Mobile search is handled directly by _renderMobileSearchResults
-// Desktop search still uses onGlobalSearch directly
-
-function _renderMobileSearchResults(q){
-  const resultsEl=document.getElementById('mobile-search-results');
+function runMobileSearch(q){
+  const el=document.getElementById('m-search-results');
+  if(!q.trim()){el.innerHTML='<div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:14px">Start typing to search</div>';return;}
   const ql=q.toLowerCase();
   let html='';
-
   // Transactions
-  const txMatches=state.transactions.filter(t=>
-    (t.payee||'').toLowerCase().includes(ql)||
-    (t.category||'').toLowerCase().includes(ql)||
-    (t.date||'').includes(ql)||
-    String(t.payment||t.deposit).includes(ql)
-  ).slice(0,6);
+  const txMatches=state.transactions.filter(t=>(t.payee||'').toLowerCase().includes(ql)||(t.category||'').toLowerCase().includes(ql)||(t.date||'').includes(ql)||String(t.payment||t.deposit).includes(ql)).slice(0,8);
   if(txMatches.length){
-    html+=`<div style="padding:8px 16px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35)">Transactions</div>`;
+    html+=`<div class="m-search-section">Transactions</div>`;
     txMatches.forEach(t=>{
-      const amt=t.payment?`-$${t.payment.toFixed(2)}`:`+$${t.deposit.toFixed(2)}`;
-      const col=t.deposit?'var(--teal)':'var(--coral)';
-      html+=`<div onclick="closeMobileSearch();showPage('transactions');setMobileTab('transactions');setTimeout(()=>{document.getElementById('tx-search').value='${(t.payee||'').replace(/'/g,"\'")}';renderTransactions();},50)"
-        style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;-webkit-tap-highlight-color:transparent" 
-        onmousedown="this.style.background='rgba(56,189,248,0.1)'" onmouseup="this.style.background=''">
-        <span style="font-size:18px">${t.deposit?'💚':'🔴'}</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.payee||'—'}</div>
-          <div style="font-size:11px;color:var(--text-light)">${t.date} · ${t.category||''}</div>
-        </div>
-        <span style="font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:${col}">${amt}</span>
-      </div>`;
+      const amt=t.payment?`-${fmt(t.payment)}`:`+${fmt(t.deposit)}`;
+      const col=t.deposit?'#34D399':'#F87171';
+      html+=`<div class="m-search-item" onclick="closeMobileSearch();switchMobileTab('transactions')">
+        <span class="m-search-item-icon">${t.deposit?'💰':'💸'}</span>
+        <div class="m-search-item-text"><div class="m-search-item-title">${t.payee||'—'}</div><div class="m-search-item-sub">${t.date} · ${t.category||''}</div></div>
+        <span class="m-search-item-right" style="color:${col}">${amt}</span></div>`;
     });
   }
-
   // Accounts
   const acctMatches=state.accounts.filter(a=>a.name.toLowerCase().includes(ql)).slice(0,3);
   if(acctMatches.length){
-    html+=`<div style="padding:8px 16px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35)">Accounts</div>`;
+    html+=`<div class="m-search-section">Accounts</div>`;
     acctMatches.forEach(a=>{
       const bal=acctBalance(a.id);
-      html+=`<div onclick="closeMobileSearch();showPage('accounts');setMobileTab('accounts')"
-        style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer"
-        onmousedown="this.style.background='rgba(56,189,248,0.1)'" onmouseup="this.style.background=''">
-        <span style="font-size:18px">🏦</span>
-        <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">${a.name}</div><div style="font-size:11px;color:var(--text-light)">${a.type}</div></div>
-        <span style="font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:${bal>=0?'var(--teal)':'var(--coral)'}">$${Math.abs(bal).toFixed(2)}</span>
-      </div>`;
+      html+=`<div class="m-search-item" onclick="closeMobileSearch();switchMobileTab('home')">
+        <span class="m-search-item-icon">🏦</span>
+        <div class="m-search-item-text"><div class="m-search-item-title">${a.name}</div><div class="m-search-item-sub">${a.type}</div></div>
+        <span class="m-search-item-right" style="color:${bal>=0?'#34D399':'#F87171'}">${fmt(bal)}</span></div>`;
     });
   }
-
   // Funds
-  const fundMatches=state.funds.filter(f=>f.name.toLowerCase().includes(ql)).slice(0,3);
+  const fundMatches=state.funds.filter(f=>f.name.toLowerCase().includes(ql)).slice(0,4);
   if(fundMatches.length){
-    html+=`<div style="padding:8px 16px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35)">Funds</div>`;
+    html+=`<div class="m-search-section">Funds</div>`;
     fundMatches.forEach(f=>{
       const bal=fundBalanceWithContribs(f.id,'','');
-      html+=`<div onclick="closeMobileSearch();showPage('funds');setMobileTab('funds');setTimeout(()=>toggleFundHistory('${f.id}'),120)"
-        style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer"
-        onmousedown="this.style.background='rgba(56,189,248,0.1)'" onmouseup="this.style.background=''">
-        <span style="font-size:18px">💼</span>
-        <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">${f.name}</div><div style="font-size:11px;color:var(--text-light)">Goal: $${(f.goal||0).toFixed(2)}</div></div>
-        <span style="font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:${bal>=0?'var(--teal)':'var(--coral)'}">$${bal.toFixed(2)}</span>
-      </div>`;
+      html+=`<div class="m-search-item" onclick="closeMobileSearch();switchMobileTab('funds')">
+        <span class="m-search-item-icon">💼</span>
+        <div class="m-search-item-text"><div class="m-search-item-title">${f.name}</div><div class="m-search-item-sub">Goal: ${fmt(f.goal||0)}</div></div>
+        <span class="m-search-item-right" style="color:${bal>=0?'#34D399':'#F87171'}">${fmt(bal)}</span></div>`;
     });
   }
-
-  // Budget categories
-  const budgMatches=state.budgetCategories.filter(b=>b.name.toLowerCase().includes(ql)).slice(0,3);
+  // Budget
+  const budgMatches=state.budgetCategories.filter(b=>b.name.toLowerCase().includes(ql)).slice(0,4);
   if(budgMatches.length){
-    html+=`<div style="padding:8px 16px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35)">Budget</div>`;
+    html+=`<div class="m-search-section">Budget Categories</div>`;
     budgMatches.forEach(b=>{
-      html+=`<div onclick="closeMobileSearch();openCategoryPopup('${b.id}')"
-        style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer"
-        onmousedown="this.style.background='rgba(56,189,248,0.1)'" onmouseup="this.style.background=''">
-        <span style="font-size:18px">${b.type==='income'?'📈':'📉'}</span>
-        <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">${b.name}</div><div style="font-size:11px;color:var(--text-light)">${b.type} · $${(b.amount||0).toFixed(2)}/mo</div></div>
-      </div>`;
+      html+=`<div class="m-search-item" onclick="closeMobileSearch();openCategoryPopup('${b.id}')">
+        <span class="m-search-item-icon">${b.type==='income'?'📈':'📉'}</span>
+        <div class="m-search-item-text"><div class="m-search-item-title">${b.name}</div><div class="m-search-item-sub">${b.type} · ${fmt(b.amount)}/mo</div></div></div>`;
     });
   }
-
-  if(!html){
-    html=`<div style="text-align:center;padding:40px 20px;color:var(--text-light);font-size:14px">No results for "${q}"</div>`;
-  }
-  resultsEl.innerHTML=html;
+  if(!html)html=`<div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:14px">No results for "${q}"</div>`;
+  el.innerHTML=html;
 }
 
-// Mobile recurring badge update — called from updateRecurringBadge
+/* ── MOBILE RECURRING ── */
+function mobilePostAllDue(){
+  const due=(state.recurring||[]).filter(isDue);
+  due.forEach(r=>postRecurring(r.id));
+  renderMobileHome();
+  updateMobileRecurringBadge();
+}
 function updateMobileRecurringBadge(){
   const dueCount=(state.recurring||[]).filter(isDue).length;
-  const mbadge=document.getElementById('mtab-badge-rec');
-  if(mbadge){mbadge.textContent=dueCount;mbadge.style.display=dueCount>0?'inline-block':'none';}
+  const badge=document.getElementById('m-more-rec-badge');
+  if(badge){badge.textContent=dueCount;badge.style.display=dueCount>0?'inline-block':'none';}
 }
 
-// mobileShowPageHook defined near showPage
-
-// Mobile sync dot — update color based on sync status
+/* ── MOBILE SYNC DOT ── */
 function updateMobileSyncDot(){
-  const dot=document.getElementById('mobile-sync-dot');
-  if(!dot)return;
-  const autoEnabled=localStorage.getItem('meridian_auto_sync')==='true';
-  const token=localStorage.getItem('meridian_sync_token');
-  const gistId=localStorage.getItem('meridian_sync_gist_id');
-  dot.style.background=autoEnabled&&token&&gistId?'var(--teal)':'var(--amber)';
-  dot.title=autoEnabled?'Auto-sync ON':'Sync not configured — tap ☁️ in More';
+  const dot=document.getElementById('m-sync-dot');
+  const lbl=document.getElementById('m-sync-label');
+  const autoOn=localStorage.getItem('meridian_auto_sync')==='true';
+  const hasGist=!!localStorage.getItem('meridian_sync_gist_id');
+  const hasToken=!!localStorage.getItem('meridian_sync_token');
+  if(dot){dot.style.background=autoOn&&hasGist&&hasToken?'#34D399':'#FBBF24';}
+  if(lbl)lbl.textContent=autoOn&&hasGist?'Auto-sync ON ✓':'Configure cloud sync';
 }
 
-// Call on load
-window.addEventListener('load',()=>{
+/* ── INIT MOBILE ON LOAD ── */
+function initMobile(){
+  if(!isMobile())return;
+  renderMobileHome();
   updateMobileSyncDot();
-  if(isMobile())setMobileTab('transactions');
+  updateMobileRecurringBadge();
+}
+window.addEventListener('load', initMobile);
+window.addEventListener('resize', ()=>{
+  if(isMobile())initMobile();
 });
+
+/* ── mobileShowPageHook is defined before showPage ── */
+function mobileShowPageHook(p){
+  // On mobile, desktop showPage does nothing visible
+  // but we keep the state in sync
+}
 
 /* ═══ DASHBOARD ═══ */
 function renderDashboard(){
@@ -6072,6 +6983,486 @@ document.getElementById('fund-start').value=twoWeeksAgo.toISOString().split('T')
 document.getElementById('fund-end').value=today;
 
 showPage('transactions');
+
+/* ═══ MOBILE APP ═══ */
+function isMobile(){
+  // Check for actual mobile device, not just narrow window
+  const ua=navigator.userAgent||navigator.vendor||window.opera;
+  const isMobileUA=/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua.toLowerCase());
+  const isNarrow=window.innerWidth<=768;
+  // Only treat as mobile if BOTH narrow AND mobile user agent
+  // OR if it's a touch-only device with narrow screen
+  const isTouch='ontouchstart' in window&&!window.matchMedia('(pointer:fine)').matches;
+  return (isMobileUA&&isNarrow)||(isTouch&&isNarrow);
+}
+
+let _mobileType='payment';
+let _mActiveTab='home';
+
+function setMobileTab(tab){
+  _mActiveTab=tab;
+  document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+  const btn=document.getElementById('m-tab-'+tab);
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.m-page').forEach(p=>p.classList.remove('active'));
+  const page=document.getElementById('m-page-'+tab);
+  if(page)page.classList.add('active');
+  // Scroll to top
+  const app=document.getElementById('m-app');
+  if(app)app.scrollTop=0;
+}
+
+// ── HOME ─────────────────────────────────────────────────────────────────────
+function renderMobileHome(){
+  // Net worth
+  const totalAssets=state.accounts.filter(a=>a.type!=='loan'&&a.type!=='credit').reduce((s,a)=>s+acctBalance(a.id),0);
+  const totalDebts=state.accounts.filter(a=>a.type==='loan'||a.type==='credit').reduce((s,a)=>s+Math.abs(Math.min(0,acctBalance(a.id))),0);
+  const netWorth=totalAssets-totalDebts;
+  const nwEl=document.getElementById('m-net-worth');
+  if(nwEl)nwEl.textContent=fmt(netWorth);
+  nwEl&&(nwEl.style.color=netWorth>=0?'#fff':'#FCA5A5');
+
+  // Month income/expenses
+  const now=new Date();
+  const mStart=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+  const mEnd=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-31`;
+  const mTxs=state.transactions.filter(t=>t.date>=mStart&&t.date<=mEnd&&t.type!=='transfer');
+  const mIncome=mTxs.reduce((s,t)=>s+t.deposit,0);
+  const mExp=mTxs.reduce((s,t)=>s+t.payment,0);
+  const incEl=document.getElementById('m-month-income');
+  const expEl=document.getElementById('m-month-expenses');
+  if(incEl)incEl.textContent=fmt(mIncome);
+  if(expEl)expEl.textContent=fmt(mExp);
+
+  // Accounts list
+  const accEl=document.getElementById('m-accounts-list');
+  if(accEl){
+    accEl.innerHTML=state.accounts.map(a=>{
+      const bal=acctBalance(a.id);
+      const isDebt=a.type==='credit'||a.type==='loan';
+      const color=isDebt?(bal<0?'var(--coral)':'var(--teal)'):(bal>=0?'var(--teal)':'var(--coral)');
+      return`<div class="m-account-card">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:2px;text-transform:capitalize">${a.type}</div>
+        </div>
+        <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:${color}">${fmt(bal)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent transactions
+  const recEl=document.getElementById('m-recent-list');
+  if(recEl){
+    const recent=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+    recEl.innerHTML=recent.length?recent.map(t=>mTxCard(t)).join(''):'<div style="text-align:center;padding:20px;color:var(--text-light);font-size:13px">No transactions yet — tap ＋ to add one</div>';
+  }
+
+  // Due banner
+  const dueCount=(state.recurring||[]).filter(isDue).length;
+  const banner=document.getElementById('m-due-banner');
+  if(banner){
+    banner.style.display=dueCount>0?'flex':'none';
+    const txt=document.getElementById('m-due-text');
+    if(txt)txt.textContent=`${dueCount} transaction${dueCount!==1?'s':''} due`;
+  }
+
+  // Mobile sync dot
+  const dot=document.getElementById('m-sync-dot');
+  if(dot){
+    const auto=localStorage.getItem('meridian_auto_sync')==='true';
+    const tok=localStorage.getItem('meridian_sync_token');
+    const gist=localStorage.getItem('meridian_sync_gist_id');
+    dot.style.background=auto&&tok&&gist?'var(--teal)':'var(--amber)';
+  }
+}
+
+function mTxCard(t){
+  const a=getAcct(t.account);
+  const isDeposit=t.deposit>0;
+  const amt=isDeposit?t.deposit:t.payment;
+  const color=t.type==='transfer'?'var(--purple)':isDeposit?'var(--teal)':'var(--coral)';
+  const sign=t.type==='transfer'?'⇄':isDeposit?'+':'-';
+  return`<div class="m-tx-card">
+    <div style="width:40px;height:40px;border-radius:10px;background:${color}22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">
+      ${t.type==='transfer'?'⇄':isDeposit?'💰':'💸'}
+    </div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.payee||'—'}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:2px">${t.date} · ${t.category||a?.name||''}</div>
+    </div>
+    <div style="font-size:16px;font-weight:700;font-family:'Courier New',monospace;color:${color};flex-shrink:0">${sign}${fmt(amt)}</div>
+  </div>`;
+}
+
+// ── TRANSACTIONS ──────────────────────────────────────────────────────────────
+function renderMobileTransactions(){
+  // Populate account filter
+  const acctSel=document.getElementById('m-tx-acct');
+  if(acctSel&&acctSel.options.length<=1){
+    state.accounts.forEach(a=>acctSel.add(new Option(a.name.split(' ')[0],a.id)));
+  }
+  const search=(document.getElementById('m-tx-search')?.value||'').toLowerCase();
+  const acctFilter=document.getElementById('m-tx-acct')?.value||'';
+
+  let txs=state.transactions.filter(t=>{
+    if(acctFilter&&t.account!==acctFilter)return false;
+    if(search&&!(t.payee||'').toLowerCase().includes(search)&&!(t.category||'').toLowerCase().includes(search)&&!String(t.payment||t.deposit).includes(search))return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+
+  const nonTx=txs.filter(t=>t.type!=='transfer');
+  const income=nonTx.reduce((s,t)=>s+t.deposit,0);
+  const expenses=nonTx.reduce((s,t)=>s+t.payment,0);
+  const statsEl=document.getElementById('m-tx-stats');
+  if(statsEl)statsEl.innerHTML=`
+    <div style="background:var(--card-bg);border:1px solid var(--border-solid);border-radius:10px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light)">Income</div>
+      <div style="font-size:16px;font-weight:700;color:var(--teal);font-family:'Courier New',monospace;margin-top:3px">${fmt(income)}</div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid var(--border-solid);border-radius:10px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light)">Expenses</div>
+      <div style="font-size:16px;font-weight:700;color:var(--coral);font-family:'Courier New',monospace;margin-top:3px">${fmt(expenses)}</div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid var(--border-solid);border-radius:10px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light)">Net</div>
+      <div style="font-size:16px;font-weight:700;color:${income>=expenses?'var(--teal)':'var(--coral)'};font-family:'Courier New',monospace;margin-top:3px">${fmt(income-expenses)}</div>
+    </div>`;
+
+  const listEl=document.getElementById('m-tx-list');
+  if(listEl)listEl.innerHTML=txs.length?txs.map(t=>mTxCard(t)).join(''):'<div style="text-align:center;padding:40px 20px;color:var(--text-light);font-size:14px">No transactions found</div>';
+}
+
+// ── FUNDS ─────────────────────────────────────────────────────────────────────
+function renderMobileFunds(){
+  const el=document.getElementById('m-funds-list');
+  if(!el)return;
+  el.innerHTML=state.funds.map(f=>{
+    const bal=fundBalanceWithContribs(f.id,'','');
+    const goal=f.goal||0;
+    const pct=goal>0?Math.min(1,bal/goal):0;
+    const color=bal<0?'var(--coral)':pct>=1?'var(--teal)':pct>.6?'var(--amber)':'var(--purple)';
+    // Per-account pills
+    const acctTotals={};
+    state.transactions.filter(t=>txBelongsToFund(t,f.id)&&!isIntraFundTransfer(t)).forEach(t=>{
+      if(!acctTotals[t.account])acctTotals[t.account]=0;
+      acctTotals[t.account]+=t.deposit-t.payment;
+    });
+    (state.contributions||[]).filter(c=>c.fundId===f.id&&c.acctId&&c.type!=='fund-transfer').forEach(c=>{
+      if(!acctTotals[c.acctId])acctTotals[c.acctId]=0;
+      acctTotals[c.acctId]+=c.amount;
+    });
+    const pills=Object.entries(acctTotals).filter(([,v])=>Math.abs(v)>0.001).map(([id,v])=>{
+      const a=getAcct(id);
+      return`<span style="background:rgba(255,255,255,0.06);border:1px solid var(--border-solid);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text-mid);white-space:nowrap">${a?a.name.split(' ')[0]:'?'} <b style="color:${v>=0?'var(--teal)':'var(--coral)'}">${fmt(v)}</b></span>`;
+    }).join('');
+    return`<div class="m-fund-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text)">${f.name}</div>
+          ${f.category?`<div style="font-size:11px;color:var(--text-light);margin-top:2px">${f.category}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:20px;font-weight:700;font-family:'Courier New',monospace;color:${color}">${fmt(bal)}</div>
+          ${goal>0?`<div style="font-size:10px;color:var(--text-light)">of ${fmt(goal)} goal</div>`:''}
+        </div>
+      </div>
+      ${goal>0?`<div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:10px"><div style="height:100%;width:${pct*100}%;background:${color};border-radius:3px"></div></div>`:''}
+      ${pills?`<div style="display:flex;flex-wrap:wrap;gap:5px">${pills}</div>`:''}
+    </div>`;
+  }).join('')||'<div style="text-align:center;padding:40px;color:var(--text-light)">No funds yet</div>';
+}
+
+// ── BUDGET ────────────────────────────────────────────────────────────────────
+function renderMobileBudget(){
+  const sel=document.getElementById('m-budget-month');
+  if(sel&&!sel.options.length){
+    for(let m=0;m<12;m++){
+      const d=new Date(2026,m,1);
+      sel.add(new Option(d.toLocaleString('default',{month:'short',year:'numeric'}),`2026-${String(m+1).padStart(2,'0')}`));
+    }
+    const saved=localStorage.getItem('meridian_budget_month')||localStorage.getItem('flair_budget_month');
+    sel.value=saved||('2026-'+String(new Date().getMonth()+1).padStart(2,'0'));
+  }
+  const mk=sel?.value||'2026-01';
+  const [yr,mo]=mk.split('-');
+  const s=`${yr}-${mo}-01`,e=`${yr}-${mo}-31`;
+  const txs=state.transactions.filter(t=>t.date>=s&&t.date<=e&&t.type!=='transfer');
+
+  const incCats=state.budgetCategories.filter(b=>b.type==='income');
+  const expCats=state.budgetCategories.filter(b=>b.type==='expense');
+  const totalIncBudg=incCats.reduce((sum,b)=>sum+getMonthBudget(b,mk),0);
+  const totalExpBudg=expCats.reduce((sum,b)=>sum+getMonthBudget(b,mk),0);
+  const totalIncAct=txs.reduce((s,t)=>s+t.deposit,0);
+  const totalExpAct=txs.reduce((s,t)=>s+t.payment,0);
+
+  const sumEl=document.getElementById('m-budget-summary');
+  if(sumEl)sumEl.innerHTML=`
+    <div style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:10px;padding:12px">
+      <div style="font-size:10px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.08em">Income</div>
+      <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:var(--teal);margin-top:4px">${fmt(totalIncAct)}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:2px">of ${fmt(totalIncBudg)} budgeted</div>
+    </div>
+    <div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:12px">
+      <div style="font-size:10px;color:var(--coral);font-weight:700;text-transform:uppercase;letter-spacing:.08em">Expenses</div>
+      <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:var(--coral);margin-top:4px">${fmt(totalExpAct)}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:2px">of ${fmt(totalExpBudg)} budgeted</div>
+    </div>`;
+
+  function buildBudgetRows(cats,isIncome,elId){
+    const el=document.getElementById(elId);
+    if(!el)return;
+    el.innerHTML=cats.filter(c=>getMonthBudget(c,mk)>0||true).map(cat=>{
+      const budg=getMonthBudget(cat,mk);
+      const actual=isIncome?txs.filter(t=>t.category===cat.name).reduce((s,t)=>s+t.deposit,0):txs.filter(t=>t.category===cat.name).reduce((s,t)=>s+t.payment,0);
+      const diff=isIncome?actual-budg:budg-actual;
+      const pct=budg>0?Math.min(1,actual/budg):0;
+      const over=actual>budg&&budg>0;
+      const barColor=isIncome?(actual>=budg?'var(--teal)':pct>.5?'var(--amber)':'var(--coral)'):(over?'var(--coral)':pct>.8?'var(--amber)':'var(--teal)');
+      const diffColor=diff>=0?'var(--teal)':'var(--coral)';
+      if(budg===0&&actual===0)return'';
+      return`<div class="m-budget-row">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:8px">${cat.name}</div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:14px;font-weight:700;font-family:'Courier New',monospace;color:${barColor}">${fmt(actual)}</div>
+            <div style="font-size:10px;color:${diffColor}">${diff>=0?'+':''}${fmt(diff)}</div>
+          </div>
+        </div>
+        ${budg>0?`<div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct*100}%;background:${barColor};border-radius:2px;transition:width .3s"></div></div>`:''}
+      </div>`;
+    }).join('');
+  }
+  buildBudgetRows(incCats,true,'m-budget-income');
+  buildBudgetRows(expCats,false,'m-budget-expenses');
+}
+
+// ── RECURRING ─────────────────────────────────────────────────────────────────
+function renderMobileRecurring(){
+  const el=document.getElementById('m-recurring-list');
+  if(!el)return;
+  const recs=state.recurring||[];
+  const due=recs.filter(isDue);
+  let html='';
+  if(due.length){
+    html+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--coral);margin-bottom:8px">● Due Now</div>`;
+    html+=due.map(r=>{
+      const a=getAcct(r.account);
+      return`<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text)">${r.payee}</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:2px">${a?a.name:''} · ${freqLabel(r)}</div>
+          </div>
+          <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:${r.type==='deposit'?'var(--teal)':'var(--coral)'}">${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
+        </div>
+        <button onclick="postRecurring('${r.id}');renderMobileRecurring();renderMobileHome()" style="width:100%;padding:12px;background:var(--coral);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">Post Transaction</button>
+      </div>`;
+    }).join('');
+  }
+  const upcoming=recs.filter(r=>!isDue(r)&&r.active);
+  if(upcoming.length){
+    html+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:8px;margin-top:${due.length?'16px':'0'}">Upcoming</div>`;
+    html+=upcoming.map(r=>{
+      const a=getAcct(r.account);
+      return`<div style="background:var(--card-bg);border:1px solid var(--border-solid);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;color:var(--text)">${r.payee}</div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:2px">${freqLabel(r)} · Next: ${r.nextDue}</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;font-family:'Courier New',monospace;color:${r.type==='deposit'?'var(--teal)':'var(--coral)'}"> ${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
+      </div>`;
+    }).join('');
+  }
+  if(!recs.length)html='<div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px">No recurring transactions set up</div>';
+  el.innerHTML=html;
+
+  // Update badge
+  const badge=document.getElementById('m-rec-badge');
+  const dueCount=due.length;
+  if(badge){badge.textContent=dueCount;badge.style.display=dueCount>0?'inline-block':'none';}
+}
+
+// ── MORE ──────────────────────────────────────────────────────────────────────
+function renderMobileMore(){
+  const el=document.getElementById('m-more-accounts');
+  if(!el)return;
+  el.innerHTML=state.accounts.map(a=>{
+    const bal=acctBalance(a.id);
+    const isDebt=a.type==='credit'||a.type==='loan';
+    const color=isDebt?(bal<0?'var(--coral)':'var(--teal)'):(bal>=0?'var(--teal)':'var(--coral)');
+    return`<div class="m-account-card">
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div>
+        <div style="font-size:11px;color:var(--text-light);text-transform:capitalize">${a.type}</div>
+      </div>
+      <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:${color}">${fmt(bal)}</div>
+    </div>`;
+  }).join('');
+}
+function mobileOpenAccounts(){ setMobileTab('more');renderMobileMore(); }
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+function openMobileSearch(){
+  document.getElementById('m-search-overlay').style.display='block';
+  setTimeout(()=>document.getElementById('m-search-input')?.focus(),100);
+}
+function closeMobileSearch(){
+  document.getElementById('m-search-overlay').style.display='none';
+  const inp=document.getElementById('m-search-input');
+  if(inp)inp.value='';
+  const res=document.getElementById('m-search-results');
+  if(res)res.innerHTML='';
+}
+function renderMobileSearch(q){
+  const el=document.getElementById('m-search-results');
+  if(!el)return;
+  if(!q.trim()){el.innerHTML='';return;}
+  const ql=q.toLowerCase();
+  let html='';
+  const txs=state.transactions.filter(t=>(t.payee||'').toLowerCase().includes(ql)||(t.category||'').toLowerCase().includes(ql)||String(t.payment||t.deposit).includes(ql)).slice(0,8);
+  if(txs.length){
+    html+=`<div style="padding:8px 16px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35)">Transactions</div>`;
+    txs.forEach(t=>{
+      const amt=t.deposit?`+${fmt(t.deposit)}`:`-${fmt(t.payment)}`;
+      const col=t.deposit?'var(--teal)':'var(--coral)';
+      html+=`<div class="m-search-result" onclick="closeMobileSearch();setMobileTab('transactions');setTimeout(()=>{document.getElementById('m-tx-search').value='${(t.payee||'').replace(/'/g,"\'")}';renderMobileTransactions();},50)">
+        <span style="font-size:22px">${t.deposit?'💰':'💸'}</span>
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:var(--text)">${t.payee||'—'}</div><div style="font-size:11px;color:var(--text-light)">${t.date} · ${t.category||''}</div></div>
+        <span style="font-size:14px;font-weight:700;font-family:'Courier New',monospace;color:${col}">${amt}</span>
+      </div>`;
+    });
+  }
+  const funds=state.funds.filter(f=>f.name.toLowerCase().includes(ql)).slice(0,4);
+  if(funds.length){
+    html+=`<div style="padding:8px 16px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35)">Funds</div>`;
+    funds.forEach(f=>{
+      const bal=fundBalanceWithContribs(f.id,'','');
+      html+=`<div class="m-search-result" onclick="closeMobileSearch();setMobileTab('funds');renderMobileFunds()">
+        <span style="font-size:22px">💼</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)">${f.name}</div></div>
+        <span style="font-size:14px;font-weight:700;font-family:'Courier New',monospace;color:${bal>=0?'var(--teal)':'var(--coral)'}">${fmt(bal)}</span>
+      </div>`;
+    });
+  }
+  const budg=state.budgetCategories.filter(b=>b.name.toLowerCase().includes(ql)).slice(0,4);
+  if(budg.length){
+    html+=`<div style="padding:8px 16px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35)">Budget</div>`;
+    budg.forEach(b=>{
+      html+=`<div class="m-search-result" onclick="closeMobileSearch();openCategoryPopup('${b.id}')">
+        <span style="font-size:22px">${b.type==='income'?'📈':'📉'}</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)">${b.name}</div><div style="font-size:11px;color:var(--text-light)">${b.type}</div></div>
+      </div>`;
+    });
+  }
+  if(!html)html=`<div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px">No results for "${q}"</div>`;
+  el.innerHTML=html;
+}
+
+// ── ADD TRANSACTION ───────────────────────────────────────────────────────────
+function openMobileAddTx(){
+  // Populate dropdowns
+  const acctSel=document.getElementById('m-account');
+  while(acctSel.options.length)acctSel.remove(0);
+  state.accounts.forEach(a=>acctSel.add(new Option(a.name,a.id)));
+  const fundSel=document.getElementById('m-fund');
+  while(fundSel.options.length>1)fundSel.remove(1);
+  state.funds.forEach(f=>fundSel.add(new Option(f.name,f.id)));
+  // Reset fields
+  document.getElementById('m-amount').value='';
+  document.getElementById('m-payee').value='';
+  document.getElementById('m-category').value='';
+  document.getElementById('m-memo').value='';
+  document.getElementById('m-date').value=today;
+  document.getElementById('m-payee-suggest').style.display='none';
+  document.getElementById('m-cat-suggest').style.display='none';
+  setMobileType('payment');
+  document.getElementById('m-add-modal').style.display='block';
+  setTimeout(()=>document.getElementById('m-amount').focus(),200);
+}
+function closeMobileAddTx(){
+  document.getElementById('m-add-modal').style.display='none';
+}
+function setMobileType(type){
+  _mobileType=type;
+  const payBtn=document.getElementById('m-type-payment');
+  const depBtn=document.getElementById('m-type-deposit');
+  if(payBtn){payBtn.style.background=type==='payment'?'var(--coral)':'var(--card-bg)';payBtn.style.color=type==='payment'?'#fff':'var(--text-mid)';}
+  if(depBtn){depBtn.style.background=type==='deposit'?'var(--teal)':'var(--card-bg)';depBtn.style.color=type==='deposit'?'#fff':'var(--text-mid)';}
+}
+function saveMobileAddTx(){
+  const amount=parseFloat(document.getElementById('m-amount').value)||0;
+  const payee=document.getElementById('m-payee').value.trim();
+  const account=document.getElementById('m-account').value;
+  if(!amount||!account){
+    alert('Please enter an amount and select an account.');return;
+  }
+  const id='t'+state.txCounter++;
+  const num=String(nextTxNum());
+  state.transactions.push({
+    id,account,date:document.getElementById('m-date').value||today,
+    num,payee,memo:document.getElementById('m-memo').value.trim(),
+    fund:document.getElementById('m-fund').value,
+    category:document.getElementById('m-category').value.trim(),
+    cleared:'',
+    payment:_mobileType==='payment'?amount:0,
+    deposit:_mobileType==='deposit'?amount:0,
+    type:_mobileType,
+  });
+  saveState();
+  closeMobileAddTx();
+  toast(`Saved: ${payee||fmt(amount)} ✓`);
+  // Refresh current tab
+  if(_mActiveTab==='home')renderMobileHome();
+  else if(_mActiveTab==='transactions')renderMobileTransactions();
+  if(_mobileType==='deposit')setTimeout(()=>checkReplenishment(id),300);
+}
+
+// Payee autocomplete for mobile
+function showMobilePayeeSuggest(input){
+  const val=input.value.toLowerCase();
+  const el=document.getElementById('m-payee-suggest');
+  if(!el)return;
+  const seen=new Set();
+  const matches=state.transactions.map(t=>t.payee).filter(p=>p&&p.toLowerCase().includes(val)&&!seen.has(p)&&seen.add(p)).slice(0,5);
+  if(!matches.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=matches.map(p=>`<div class="m-suggest-item" onmousedown="document.getElementById('m-payee').value='${p.replace(/'/g,"\'")}';document.getElementById('m-payee-suggest').style.display='none'">${p}</div>`).join('');
+}
+function showMobileCatSuggest(input){
+  const val=input.value.toLowerCase();
+  const el=document.getElementById('m-cat-suggest');
+  if(!el)return;
+  const matches=state.budgetCategories.filter(b=>b.name.toLowerCase().includes(val)).slice(0,6);
+  if(!matches.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=matches.map(b=>`<div class="m-suggest-item" onmousedown="document.getElementById('m-category').value='${b.name.replace(/'/g,"\'")}';document.getElementById('m-cat-suggest').style.display='none'">${b.name}</div>`).join('');
+}
+
+// Hook into updateRecurringBadge
+function updateMobileRecurringBadge(){
+  const dueCount=(state.recurring||[]).filter(isDue).length;
+  const badge=document.getElementById('m-rec-badge');
+  if(badge){badge.textContent=dueCount;badge.style.display=dueCount>0?'inline-block':'none';}
+}
+
+// mobileShowPageHook — called from showPage
+function mobileShowPageHook(p){}
+
+// Init mobile on load
+window.addEventListener('load',()=>{
+  if(isMobile()){
+    setMobileTab('home');
+    renderMobileHome();
+    updateMobileRecurringBadge();
+  }
+});
+window.addEventListener('resize',()=>{
+  if(isMobile()&&_mActiveTab==='home')renderMobileHome();
+});
+
+
+
 </script>
 </body>
 </html>
