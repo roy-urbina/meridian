@@ -5662,6 +5662,7 @@ async function syncPull(){
       showPage('dashboard');
       renderDashboard();
       updateRecurringBadge();
+      updateSyncStatusLabel();
       toast('Data pulled from cloud ✓');
     },1200);
 
@@ -6329,6 +6330,49 @@ window.addEventListener('load',()=>{
 });
 window.addEventListener('resize',()=>{
   if(isMobile()&&_mActiveTab==='home')renderMobileHome();
+});
+
+// ── KEYBOARD SHORTCUTS (desktop only) ────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  // Don't fire if typing in an input, contenteditable, or select
+  const tag=document.activeElement?.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(document.activeElement?.isContentEditable)return;
+  // Don't fire on mobile
+  if(isMobile())return;
+
+  // N — new transaction row
+  if(e.key==='N'||e.key==='n'){
+    e.preventDefault();
+    addTxRow();
+    showPage('transactions');
+    return;
+  }
+  // T — open templates panel
+  if(e.key==='T'||e.key==='t'){
+    e.preventDefault();
+    openTemplatesPanel();
+    return;
+  }
+  // / — focus global search
+  if(e.key==='/'){
+    e.preventDefault();
+    const gs=document.getElementById('global-search');
+    if(gs){gs.focus();gs.select();}
+    return;
+  }
+  // Escape — close modals/panels
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay').forEach(m=>{
+      if(m.style.display!=='none')m.style.display='none';
+    });
+    // Close templates panel if open
+    const tp=document.getElementById('templates-panel');
+    if(tp&&tp.style.right==='0px')closeTemplatesPanel();
+    // Close search results
+    closeSearchResults?.();
+    return;
+  }
 });
 
 </script>
