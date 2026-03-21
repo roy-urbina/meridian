@@ -282,8 +282,8 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 #m-add-modal { display: none; }
 #m-search-wrap { display: none; }
 
-/* Mobile: touch device ≤768px wide — show mobile, hide desktop */
-@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+/* Mobile: screen ≤768px wide — show mobile, hide desktop */
+@media (max-width: 768px) {
   /* Hide desktop */
   .sidebar { display: none !important; }
   .main { display: none !important; }
@@ -293,6 +293,16 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
   #m-tabbar { display: flex !important; }
   #m-add-btn { display: flex !important; }
   body { overflow-x: hidden; max-width: 100vw; }
+}
+
+/* Desktop: wider than 768px — force hide all mobile elements */
+@media (min-width: 769px) {
+  #m-topbar { display: none !important; }
+  #m-app { display: none !important; }
+  #m-tabbar { display: none !important; }
+  #m-add-btn { display: none !important; }
+  #m-add-modal { display: none !important; }
+  .m-search-wrap { display: none !important; }
 }
 
 /* Mobile tab styles */
@@ -376,7 +386,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
 .m-search-item-right { font-size: 13px; font-weight: 700; font-family: 'Courier New', monospace; flex-shrink: 0; }
 
 /* Toast on mobile */
-@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+@media (max-width: 768px) {
   .toast { left: 16px !important; right: 16px !important; bottom: 82px !important; text-align: center !important; }
 }
 
@@ -5511,6 +5521,14 @@ function updateSyncStatusLabel(){
   }
 }
 
+function updateMobileSyncDot(){
+  const dot=document.getElementById('m-sync-dot');
+  if(!dot)return;
+  const auto=localStorage.getItem('meridian_auto_sync')==='true';
+  const tok=localStorage.getItem('meridian_sync_token');
+  const gist=localStorage.getItem('meridian_sync_gist_id');
+  dot.style.background=auto&&tok&&gist?'var(--teal)':'var(--amber)';
+}
 async function syncPush(){
   const token=document.getElementById('sync-token').value.trim();
   const gistId=document.getElementById('sync-gist-id').value.trim();
@@ -5828,11 +5846,7 @@ function renderDashboard(){
 
 /* ═══ MOBILE APP ═══ */
 function isMobile(){
-  const ua=navigator.userAgent||navigator.vendor||window.opera;
-  const isMobileUA=/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua.toLowerCase());
-  const isNarrow=window.innerWidth<=768;
-  const isTouch='ontouchstart' in window&&!window.matchMedia('(pointer:fine)').matches;
-  return (isMobileUA&&isNarrow)||(isTouch&&isNarrow);
+  return window.innerWidth <= 768;
 }
 let _mobileType='payment';
 let _mActiveTab='home';
