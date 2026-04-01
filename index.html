@@ -8,168 +8,550 @@
   <meta http-equiv="Expires" content="0">
   <title>Meridian — by Roy</title>
   <style>
+/* ═══════════════════════════════════════════════════════
+   MERIDIAN — Design System
+   Font: Inter (clean, modern, financial)
+   Colors: Deep navy base, electric blue accent, semantic greens/reds
+   Spacing: 4px grid
+   Radius: consistent 12px cards, 8px elements, 6px small
+═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --purple:#38BDF8;--purple-light:rgba(56,189,248,0.12);--purple-mid:rgba(56,189,248,0.25);
-  --teal:#34D399;--teal-light:rgba(52,211,153,0.15);
-  --amber:#FBBF24;--amber-light:rgba(251,191,36,0.15);
-  --coral:#F87171;--coral-light:rgba(248,113,113,0.15);
-  --green:#4ADE80;--green-light:rgba(74,222,128,0.15);
-  --gold:#FCD34D;--gold-light:rgba(252,211,77,0.15);
-  --rose:#FB7185;--rose-light:rgba(251,113,133,0.15);
-  --bg:#0F1117;--card-bg:#1A1F2E;
-  --text:#E8EAF0;--text-mid:#8B92A8;--text-light:#4A5168;
-  --border:rgba(255,255,255,0.06);--border-solid:rgba(255,255,255,0.09);
-  --shadow:0 2px 16px rgba(0,0,0,0.4);
-  --shadow-hover:0 8px 32px rgba(0,0,0,0.6);
-  --radius:16px;--radius-sm:10px;--sidebar-w:224px;
-  --cell-h:34px;
-  --sidebar-bg:linear-gradient(180deg,#080B12 0%,#0D1321 100%);
+  /* Brand */
+  --blue:#0EA5E9;--blue-dim:rgba(14,165,233,0.15);--blue-mid:rgba(14,165,233,0.30);
+  /* Semantic */
+  --green:#22C55E;--green-dim:rgba(34,197,94,0.14);
+  --red:#F43F5E;--red-dim:rgba(244,63,94,0.14);
+  --amber:#F59E0B;--amber-dim:rgba(245,158,11,0.14);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.14);
+  /* Aliases for backward compat */
+  --teal:var(--green);--teal-light:var(--green-dim);
+  --coral:var(--red);--coral-light:var(--red-dim);
+  --amber-light:var(--amber-dim);
+  --green-light:var(--green-dim);
+  --gold:#F59E0B;--gold-light:var(--amber-dim);
+  --rose:#FB7185;--rose-light:rgba(251,113,133,0.14);
+  /* Surfaces */
+  --bg:#080C14;
+  --surface-1:#0E1420;
+  --surface-2:#131926;
+  --surface-3:#1A2035;
+  --card-bg:var(--surface-2);
+  /* Text */
+  --text:#F0F4FF;--text-mid:#8A95B0;--text-light:#4A5370;
+  /* Borders */
+  --border:rgba(255,255,255,0.05);
+  --border-solid:rgba(255,255,255,0.08);
+  --border-focus:#0EA5E9;
+  /* Shadows */
+  --shadow:0 1px 3px rgba(0,0,0,0.4),0 4px 16px rgba(0,0,0,0.25);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.5);
+  --shadow-hover:0 0 0 1px rgba(14,165,233,0.3),0 8px 32px rgba(0,0,0,0.5);
+  /* Sidebar */
+  --sidebar-w:220px;
+  --sidebar-bg:#060A10;
+  /* Layout */
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --cell-h:36px;
+  /* Transitions */
+  --ease:.15s cubic-bezier(0.4,0,0.2,1);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Times New Roman',Times,serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;-webkit-font-smoothing:antialiased;color-scheme:dark}
 
-/* SIDEBAR */
-.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);border-right:none;display:flex;flex-direction:column;padding:24px 14px;position:fixed;top:0;left:0;bottom:0;z-index:50;box-shadow:4px 0 24px rgba(15,10,43,0.18)}
-.logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:32px}
-.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#0F4C75,#00B4D8);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(15,76,117,0.45);flex-shrink:0}
-.logo-name{font-size:18px;font-weight:700;letter-spacing:-.5px;color:#fff}
-.nav-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.35);padding:0 10px;margin-bottom:6px;margin-top:18px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);transition:all .15s;margin-bottom:2px}
-.nav-item:hover{background:rgba(255,255,255,0.10);color:#fff}
-.nav-item.active{background:linear-gradient(135deg,#0F4C75,#00B4D8);color:#fff;box-shadow:0 4px 16px rgba(0,180,216,0.40)}
-.nav-icon{font-size:16px;width:20px;text-align:center}
-.nav-badge{margin-left:auto;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
+/* ── RESET ── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color-scheme:dark;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--sidebar-bg);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:20px 12px;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:50;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  padding:4px 8px;margin-bottom:28px;
+}
+.logo-icon{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,#0369A1,#0EA5E9);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:700;
+  font-family:'Inter',sans-serif;font-style:normal;
+  color:#fff;flex-shrink:0;
+  box-shadow:0 0 16px rgba(14,165,233,0.35);
+}
+.logo-name{font-size:16px;font-weight:700;letter-spacing:-.3px;color:#fff}
+
+.nav-label{
+  font-size:9px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--text-light);
+  padding:0 8px;margin-bottom:4px;margin-top:16px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:var(--radius-sm);
+  cursor:pointer;font-size:13px;font-weight:500;
+  color:var(--text-mid);transition:all var(--ease);
+  margin-bottom:1px;
+}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(3,105,161,0.6),rgba(14,165,233,0.3));
+  color:#fff;
+  border:1px solid rgba(14,165,233,0.25);
+  box-shadow:0 0 12px rgba(14,165,233,0.15);
+}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;
+}
 .nav-item.active .nav-badge{background:rgba(255,255,255,0.25);color:#fff}
 
-/* MAIN */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:28px 32px}
-.page{display:none;animation:fadeIn .18s ease}
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:24px 28px}
+.page{display:none;animation:pageIn .2s ease}
 .page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.page-heading h1{font-size:26px;font-weight:600;letter-spacing:-.5px}
-.page-heading p{font-size:13px;color:var(--text-mid);margin-top:2px}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-family:inherit;font-size:13px;font-weight:500;border:1.5px solid var(--border-solid);border-radius:9px;cursor:pointer;background:var(--card-bg);color:var(--text);transition:all .15s;white-space:nowrap}
-.btn:hover{background:rgba(255,255,255,0.06)}
-.btn.primary{background:linear-gradient(135deg,#0F4C75,#0096C7);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(15,76,117,0.30)}
-.btn.primary:hover{background:linear-gradient(135deg,#0A3A5C,#0077A8);box-shadow:0 6px 20px rgba(15,76,117,0.42);transform:translateY(-1px)}
+.page-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
+.page-heading h1{font-size:22px;font-weight:700;letter-spacing:-.4px;color:var(--text)}
+.page-heading p{font-size:12px;color:var(--text-mid);margin-top:3px}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;font-family:inherit;font-size:12px;font-weight:500;
+  border:1px solid var(--border-solid);border-radius:var(--radius-sm);
+  cursor:pointer;background:var(--surface-3);color:var(--text);
+  transition:all var(--ease);white-space:nowrap;
+}
+.btn:hover{background:var(--surface-3);border-color:rgba(255,255,255,0.15);color:var(--text)}
+.btn.primary{
+  background:linear-gradient(135deg,#0369A1,#0EA5E9);
+  color:#fff;border-color:transparent;
+  box-shadow:0 2px 8px rgba(14,165,233,0.3);
+}
+.btn.primary:hover{
+  background:linear-gradient(135deg,#025A8A,#0284C7);
+  box-shadow:0 4px 16px rgba(14,165,233,0.45);
+  transform:translateY(-1px);
+}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--text-mid)}
-.btn.ghost:hover{background:rgba(255,255,255,0.06);color:var(--text)}
-.btn.sm{padding:4px 10px;font-size:11px;border-radius:7px}
+.btn.ghost:hover{background:rgba(255,255,255,0.05);color:var(--text);border-color:transparent}
+.btn.sm{padding:4px 9px;font-size:11px;border-radius:6px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-/* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:var(--card-bg);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border);border-left:3px solid var(--purple);transition:box-shadow .2s,transform .2s}
-.stat-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
-.stat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);margin-bottom:5px}
-.stat-value{font-size:20px;font-weight:600;letter-spacing:-.4px}
-.stat-value.pos{color:var(--teal)}
-.stat-value.neg{color:var(--coral)}
-.stat-value.purple{color:var(--purple)}
-.stat-sub{font-size:11px;color:var(--text-light);margin-top:2px}
+/* ── STAT CARDS ── */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;margin-bottom:20px;
+}
+.stat-card{
+  background:var(--surface-2);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  border:1px solid var(--border);
+  transition:border-color var(--ease),box-shadow var(--ease);
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),transparent);
+  opacity:0.6;
+}
+.stat-card:hover{border-color:var(--border-solid);box-shadow:var(--shadow-hover)}
+.stat-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--text-light);margin-bottom:6px;
+}
+.stat-value{font-size:20px;font-weight:700;letter-spacing:-.5px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
+.stat-value.pos{color:var(--green)}
+.stat-value.neg{color:var(--red)}
+.stat-value.purple{color:var(--blue)}
+.stat-sub{font-size:10px;color:var(--text-light);margin-top:3px}
 
-/* ═══ SHEET ═══ */
-.sheet-wrap{background:var(--card-bg);border:1px solid var(--border-solid);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-.sheet-toolbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border-solid);background:rgba(255,255,255,0.03);flex-wrap:wrap}
-.sheet-label{font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+/* ── TABLES ── */
+.sheet-wrap{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.sheet-toolbar{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface-1);
+  flex-wrap:wrap;
+}
+.sheet-label{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em}
 .sheet-scroll{overflow-x:auto;overflow-y:auto;max-height:520px}
+.sheet-scroll::-webkit-scrollbar{width:5px;height:5px}
+.sheet-scroll::-webkit-scrollbar-track{background:transparent}
+.sheet-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
 .sheet{border-collapse:collapse;width:100%;font-size:12.5px}
-.sheet thead th{height:36px;padding:0 10px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-light);background:rgba(255,255,255,0.04);border-right:1px solid var(--border-solid);border-bottom:2px solid var(--purple);white-space:nowrap;position:sticky;top:0;z-index:3;user-select:none}
+.sheet thead th{
+  height:34px;padding:0 10px;
+  text-align:left;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text-light);
+  background:var(--surface-1);
+  border-right:1px solid var(--border);
+  border-bottom:1px solid rgba(14,165,233,0.25);
+  white-space:nowrap;position:sticky;top:0;z-index:3;
+  user-select:none;
+}
 .sheet thead th:last-child{border-right:none}
-.sheet .row-num{width:38px;min-width:38px;max-width:38px;text-align:center;font-family:'Courier New',Courier,monospace;font-size:10px;color:var(--text-light);background:rgba(255,255,255,0.03);border-right:2px solid var(--border-solid);padding:0;user-select:none}
-.sheet tbody tr{border-bottom:1px solid var(--border-solid);transition:background .08s}
+.sheet .row-num{
+  width:36px;min-width:36px;max-width:36px;
+  text-align:center;
+  font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;
+  font-size:10px;color:var(--text-light);
+  background:var(--surface-1);
+  border-right:1px solid var(--border);
+  padding:0;user-select:none;
+}
+.sheet tbody tr{border-bottom:1px solid var(--border);transition:background var(--ease)}
 .sheet tbody tr:last-child{border-bottom:none}
-.sheet tbody tr:hover{background:rgba(56,189,248,0.06)}
-.sheet tbody tr.transfer-row{background:rgba(56,189,248,0.04)}
-.sheet tbody tr.transfer-row:hover{background:rgba(56,189,248,0.08)}
-.sheet td{height:var(--cell-h);padding:0;border-right:1px solid var(--border-solid);vertical-align:middle;position:relative}
+.sheet tbody tr:hover{background:rgba(14,165,233,0.04)}
+.sheet tbody tr.transfer-row{background:rgba(167,139,250,0.04)}
+.sheet tbody tr.transfer-row:hover{background:rgba(167,139,250,0.08)}
+.sheet td{
+  height:var(--cell-h);padding:0;
+  border-right:1px solid var(--border);
+  vertical-align:middle;position:relative;
+}
 .sheet td:last-child{border-right:none}
 
-/* CELLS */
-.cell{display:block;width:100%;height:100%;padding:0 8px;line-height:var(--cell-h);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:text;outline:none;background:transparent;font-family:'Times New Roman',Times,serif;font-size:12.5px;color:var(--text);border:none;caret-color:#0096C7}
-.cell:focus{background:rgba(56,189,248,0.08);outline:2px solid var(--purple);outline-offset:-2px;border-radius:3px;z-index:2;position:relative;white-space:pre;overflow:visible}
-.cell.num{font-family:'Courier New',Courier,monospace;text-align:right;padding-right:10px}
+/* ── CELLS ── */
+.cell{
+  display:block;width:100%;height:100%;
+  padding:0 8px;line-height:var(--cell-h);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  cursor:text;outline:none;background:transparent;
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--text);
+  border:none;caret-color:var(--blue);
+}
+.cell:focus{
+  background:rgba(14,165,233,0.07);
+  outline:2px solid rgba(14,165,233,0.5);
+  outline-offset:-2px;border-radius:3px;
+  z-index:2;position:relative;
+  white-space:pre;overflow:visible;
+}
+.cell.num{font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;text-align:right;padding-right:10px}
 .cell.muted{color:var(--text-light)}
-.cell.pos{color:var(--teal);font-weight:600;font-family:'Courier New',Courier,monospace}
-.cell.neg{color:var(--coral);font-weight:600;font-family:'Courier New',Courier,monospace}
+.cell.pos{color:var(--green);font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
+.cell.neg{color:var(--red);font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
 .cell.read-only{cursor:default}
-.cell-select{width:100%;height:100%;border:none;background:transparent;font-family:'Times New Roman',Times,serif;font-size:12.5px;color:var(--text);padding:0 6px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none}
-.cell-select:focus{background:var(--purple-light);color:var(--purple)}
-.clr-pill{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;user-select:none;transition:all .15s}
-.clr-empty{background:rgba(255,255,255,0.08);color:var(--text-light)}
-.clr-c{background:var(--teal-light);color:var(--teal)}
-.clr-r{background:var(--green-light);color:var(--green)}
-.pay-cell{color:var(--coral);font-family:'Courier New',Courier,monospace;font-weight:500}
-.dep-cell{color:var(--teal);font-family:'Courier New',Courier,monospace;font-weight:500}
-.bal-cell{font-family:'Courier New',Courier,monospace;font-weight:600}
-.type-chip{display:inline-block;padding:2px 6px;border-radius:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;pointer-events:none}
-.chip-transfer{background:var(--purple-light);color:var(--purple)}
-.chip-payment{background:var(--coral-light);color:var(--coral)}
-.chip-deposit{background:var(--teal-light);color:var(--teal)}
-.add-row-tr td{background:rgba(255,255,255,0.02);padding:6px 10px;border-top:1px solid var(--border-solid)}
-.add-row-btn{background:none;border:none;color:var(--purple);font-size:12px;font-weight:600;cursor:pointer;padding:2px 8px;border-radius:5px;font-family:inherit;letter-spacing:.01em}
-.add-row-btn:hover{background:rgba(56,189,248,0.12)}
-.prog-wrap{display:flex;align-items:center;gap:6px;padding:0 8px}
-.prog-track{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
-.prog-fill{height:100%;border-radius:3px}
-.prog-pct{font-size:10px;font-weight:600;font-family:'Courier New',Courier,monospace;min-width:60px;text-align:right}
-.reconcile-bar{background:linear-gradient(135deg,#0F4C75,#0096C7,#00B4D8);border-radius:var(--radius-sm);padding:12px 18px;color:#fff;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:12px;font-size:12px}
-.r-item{display:flex;flex-direction:column}
-.r-label{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.06em}
-.r-val{font-size:15px;font-weight:600;font-family:'Courier New',Courier,monospace}
-.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.filter-bar select,.filter-bar input{font-family:inherit;font-size:12px;color:var(--text);border:1.5px solid var(--border-solid);border-radius:7px;padding:5px 9px;background:var(--card-bg);width:auto;color:var(--text)}
-.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--purple)}
-.icon-btn{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--text-light);transition:all .15s}
-.icon-btn:hover{background:rgba(255,255,255,0.08);color:var(--text)}
-.icon-btn.del:hover{background:var(--coral-light);color:var(--coral)}
+.cell-select{
+  width:100%;height:100%;border:none;
+  background:transparent;
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--text);
+  padding:0 6px;cursor:pointer;outline:none;
+  appearance:none;-webkit-appearance:none;
+}
+.cell-select:focus{background:var(--blue-dim);color:var(--blue)}
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100}
-.modal{background:#1E2438;border-radius:22px;padding:28px;width:90%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(15,76,117,.20),0 4px 16px rgba(15,76,117,.10);border:1px solid var(--border)}
+.clr-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;
+  font-size:10px;font-weight:700;cursor:pointer;
+  user-select:none;transition:all var(--ease);
+}
+.clr-empty{background:rgba(255,255,255,0.06);color:var(--text-light)}
+.clr-c{background:var(--amber-dim);color:var(--amber)}
+.clr-r{background:var(--green-dim);color:var(--green)}
+.pay-cell{color:var(--red);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:500}
+.dep-cell{color:var(--green);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:500}
+.bal-cell{font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:600}
+
+.type-chip{
+  display:inline-block;padding:2px 7px;border-radius:20px;
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+  pointer-events:none;
+}
+.chip-transfer{background:var(--purple-dim);color:var(--blue)}
+.chip-payment{background:var(--red-dim);color:var(--red)}
+.chip-deposit{background:var(--green-dim);color:var(--green)}
+
+.add-row-tr td{
+  background:transparent;
+  padding:6px 10px;border-top:1px solid var(--border);
+}
+.add-row-btn{
+  background:none;border:none;color:var(--blue);
+  font-size:12px;font-weight:500;cursor:pointer;
+  padding:3px 8px;border-radius:5px;font-family:inherit;
+}
+.add-row-btn:hover{background:var(--blue-dim)}
+
+.prog-wrap{display:flex;align-items:center;gap:6px;padding:0 8px}
+.prog-track{flex:1;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px}
+.prog-pct{
+  font-size:10px;font-weight:600;
+  font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;
+  min-width:55px;text-align:right;color:var(--text-mid);
+}
+
+.reconcile-bar{
+  background:linear-gradient(135deg,rgba(3,105,161,0.4),rgba(14,165,233,0.2));
+  border:1px solid rgba(14,165,233,0.2);
+  border-radius:var(--radius-sm);padding:12px 18px;
+  color:#fff;display:flex;align-items:center;gap:20px;
+  flex-wrap:wrap;margin-top:12px;font-size:12px;
+}
+.r-item{display:flex;flex-direction:column}
+.r-label{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.06em}
+.r-val{font-size:15px;font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
+
+.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{
+  font-family:inherit;font-size:12px;color:var(--text);
+  border:1px solid var(--border-solid);border-radius:var(--radius-xs);
+  padding:5px 9px;background:var(--surface-2);width:auto;
+}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--blue)}
+
+.icon-btn{
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;cursor:pointer;border:none;
+  background:transparent;color:var(--text-light);
+  transition:all var(--ease);
+}
+.icon-btn:hover{background:rgba(255,255,255,0.07);color:var(--text)}
+.icon-btn.del:hover{background:var(--red-dim);color:var(--red)}
+
+/* ── MODALS ── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;
+}
+.modal{
+  background:var(--surface-2);
+  border-radius:16px;padding:24px;
+  width:90%;max-width:460px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+  border:1px solid var(--border-solid);
+}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.modal-header h3{font-size:16px;font-weight:600}
+.modal-header h3{font-size:15px;font-weight:600}
 .form-row{margin-bottom:12px}
-.form-row label{display:block;font-size:10px;font-weight:600;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.form-row input,.form-row select{width:100%;padding:8px 11px;border:1.5px solid var(--border-solid);border-radius:8px;font-family:inherit;font-size:13px;color:var(--text);background:rgba(255,255,255,0.05);transition:border-color .15s;color:var(--text)}
-.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--purple);background:rgba(56,189,248,0.08)}
+.form-row label{
+  display:block;font-size:10px;font-weight:600;
+  color:var(--text-mid);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:5px;
+}
+.form-row input,.form-row select{
+  width:100%;padding:8px 11px;
+  border:1px solid var(--border-solid);border-radius:var(--radius-xs);
+  font-family:inherit;font-size:13px;color:var(--text);
+  background:var(--surface-1);transition:border-color var(--ease);
+}
+.form-row input:focus,.form-row select:focus{
+  outline:none;border-color:var(--blue);
+  background:rgba(14,165,233,0.06);
+}
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 
-/* DASHBOARD */
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.dash-card{background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);transition:box-shadow .2s}
-.dash-card h3{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light);margin-bottom:12px}
+/* ── DASHBOARD CARDS ── */
+.dash-card{
+  background:var(--surface-2);
+  border-radius:var(--radius);
+  padding:16px;
+  border:1px solid var(--border);
+  transition:border-color var(--ease);
+}
+.dash-card:hover{border-color:var(--border-solid)}
+.dash-card h3{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--text-light);margin-bottom:12px;
+}
+.acct-balance-row:hover{background:rgba(255,255,255,0.03);padding-left:6px;border-radius:4px}
+.budget-dash-row:hover{background:rgba(255,255,255,0.03);padding-left:10px}
 .mini-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .mini-label{flex:1;font-size:12px}
-.mini-bar-wrap{flex:2;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
-.mini-bar{height:100%;border-radius:3px}
-.mini-amount{font-size:11px;font-weight:600;font-family:'Courier New',Courier,monospace;min-width:65px;text-align:right}
+.mini-bar-wrap{flex:2;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.mini-bar{height:100%;border-radius:2px}
+.mini-amount{font-size:11px;font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;min-width:65px;text-align:right}
 
+/* ── AUTOCOMPLETE ── */
 .autocomplete-wrap{position:relative;width:100%;height:100%}
 .autocomplete-list{
   position:absolute;top:100%;left:0;z-index:200;
-  background:#1E2438;border:1.5px solid var(--purple);
+  background:var(--surface-3);
+  border:1px solid var(--border-focus);
   border-top:none;border-radius:0 0 8px 8px;
   min-width:180px;max-width:320px;
-  box-shadow:0 8px 24px rgba(91,78,232,0.15);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
   max-height:200px;overflow-y:auto;
   font-size:12.5px;
 }
 .autocomplete-item{
   padding:7px 12px;cursor:pointer;
-  border-bottom:0.5px solid var(--border-solid);
+  border-bottom:1px solid var(--border);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  transition:background .1s;
+  transition:background var(--ease);
+  font-family:'Inter',sans-serif;
 }
 .autocomplete-item:last-child{border-bottom:none}
-.autocomplete-item:hover,.autocomplete-item.active{background:rgba(56,189,248,0.15);color:var(--purple)}
-.autocomplete-item mark{background:transparent;color:var(--purple);font-weight:700}
+.autocomplete-item:hover,.autocomplete-item.active{background:var(--blue-dim);color:var(--blue)}
+.autocomplete-item mark{background:transparent;color:var(--blue);font-weight:600}
 .category-input-wrap{position:relative;width:100%;height:100%}
+
+/* ── GLOBAL SEARCH ── */
+.search-bar-wrap{padding:0 8px;margin-bottom:14px;position:relative}
+.global-search-input{
+  width:100%;padding:8px 12px 8px 32px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xs);color:#fff;
+  font-family:inherit;font-size:12px;
+  transition:all var(--ease);
+}
+.global-search-input::placeholder{color:rgba(255,255,255,0.3)}
+.global-search-input:focus{outline:none;background:rgba(255,255,255,0.08);border-color:var(--blue)}
+.search-icon{
+  position:absolute;left:20px;top:50%;transform:translateY(-50%);
+  font-size:12px;color:rgba(255,255,255,0.3);pointer-events:none;
+}
+.search-results-dropdown{
+  position:fixed;left:calc(var(--sidebar-w) + 4px);top:auto;
+  width:360px;background:var(--surface-3);
+  border:1px solid var(--border-solid);border-radius:var(--radius);
+  box-shadow:0 16px 48px rgba(0,0,0,0.7);
+  z-index:200;max-height:480px;overflow-y:auto;
+}
+.search-results-dropdown::-webkit-scrollbar{width:4px}
+.search-results-dropdown::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:2px}
+.sr-section{padding:8px 12px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);border-top:1px solid var(--border)}
+.sr-section:first-child{border-top:none}
+.sr-item{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;transition:background var(--ease)}
+.sr-item:hover,.sr-item.focused{background:rgba(14,165,233,0.08)}
+.sr-item-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.sr-item-main{flex:1;min-width:0}
+.sr-item-title{font-size:12.5px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-item-sub{font-size:10.5px;color:var(--text-light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-item-badge{font-size:11px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;flex-shrink:0}
+.sr-empty{padding:20px;text-align:center;font-size:12px;color:var(--text-light)}
+mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding:0 1px}
+
+/* ── MISC ── */
+.amount-range-wrap{display:flex;gap:4px;align-items:center}
+.amount-range-wrap input{width:80px}
+
+/* ── YEARLY BUDGET ── */
+#yearly-grid td[contenteditable="true"]:focus{
+  outline:2px solid var(--blue);
+  background:rgba(14,165,233,0.1)!important;
+  position:relative;z-index:2;
+}
+#yearly-grid td[contenteditable="true"]{cursor:text}
+#yearly-grid tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* ── HELP PAGE ── */
+.help-section{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.help-section-header{
+  padding:12px 18px;font-size:13px;font-weight:600;
+  background:var(--surface-1);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:background var(--ease);
+}
+.help-section-header:hover{background:rgba(14,165,233,0.06)}
+.help-section-body{padding:16px 18px}
+.help-q{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;margin-top:14px;display:flex;align-items:flex-start;gap:8px}
+.help-q::before{content:'Q';background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.help-q:first-child{margin-top:0}
+.help-a{font-size:12.5px;color:var(--text-mid);line-height:1.7;margin-bottom:4px;padding-left:22px}
+.help-a b{color:var(--text);font-weight:600}
+.help-key{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--surface-3);border:1px solid var(--border-solid);
+  border-radius:5px;padding:3px 10px;
+  font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;
+  font-size:12px;font-weight:600;color:var(--blue);
+  min-width:56px;text-align:center;flex-shrink:0;
+}
+.help-table{display:flex;flex-direction:column;gap:6px}
+.help-table-row{display:flex;align-items:center;gap:14px;padding:7px 0;border-bottom:1px solid var(--border)}
+.help-table-row:last-child{border-bottom:none}
+.help-desc{font-size:12.5px;color:var(--text-mid);line-height:1.5}
+.help-note{font-size:11px;color:var(--text-mid);background:rgba(14,165,233,0.06);border-radius:7px;padding:10px 14px;margin-top:12px;border-left:2px solid var(--blue)}
+.help-section.hidden{display:none}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--surface-3);
+  border:1px solid var(--border-solid);
+  color:var(--text);padding:10px 18px;
+  border-radius:var(--radius-sm);font-size:13px;font-weight:500;
+  box-shadow:var(--shadow-lg);
+  opacity:0;transform:translateY(8px);
+  transition:all .25s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;z-index:9999;
+  max-width:320px;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ── SAVE INDICATOR ── */
+.save-indicator{
+  font-size:11px;color:rgba(255,255,255,0.4);
+  padding:6px 8px;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ── BUDGET TABS ── */
+#budget-tab-monthly,#budget-tab-yearly{
+  font-family:inherit;background:transparent;border-top:none;border-left:none;border-right:none;
+}
+
+/* ── INLINE FUND LOG ── */
+.section-title{font-size:11px;font-weight:600;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);color:var(--text-mid)}
+
+/* ── TEMPLATES PANEL ── */
+#templates-panel{
+  position:fixed;top:0;right:-400px;width:380px;height:100vh;
+  background:var(--surface-2);border-left:1px solid var(--border);
+  z-index:80;transition:right .3s cubic-bezier(0.4,0,0.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:-8px 0 32px rgba(0,0,0,0.4);
+}
+#templates-panel.open{right:0}
+#templates-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:79;display:none;backdrop-filter:blur(2px);
+}
+
+/* ── PRINT ── */
 @media print {
   .sidebar,.page-header,.btn,.btn-row,.sheet-toolbar,.filter-bar,
   .stat-grid,.nav-item,.logo,.save-indicator,
@@ -186,116 +568,21 @@ body{font-family:'Times New Roman',Times,serif;background:var(--bg);color:var(--
   .pay-cell,.neg{color:#cc0000!important}
   .dep-cell,.pos{color:#006600!important}
 }
-/* ── GLOBAL SEARCH ── */
-.search-bar-wrap{padding:0 8px;margin-bottom:16px;position:relative}
-.global-search-input{
-  width:100%;padding:8px 12px 8px 32px;
-  background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:8px;color:#fff;
-  font-family:inherit;font-size:12.5px;
-  transition:all .15s;
-}
-.global-search-input::placeholder{color:rgba(255,255,255,0.35)}
-.global-search-input:focus{outline:none;background:rgba(255,255,255,0.11);border-color:var(--purple)}
-.search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(255,255,255,0.35);pointer-events:none}
-.search-results-dropdown{
-  position:fixed;left:calc(var(--sidebar-w) - 6px);top:auto;
-  width:360px;background:#1A1F2E;
-  border:1.5px solid var(--purple);border-radius:12px;
-  box-shadow:0 16px 48px rgba(0,0,0,0.6);
-  z-index:200;max-height:480px;overflow-y:auto;
-}
-.search-results-dropdown::-webkit-scrollbar{width:4px}
-.search-results-dropdown::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
-.sr-section{padding:8px 12px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.06)}
-.sr-section:first-child{border-top:none}
-.sr-item{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;transition:background .1s}
-.sr-item:hover,.sr-item.focused{background:rgba(56,189,248,0.1)}
-.sr-item-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
-.sr-item-main{flex:1;min-width:0}
-.sr-item-title{font-size:12.5px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sr-item-sub{font-size:10.5px;color:var(--text-light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sr-item-badge{font-size:11px;font-weight:700;font-family:'Courier New',monospace;flex-shrink:0}
-.sr-empty{padding:20px;text-align:center;font-size:12px;color:var(--text-light)}
-mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padding:0 1px}
-/* ── AMOUNT RANGE FILTER ── */
-.amount-range-wrap{display:flex;gap:4px;align-items:center}
-.amount-range-wrap input{width:80px}
-/* ── YEARLY BUDGET GRID ── */
-#yearly-grid td[contenteditable="true"]:focus{
-  outline:2px solid var(--purple);
-  background:rgba(56,189,248,0.12)!important;
-  position:relative;z-index:2;
-}
-#yearly-grid td[contenteditable="true"]{cursor:text;}
-#yearly-grid tr:hover td{filter:brightness(1.06)}
-/* ── HELP PAGE ── */
-.help-section{background:var(--card-bg);border:1px solid var(--border-solid);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
-.help-section-header{
-  padding:14px 20px;font-size:14px;font-weight:700;
-  background:linear-gradient(135deg,rgba(15,76,117,0.5),rgba(0,180,216,0.2));
-  border-bottom:1px solid var(--border-solid);
-  display:flex;align-items:center;gap:10px;cursor:pointer;
-  transition:background .15s;
-}
-.help-section-header:hover{background:linear-gradient(135deg,rgba(15,76,117,0.7),rgba(0,180,216,0.3));}
-.help-section-body{padding:18px 20px}
-.help-q{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;margin-top:16px;display:flex;align-items:flex-start;gap:8px}
-.help-q::before{content:'Q';background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;flex-shrink:0;margin-top:2px}
-.help-q:first-child{margin-top:0}
-.help-a{font-size:12.5px;color:var(--text-mid);line-height:1.7;margin-bottom:4px;padding-left:22px}
-.help-a b{color:var(--text);font-weight:600}
-.help-key{
-  display:inline-flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.08);border:1px solid var(--border-solid);
-  border-radius:5px;padding:3px 10px;font-family:'Courier New',monospace;
-  font-size:12px;font-weight:700;color:var(--purple);
-  min-width:60px;text-align:center;flex-shrink:0;
-}
-.help-table{display:flex;flex-direction:column;gap:6px}
-.help-table-row{display:flex;align-items:center;gap:14px;padding:7px 0;border-bottom:1px solid var(--border-solid)}
-.help-table-row:last-child{border-bottom:none}
-.help-desc{font-size:12.5px;color:var(--text-mid);line-height:1.5}
-.help-note{font-size:11px;color:var(--text-light);background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin-top:14px;border-left:3px solid var(--purple)}
-.help-section.hidden{display:none}
-/* ═══════════════════════════════════════════
-   MOBILE — completely separate UI under 768px
-   Desktop layout is completely hidden on mobile
-═══════════════════════════════════════════ */
-/* ═══════════════════════════════════
-   MOBILE — hide desktop, show mobile UI
-═══════════════════════════════════ */
-/* ═══ MOBILE — screens 768px and under ═══════════
-   Desktop is completely unchanged.
-   Mobile is a ground-up redesign for phone use.
-══════════════════════════════════════════════════ */
 
-/* ── Hide desktop, show mobile chrome ── */
-/* ═══ MOBILE / DESKTOP VISIBILITY ═══ 
-   Desktop (default): sidebar + main visible, all mobile elements hidden
-   Mobile (touch + narrow): sidebar + main hidden, mobile elements visible
-═══════════════════════════════════════════════════════════════════════ */
-
-/* Default: hide all mobile UI elements */
+/* ═══ MOBILE / DESKTOP VISIBILITY ═══ */
 #m-topbar, #m-app, #m-tabbar, #m-add-btn { display: none !important; }
 #m-add-modal { display: none; }
 #m-search-wrap { display: none; }
 
-/* Mobile: screen ≤768px wide — show mobile, hide desktop */
 @media (max-width: 768px) {
-  /* Hide desktop */
   .sidebar { display: none !important; }
   .main { display: none !important; }
-  /* Show mobile shell */
   #m-topbar { display: flex !important; }
   #m-app { display: block !important; }
   #m-tabbar { display: flex !important; }
   #m-add-btn { display: flex !important; }
   body { overflow-x: hidden; max-width: 100vw; }
 }
-
-/* Desktop: wider than 768px — force hide all mobile elements */
 @media (min-width: 769px) {
   #m-topbar { display: none !important; }
   #m-app { display: none !important; }
@@ -305,7 +592,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
   .m-search-wrap { display: none !important; }
 }
 
-/* Mobile tab styles */
+/* ── MOBILE COMPONENTS ── */
 .m-tab {
   display: flex; flex-direction: column; align-items: center;
   gap: 3px; padding: 8px 4px; border-radius: 10px;
@@ -314,84 +601,41 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
   transition: all .15s;
 }
 .m-tab:active { transform: scale(0.9); }
-.m-tab-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 500; }
-.m-tab.active .m-tab-lbl { color: #00B4D8; font-weight: 700; }
-.m-tab.active { background: rgba(0,180,216,0.12); }
-
-/* Mobile pages */
+.m-tab-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 500; font-family:'Inter',sans-serif; }
+.m-tab.active .m-tab-lbl { color: #0EA5E9; font-weight: 700; }
+.m-tab.active { background: rgba(14,165,233,0.12); }
 .m-page { display: none; }
 .m-page.active { display: block; }
-
-/* Mobile cards */
 .m-tx-card {
-  background: var(--card-bg); border: 1px solid var(--border-solid);
+  background: var(--surface-2); border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 14px;
   display: flex; align-items: center; gap: 12px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
-.m-tx-card:active { background: rgba(255,255,255,0.06); }
-.m-fund-card {
-  background: var(--card-bg); border: 1px solid var(--border-solid);
-  border-radius: 14px; padding: 16px;
-}
-.m-budget-row {
-  background: var(--card-bg); border: 1px solid var(--border-solid);
-  border-radius: 10px; padding: 12px 14px; margin-bottom: 6px;
-}
-.m-account-card {
-  background: var(--card-bg); border: 1px solid var(--border-solid);
-  border-radius: 12px; padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px;
 }
-.m-more-btn {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px; background: var(--card-bg);
-  border: 1px solid var(--border-solid); border-radius: 12px;
-  cursor: pointer; font-family: inherit; font-size: 15px;
-  color: var(--text); text-align: left; width: 100%;
-  margin-bottom: 8px; -webkit-tap-highlight-color: transparent;
-}
-.m-more-btn:active { background: rgba(255,255,255,0.08); }
-.m-suggest-item {
-  padding: 12px 14px; border-bottom: 1px solid var(--border-solid);
-  cursor: pointer; font-size: 14px; color: var(--text);
-}
-.m-suggest-item:active { background: rgba(56,189,248,0.1); }
+.m-tx-card:active { background: rgba(255,255,255,0.05); }
+.m-fund-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+.m-budget-row { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 6px; }
+.m-account-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.m-more-btn { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-family: inherit; font-size: 15px; color: var(--text); text-align: left; width: 100%; margin-bottom: 8px; -webkit-tap-highlight-color: transparent; }
+.m-more-btn:active { background: rgba(255,255,255,0.06); }
+.m-suggest-item { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 14px; color: var(--text); }
+.m-suggest-item:active { background: rgba(14,165,233,0.08); }
 .m-suggest-item:last-child { border-bottom: none; }
-
-/* Search overlay */
-.m-search-wrap {
-  position: fixed; inset: 0; z-index: 200;
-  background: var(--bg); flex-direction: column;
-}
+.m-search-wrap { position: fixed; inset: 0; z-index: 200; background: var(--bg); flex-direction: column; }
 .m-search-wrap.open { display: flex !important; }
-
-/* Search results */
-.m-search-section {
-  font-size: 9px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .12em; color: rgba(255,255,255,0.3);
-  padding: 12px 16px 6px;
-}
-.m-search-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
-  cursor: pointer;
-}
-.m-search-item:active { background: rgba(56,189,248,0.08); }
+.m-search-section { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,0.25); padding: 12px 16px 6px; }
+.m-search-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: pointer; }
+.m-search-item:active { background: rgba(14,165,233,0.07); }
 .m-search-item-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
 .m-search-item-text { flex: 1; min-width: 0; }
-.m-search-item-title { font-size: 14px; font-weight: 500; color: #E8EAF0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.m-search-item-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-.m-search-item-right { font-size: 13px; font-weight: 700; font-family: 'Courier New', monospace; flex-shrink: 0; }
-
-/* Toast on mobile */
+.m-search-item-title { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-search-item-sub { font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+.m-search-item-right { font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono','Courier New', monospace; flex-shrink: 0; }
 @media (max-width: 768px) {
   .toast { left: 16px !important; right: 16px !important; bottom: 82px !important; text-align: center !important; }
 }
-
-
-  </style>
+</style>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
@@ -399,7 +643,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Meridian">
   <meta name="theme-color" content="#0F4C75">
-  <link rel="apple-touch-icon" href="icon-101.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
@@ -432,18 +676,18 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     </div>
     <div style="background:linear-gradient(135deg,#0F4C75,#00B4D8);border-radius:16px;padding:20px;margin-bottom:14px">
       <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Net Worth</div>
-      <div id="m-net-worth" style="font-size:32px;font-weight:700;color:#fff;font-family:'Courier New',monospace">—</div>
+      <div id="m-net-worth" style="font-size:32px;font-weight:700;color:#fff;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px">
-        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Income</div><div id="m-month-income" style="font-size:14px;font-weight:700;color:#4ADE80;font-family:'Courier New',monospace">—</div></div>
-        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Expenses</div><div id="m-month-expenses" style="font-size:14px;font-weight:700;color:#FCA5A5;font-family:'Courier New',monospace">—</div></div>
-        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Net</div><div id="m-month-net" style="font-size:14px;font-weight:700;font-family:'Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Income</div><div id="m-month-income" style="font-size:14px;font-weight:700;color:#4ADE80;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Expenses</div><div id="m-month-expenses" style="font-size:14px;font-weight:700;color:#FCA5A5;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:2px">Net</div><div id="m-month-net" style="font-size:14px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
       </div>
     </div>
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:8px">Accounts</div>
     <div id="m-accounts-list" style="margin-bottom:14px"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light)">Recent</div>
-      <button onclick="setMobileTab('transactions');renderMobileTransactions()" style="background:none;border:none;color:var(--purple);font-size:12px;cursor:pointer;font-family:inherit">See all →</button>
+      <button onclick="setMobileTab('transactions');renderMobileTransactions()" style="background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer;font-family:inherit">See all →</button>
     </div>
     <div id="m-recent-list"></div>
   </div>
@@ -521,8 +765,8 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     <div style="text-align:center;margin-bottom:28px">
       <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Amount</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-        <span style="font-size:28px;color:var(--text-mid);font-family:'Courier New',monospace">$</span>
-        <input id="m-amount" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal" style="font-size:42px;font-weight:700;font-family:'Courier New',monospace;color:var(--text);background:none;border:none;outline:none;width:200px;text-align:center">
+        <span style="font-size:28px;color:var(--text-mid);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">$</span>
+        <input id="m-amount" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal" style="font-size:42px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--text);background:none;border:none;outline:none;width:200px;text-align:center">
       </div>
       <div style="height:2px;background:var(--purple);width:180px;margin:8px auto 0;border-radius:1px"></div>
     </div>
@@ -705,7 +949,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
       <div class="page-heading"><h1>Transactions</h1><p id="tx-subtitle">All accounts</p></div>
       <div class="btn-row">
         <button class="btn" onclick="openReconcileModal()" style="border-color:var(--amber);color:var(--amber)">⚖ Reconcile</button>
-        <button class="btn" onclick="openTemplatesPanel()" style="border-color:var(--purple);color:var(--purple)">📋 Templates</button>
+        <button class="btn" onclick="openTemplatesPanel()" style="border-color:var(--blue);color:var(--blue)">📋 Templates</button>
         <button class="btn primary" onclick="addTxRow()">＋ Add Row <span style="opacity:.55;font-size:10px;margin-left:2px">N</span></button>
       </div>
     </div>
@@ -798,7 +1042,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
             <button onclick="closeFundMenu();openContributeModal()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;font-family:inherit;font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border-solid)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='none'">
               <span style="font-size:16px">💰</span><div style="text-align:left"><div>Contribute to Fund</div><div style="font-size:10px;color:var(--text-light);font-weight:400">Allocate money into a fund</div></div>
             </button>
-            <button onclick="closeFundMenu();openFundTransferModal()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;font-family:inherit;font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border-solid)" onmouseover="this.style.background='var(--purple-light)'" onmouseout="this.style.background='none'">
+            <button onclick="closeFundMenu();openFundTransferModal()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;font-family:inherit;font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border-solid)" onmouseover="this.style.background='var(--blue-dim)'" onmouseout="this.style.background='none'">
               <span style="font-size:16px">⇄</span><div style="text-align:left"><div>Transfer Between Funds</div><div style="font-size:10px;color:var(--text-light);font-weight:400">Move money from one fund to another</div></div>
             </button>
             <button onclick="closeFundMenu();openReplenishRulesModal()" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;font-family:inherit;font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;color:var(--text)" onmouseover="this.style.background='var(--amber-light)'" onmouseout="this.style.background='none'">
@@ -854,7 +1098,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     <!-- Tab switcher -->
     <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border-solid)">
       <button id="budget-tab-monthly" onclick="switchBudgetTab('monthly')"
-        style="padding:10px 22px;font-family:inherit;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--purple);border-bottom:2px solid var(--purple);margin-bottom:-2px;transition:all .15s">
+        style="padding:10px 22px;font-family:inherit;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--blue);border-bottom:2px solid var(--purple);margin-bottom:-2px;transition:all .15s">
         Monthly
       </button>
       <button id="budget-tab-yearly" onclick="switchBudgetTab('yearly')"
@@ -1541,7 +1785,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     <div class="form-row"><label>Note</label><input type="text" id="ft-note" placeholder="e.g. Moving surplus groceries to emergency fund"></div>
     <div class="modal-footer">
       <button class="btn" onclick="closeFundTransferModal()">Cancel</button>
-      <button class="btn primary" onclick="saveFundTransfer()" style="background:var(--purple);border-color:var(--purple)">Save Fund Transfer</button>
+      <button class="btn primary" onclick="saveFundTransfer()" style="background:var(--purple);border-color:var(--blue)">Save Fund Transfer</button>
     </div>
   </div>
 </div>
@@ -1634,9 +1878,9 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
     </div>
     <div id="reconcile-preview" style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin:12px 0;font-size:13px">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
-        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px" id="rec-cleared-label">Cleared Balance</div><div id="rec-cleared-bal" style="font-size:18px;font-weight:600;font-family:'Courier New',monospace">—</div></div>
-        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Statement</div><div id="rec-stmt-display" style="font-size:18px;font-weight:600;font-family:'Courier New',monospace">—</div></div>
-        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Difference</div><div id="rec-diff-display" style="font-size:18px;font-weight:600;font-family:'Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px" id="rec-cleared-label">Cleared Balance</div><div id="rec-cleared-bal" style="font-size:18px;font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Statement</div><div id="rec-stmt-display" style="font-size:18px;font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
+        <div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Difference</div><div id="rec-diff-display" style="font-size:18px;font-weight:600;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">—</div></div>
       </div>
       <div id="rec-status-msg" style="text-align:center;margin-top:10px;font-size:12px;font-weight:600"></div>
     </div>
@@ -1735,7 +1979,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
       <div style="flex-shrink:0;position:relative;width:130px;height:130px">
         <svg id="cat-donut-svg" width="130" height="130" viewBox="0 0 130 130"></svg>
         <div id="cat-donut-label" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none">
-          <div id="cat-donut-pct" style="font-size:22px;font-weight:700;font-family:'Courier New',monospace"></div>
+          <div id="cat-donut-pct" style="font-size:22px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace"></div>
           <div style="font-size:10px;color:var(--text-light);margin-top:1px">used</div>
         </div>
       </div>
@@ -1847,7 +2091,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
           <span style="font-weight:400;color:var(--text-light);font-size:10px"> — needs "gist" scope only</span>
         </label>
         <input type="password" id="sync-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-          style="font-family:'Courier New',monospace;font-size:12px">
+          style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px">
         <div style="font-size:11px;color:var(--text-light);margin-top:4px">This is stored only in your browser's localStorage and never sent anywhere except GitHub's own API.</div>
       </div>
 
@@ -1856,7 +2100,7 @@ mark{background:rgba(56,189,248,0.25);color:var(--purple);border-radius:2px;padd
           <span style="font-weight:400;color:var(--text-light);font-size:10px"> — leave blank on first sync to create a new Gist automatically</span>
         </label>
         <input type="text" id="sync-gist-id" placeholder="Leave blank to create new — or paste existing ID"
-          style="font-family:'Courier New',monospace;font-size:12px">
+          style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px">
       </div>
     </div>
 
@@ -2061,7 +2305,7 @@ function saveState(){
     const dot=document.getElementById('save-dot');
     const lbl=document.getElementById('save-label');
     if(dot&&lbl){
-      dot.style.background='var(--purple)';
+      dot.style.background='var(--blue)';
       lbl.textContent='Saving…';
       clearTimeout(saveState._t);
       saveState._t=setTimeout(()=>{
@@ -2086,7 +2330,7 @@ function autoSyncPush(){
     const dot=document.getElementById('save-dot');
     const lbl=document.getElementById('save-label');
     if(lbl)lbl.textContent='Syncing to cloud…';
-    if(dot)dot.style.background='var(--purple)';
+    if(dot)dot.style.background='var(--blue)';
     try{
       const res=await fetch(`https://api.github.com/gists/${gistId}`,{
         method:'PATCH',
@@ -2328,7 +2572,7 @@ function renderTransactions(){
 
   const addTr=document.createElement('tr');
   addTr.className='add-row-tr';
-  addTr.innerHTML=`<td colspan="15"><button class="add-row-btn" onclick="addTxRow()">＋ Add row</button><button class="add-row-btn" style="margin-left:8px" onclick="openTxModal()">⇄ Add transfer</button><button class="add-row-btn" style="margin-left:8px;color:var(--purple)" onclick="openTemplatesPanel()">📋 Use template</button></td>`;
+  addTr.innerHTML=`<td colspan="15"><button class="add-row-btn" onclick="addTxRow()">＋ Add row</button><button class="add-row-btn" style="margin-left:8px" onclick="openTxModal()">⇄ Add transfer</button><button class="add-row-btn" style="margin-left:8px;color:var(--blue)" onclick="openTemplatesPanel()">📋 Use template</button></td>`;
   body.appendChild(addTr);
 
   const nonTransfer=txs.filter(t=>t.type!=='transfer');
@@ -2504,7 +2748,7 @@ function renderAccounts(){
   state.accounts.forEach((a,i)=>{
     const bal=acctBalance(a.id),clrBal=acctClearedBalance(a.id);
     const isDebt=a.type==='credit'||a.type==='loan';
-    let pct=0,pctColor='var(--purple)',pctLabel='';
+    let pct=0,pctColor='var(--blue)',pctLabel='';
     if(isDebt&&a.startBal<0){
       const orig=Math.abs(a.startBal),rem=Math.abs(Math.min(bal,0));
       pct=Math.max(0,Math.min(1,1-rem/orig));
@@ -2607,7 +2851,7 @@ function renderFunds(){
     // remaining = goal minus what has been spent (contributions replenish the fund)
     const remaining=allTimeBal; // net balance IS what remains
     const pct=goal>0?Math.min(1,Math.max(0,(goal-Math.max(0,goal-allTimeBal))/goal)):0;
-    const pctColor=allTimeBal<0?'var(--coral)':pct>=.8?'var(--amber)':'var(--purple)';
+    const pctColor=allTimeBal<0?'var(--coral)':pct>=.8?'var(--amber)':'var(--blue)';
     const contribLabel=contributed>0?`<span style="font-size:10px;color:var(--teal);margin-left:4px">(+${fmt(contributed)} contrib)</span>`:'';
 
     const tr=document.createElement('tr');
@@ -2626,7 +2870,7 @@ function renderFunds(){
       <td><span class="cell num read-only ${cycleBal<0?'neg':cycleBal>0?'pos':'muted'}">${cycleBal?fmt(cycleBal):'—'}</span></td>
       <td>${goal>0?`<div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${Math.min(1,allTimeBal/goal)*100}%;background:${pctColor}"></div></div><span class="prog-pct" style="color:${pctColor}">${fmtPct(Math.min(1,Math.max(0,allTimeBal/goal)))} of goal</span></div>`:`<span class="cell read-only muted" style="padding-left:8px">—</span>`}</td>
       <td style="text-align:center;display:flex;gap:2px;align-items:center;justify-content:center;height:var(--cell-h)">
-        <button class="icon-btn" onclick="toggleFundHistory('${f.id}')" title="View history" id="fund-expand-btn-${f.id}" style="color:var(--purple);font-size:13px">▶</button>
+        <button class="icon-btn" onclick="toggleFundHistory('${f.id}')" title="View history" id="fund-expand-btn-${f.id}" style="color:var(--blue);font-size:13px">▶</button>
         <button class="icon-btn del" onclick="deleteFund('${f.id}')">🗑</button>
       </td>
     `;
@@ -2641,7 +2885,7 @@ function renderFunds(){
       <div style="padding:12px 16px;border-top:1px solid var(--border-solid)">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light)">Activity — ${f.name}</span>
-          <button class="btn sm ghost" onclick="openEditLogModal_fund('${f.id}')" style="font-size:11px;color:var(--purple)">+ Add Entry</button>
+          <button class="btn sm ghost" onclick="openEditLogModal_fund('${f.id}')" style="font-size:11px;color:var(--blue)">+ Add Entry</button>
         </div>
         <div id="fund-inline-log-${f.id}"></div>
       </div>
@@ -2666,14 +2910,14 @@ function renderFunds(){
   const cycleTotal=state.funds.reduce((sum,f)=>sum+fundBalanceWithContribs(f.id,s,e),0);
 
   const totalTr=document.createElement('tr');
-  totalTr.style.cssText='border-top:2px solid var(--purple);background:var(--purple-light)';
+  totalTr.style.cssText='border-top:2px solid var(--purple);background:var(--blue-dim)';
   totalTr.innerHTML=`
     <td class="row-num" style="background:var(--purple);color:#fff;font-weight:600">Σ</td>
-    <td colspan="2" style="padding:0 8px;font-weight:600;font-size:12px;color:var(--purple);line-height:var(--cell-h)">Totals</td>
-    <td><span class="cell num read-only" style="color:var(--purple);font-weight:600">${fmt(totalGoals)}</span></td>
+    <td colspan="2" style="padding:0 8px;font-weight:600;font-size:12px;color:var(--blue);line-height:var(--cell-h)">Totals</td>
+    <td><span class="cell num read-only" style="color:var(--blue);font-weight:600">${fmt(totalGoals)}</span></td>
     <td><span class="cell num read-only neg" style="font-weight:600">${fmt(totalAllTimeSpent)}</span></td>
     <td><span class="cell num read-only pos" style="font-weight:600">${fmt(totalFundBal)}</span></td>
-    <td><span class="cell num read-only" style="color:var(--purple);font-weight:600;font-size:13px">${hasCycle?fmt(cycleTotal):'—'}</span></td>
+    <td><span class="cell num read-only" style="color:var(--blue);font-weight:600;font-size:13px">${hasCycle?fmt(cycleTotal):'—'}</span></td>
     <td></td>
     <td></td>
   `;
@@ -2706,10 +2950,10 @@ function renderFunds(){
           ${statusNote}
         </div>
         <span style="font-size:12px;color:var(--text-mid)">Total Assets: <b style="color:var(--teal)">${fmt(totalAssets)}</b></span>
-        <span style="font-size:12px;color:var(--text-mid)">Total in Funds: <b style="color:var(--purple)">${fmt(totalFundBal)}</b></span>
+        <span style="font-size:12px;color:var(--text-mid)">Total in Funds: <b style="color:var(--blue)">${fmt(totalFundBal)}</b></span>
         <span style="font-size:12px;color:var(--text-mid)">Contributions: <b style="color:var(--teal)">${fmt(totalContributed)}</b></span>
         ${!balanced?`<span style="font-size:12px;color:var(--text-mid)">${fundDiff>0?'Unassigned':'Over-allocated'}: <b style="color:${diffColor}">${fmt(Math.abs(fundDiff))}</b></span>`:''}
-        ${hasCycle?`<span style="font-size:12px;color:var(--text-mid)">Cycle Total: <b style="color:var(--purple)">${fmt(cycleTotal)}</b></span>`:''}
+        ${hasCycle?`<span style="font-size:12px;color:var(--text-mid)">Cycle Total: <b style="color:var(--blue)">${fmt(cycleTotal)}</b></span>`:''}
       </div>
     </td>
   `;
@@ -2776,10 +3020,10 @@ function switchBudgetTab(tab){
   document.getElementById('budget-yearly-view').style.display=tab==='yearly'?'block':'none';
   document.getElementById('budget-monthly-controls').style.display=tab==='monthly'?'flex':'none';
   document.getElementById('budget-yearly-controls').style.display=tab==='yearly'?'flex':'none';
-  document.getElementById('budget-tab-monthly').style.color=tab==='monthly'?'var(--purple)':'var(--text-mid)';
-  document.getElementById('budget-tab-monthly').style.borderBottomColor=tab==='monthly'?'var(--purple)':'transparent';
-  document.getElementById('budget-tab-yearly').style.color=tab==='yearly'?'var(--purple)':'var(--text-mid)';
-  document.getElementById('budget-tab-yearly').style.borderBottomColor=tab==='yearly'?'var(--purple)':'transparent';
+  document.getElementById('budget-tab-monthly').style.color=tab==='monthly'?'var(--blue)':'var(--text-mid)';
+  document.getElementById('budget-tab-monthly').style.borderBottomColor=tab==='monthly'?'var(--blue)':'transparent';
+  document.getElementById('budget-tab-yearly').style.color=tab==='yearly'?'var(--blue)':'var(--text-mid)';
+  document.getElementById('budget-tab-yearly').style.borderBottomColor=tab==='yearly'?'var(--blue)':'transparent';
   if(tab==='yearly')renderYearlyBudget();
   else renderBudget();
 }
@@ -2787,7 +3031,7 @@ function setYearlyView(v){
   _yearlyView=v;
   ['budget','actual','diff'].forEach(k=>{
     const btn=document.getElementById('yearly-view-'+k);
-    if(btn){btn.style.background=k===v?'var(--purple)':'var(--card-bg)';btn.style.color=k===v?'#fff':'var(--text-mid)';}
+    if(btn){btn.style.background=k===v?'var(--blue)':'var(--card-bg)';btn.style.color=k===v?'#fff':'var(--text-mid)';}
   });
   renderYearlyBudget();
 }
@@ -2838,7 +3082,7 @@ function renderBudget(){
       const over=actual>monthBudget&&monthBudget>0;
       const barColor=isIncome
         ?(actual>=monthBudget?'var(--teal)':pct>.5?'var(--amber)':'var(--coral)')
-        :(over?'var(--coral)':pct>.8?'var(--amber)':'var(--purple)');
+        :(over?'var(--coral)':pct>.8?'var(--amber)':'var(--blue)');
       // Show * if this month has an override
       const hasOverride=cat.monthlyAmounts&&cat.monthlyAmounts[monthKey]!==undefined;
       const tr=document.createElement('tr');
@@ -2983,7 +3227,7 @@ function renderYearlyBudget(){
   const tbl=document.getElementById('yearly-grid');
   const CELL_STYLE='padding:5px 8px;border:1px solid var(--border-solid);text-align:right;font-family:"Courier New",monospace;font-size:11px;white-space:nowrap;';
   const HDR_STYLE='padding:7px 8px;background:#0F4C75;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border:1px solid rgba(255,255,255,0.1);';
-  const GRP_STYLE='padding:6px 10px;font-size:11px;font-weight:700;color:var(--purple);background:var(--purple-light);border:1px solid var(--border-solid);';
+  const GRP_STYLE='padding:6px 10px;font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-dim);border:1px solid var(--border-solid);';
   const TOT_STYLE='padding:6px 10px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.04);border:1px solid var(--border-solid);';
 
   let html=`<thead><tr>
@@ -3032,9 +3276,9 @@ function renderYearlyBudget(){
           ${groupLabel}
           <span style="font-size:9px;color:var(--text-light);margin-left:6px">${group.cats.length} categor${group.cats.length===1?'y':'ies'}</span>
         </td>
-        ${groupTotals.map(v=>`<td style="${GRP_STYLE}text-align:right;font-family:'Courier New',monospace">${v?fmt(v):'—'}</td>`).join('')}
-        <td style="${GRP_STYLE}text-align:right;font-family:'Courier New',monospace">${fmt(groupTotal)}</td>
-        <td style="${GRP_STYLE}text-align:right;font-family:'Courier New',monospace">${fmt(groupTotal/12)}</td>
+        ${groupTotals.map(v=>`<td style="${GRP_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${v?fmt(v):'—'}</td>`).join('')}
+        <td style="${GRP_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${fmt(groupTotal)}</td>
+        <td style="${GRP_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${fmt(groupTotal/12)}</td>
       </tr>`;
 
       if(!isCollapsed){
@@ -3062,9 +3306,9 @@ function renderYearlyBudget(){
     const sTotal=sectionTotals.reduce((s,v)=>s+v,0);
     html+=`<tr>
       <td style="${TOT_STYLE}text-align:left">Total ${label}</td>
-      ${sectionTotals.map(v=>`<td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace;color:${type==='income'?'var(--teal)':'var(--coral)'}">${v?fmt(v):'—'}</td>`).join('')}
-      <td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace;font-weight:700;color:${type==='income'?'var(--teal)':'var(--coral)'}">${fmt(sTotal)}</td>
-      <td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace">${fmt(sTotal/12)}</td>
+      ${sectionTotals.map(v=>`<td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${type==='income'?'var(--teal)':'var(--coral)'}">${v?fmt(v):'—'}</td>`).join('')}
+      <td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:${type==='income'?'var(--teal)':'var(--coral)'}">${fmt(sTotal)}</td>
+      <td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${fmt(sTotal/12)}</td>
     </tr>`;
 
     return sectionTotals;
@@ -3078,9 +3322,9 @@ function renderYearlyBudget(){
   const netTotal=netTotals.reduce((s,v)=>s+v,0);
   html+=`<tr>
     <td style="${TOT_STYLE}text-align:left;font-size:12px;font-weight:700">NET (Income − Expenses)</td>
-    ${netTotals.map(v=>`<td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace;font-weight:700;color:${v>=0?'var(--teal)':'var(--coral)'}">${fmt(v)}</td>`).join('')}
-    <td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace;font-weight:700;color:${netTotal>=0?'var(--teal)':'var(--coral)'}">${fmt(netTotal)}</td>
-    <td style="${TOT_STYLE}text-align:right;font-family:'Courier New',monospace">${fmt(netTotal/12)}</td>
+    ${netTotals.map(v=>`<td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:${v>=0?'var(--teal)':'var(--coral)'}">${fmt(v)}</td>`).join('')}
+    <td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:${netTotal>=0?'var(--teal)':'var(--coral)'}">${fmt(netTotal)}</td>
+    <td style="${TOT_STYLE}text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${fmt(netTotal/12)}</td>
   </tr>`;
 
   // ── ANCHOR + BALANCE ROWS ─────────────────────────────────────────────────
@@ -3245,7 +3489,7 @@ function toggleFundHistory(fundId){
     const r=document.getElementById(`fund-history-row-${f.id}`);
     const b=document.getElementById(`fund-expand-btn-${f.id}`);
     if(r)r.style.display='none';
-    if(b){b.textContent='▶';b.style.color='var(--purple)';}
+    if(b){b.textContent='▶';b.style.color='var(--blue)';}
   });
   if(!isOpen){
     row.style.display='table-row';
@@ -3315,25 +3559,25 @@ function renderInlineFundLog(fundId){
 
     let badge='';
     if(entry.entryType==='contrib'&&entry.type==='fund-transfer'){
-      badge='<span style="margin-left:5px;background:var(--purple-light);color:var(--purple);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px">XFER</span>';
+      badge='<span style="margin-left:5px;background:var(--blue-dim);color:var(--blue);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px">XFER</span>';
     } else if(entry.entryType==='contrib'){
       badge='<span style="margin-left:5px;background:var(--teal-light);color:var(--teal);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px">CONTRIB</span>';
     } else if(entry.entryType==='tx'&&entry.type==='transfer'&&entry.fund){
-      badge='<span style="margin-left:5px;background:rgba(56,189,248,0.15);color:var(--purple);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px" title="Intra-fund reallocation — not counted as spending">REALLOC</span>';
+      badge='<span style="margin-left:5px;background:rgba(56,189,248,0.15);color:var(--blue);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px" title="Intra-fund reallocation — not counted as spending">REALLOC</span>';
     } else if(entry.autoLinked){
       badge='<span style="margin-left:5px;background:var(--amber-light);color:var(--amber);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px">AUTO</span>';
     }
 
-    const editBtn=`<button class="icon-btn" onclick="openEditLogModal('${entry.entryType}','${entry.id}')" style="font-size:11px;color:var(--purple)" title="Edit">✏️</button>`;
+    const editBtn=`<button class="icon-btn" onclick="openEditLogModal('${entry.entryType}','${entry.id}')" style="font-size:11px;color:var(--blue)" title="Edit">✏️</button>`;
 
     return `<tr style="border-bottom:1px solid var(--border-solid);${i%2===0?'background:rgba(255,255,255,0.02)':''}">
-      <td style="padding:6px 10px;font-size:11px;font-family:'Courier New',monospace;white-space:nowrap;color:var(--text-mid)">${entry.date}</td>
-      <td style="padding:6px 10px;font-size:11px;font-family:'Courier New',monospace;color:var(--text-light)">${entry.num||'—'}</td>
+      <td style="padding:6px 10px;font-size:11px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;white-space:nowrap;color:var(--text-mid)">${entry.date}</td>
+      <td style="padding:6px 10px;font-size:11px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--text-light)">${entry.num||'—'}</td>
       <td style="padding:6px 10px;font-size:12.5px;font-weight:500">${entry.payee}${badge}</td>
       <td style="padding:6px 10px;font-size:11px;color:var(--text-light)">${a?a.name:'—'}</td>
-      <td style="padding:6px 10px;text-align:right;font-family:'Courier New',monospace;font-size:12px;color:var(--coral)">${entry.payment?`-${fmt(entry.payment)}`:''}</td>
-      <td style="padding:6px 10px;text-align:right;font-family:'Courier New',monospace;font-size:12px;color:var(--teal)">${entry.deposit?`+${fmt(entry.deposit)}`:''}</td>
-      <td style="padding:6px 10px;text-align:right;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:${runBal>=0?'var(--teal)':'var(--coral)'}">${fmt(runBal)}</td>
+      <td style="padding:6px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--coral)">${entry.payment?`-${fmt(entry.payment)}`:''}</td>
+      <td style="padding:6px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--teal)">${entry.deposit?`+${fmt(entry.deposit)}`:''}</td>
+      <td style="padding:6px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;font-weight:700;color:${runBal>=0?'var(--teal)':'var(--coral)'}">${fmt(runBal)}</td>
       <td style="padding:4px 6px;text-align:center">${editBtn}</td>
     </tr>`;
   }).join('');
@@ -3355,7 +3599,7 @@ function renderInlineFundLog(fundId){
     const net=v.in-v.out;
     return `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid var(--border-solid);border-radius:7px;padding:4px 10px;font-size:11px;margin-right:6px;margin-bottom:4px">
       <span style="font-weight:600;color:var(--text)">${a?a.name:'?'}</span>
-      <span style="color:${net>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'Courier New',monospace">${fmt(net)}</span>
+      <span style="color:${net>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${fmt(net)}</span>
     </span>`;
   }).join('');
 
@@ -3368,10 +3612,10 @@ function renderInlineFundLog(fundId){
   const xferPills=[
     ...xferIn.map(c=>{
       const linkedFund=getFund(c.linkedFund);
-      return `<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(56,189,248,0.08);border:1px solid var(--purple-light);border-radius:7px;padding:4px 10px;font-size:11px;margin-right:6px;margin-bottom:4px">
-        <span style="color:var(--purple);font-size:10px">⇐</span>
+      return `<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(56,189,248,0.08);border:1px solid var(--blue-dim);border-radius:7px;padding:4px 10px;font-size:11px;margin-right:6px;margin-bottom:4px">
+        <span style="color:var(--blue);font-size:10px">⇐</span>
         <span style="font-weight:600;color:var(--text)">from ${linkedFund?linkedFund.name:'fund'}</span>
-        <span style="color:var(--teal);font-family:'Courier New',monospace">+${fmt(c.amount)}</span>
+        <span style="color:var(--teal);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">+${fmt(c.amount)}</span>
         <span style="font-size:9px;color:var(--text-light)">${c.date}</span>
       </span>`;
     }),
@@ -3380,7 +3624,7 @@ function renderInlineFundLog(fundId){
       return `<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(248,113,113,0.06);border:1px solid var(--coral-light);border-radius:7px;padding:4px 10px;font-size:11px;margin-right:6px;margin-bottom:4px">
         <span style="color:var(--coral);font-size:10px">⇒</span>
         <span style="font-weight:600;color:var(--text)">to ${linkedFund?linkedFund.name:'fund'}</span>
-        <span style="color:var(--coral);font-family:'Courier New',monospace">-${fmt(Math.abs(c.amount))}</span>
+        <span style="color:var(--coral);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">-${fmt(Math.abs(c.amount))}</span>
         <span style="font-size:9px;color:var(--text-light)">${c.date}</span>
       </span>`;
     }),
@@ -3394,7 +3638,7 @@ function renderInlineFundLog(fundId){
     ${xferPills?`<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border-solid)">
       <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:6px">Fund Transfers <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-light)">(virtual reallocation — no real account involved)</span></div>
       <div style="display:flex;flex-wrap:wrap">${xferPills}</div>
-      <div style="font-size:10px;color:var(--text-light);margin-top:4px">Net from transfers: <b style="font-family:'Courier New',monospace;color:${totalXferIn-totalXferOut>=0?'var(--teal)':'var(--coral)'}">${fmt(totalXferIn-totalXferOut)}</b></div>
+      <div style="font-size:10px;color:var(--text-light);margin-top:4px">Net from transfers: <b style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${totalXferIn-totalXferOut>=0?'var(--teal)':'var(--coral)'}">${fmt(totalXferIn-totalXferOut)}</b></div>
     </div>`:''}
     <table style="width:100%;border-collapse:collapse;font-size:12px">
       <thead><tr style="border-bottom:2px solid var(--purple)">
@@ -3834,14 +4078,14 @@ function renderRecurring(){
       <td><span class="cell read-only">${a?a.name:'—'}</span></td>
       <td><span class="cell" contenteditable="true" data-field="payee" data-rid="${r.id}">${r.payee||''}</span></td>
       <td><span class="cell muted" contenteditable="true" data-field="category" data-rid="${r.id}">${r.category||''}</span></td>
-      <td><span style="font-size:11px;background:var(--purple-light);color:var(--purple);padding:2px 7px;border-radius:6px;font-weight:600">${freqLabel(r)}</span></td>
+      <td><span style="font-size:11px;background:var(--blue-dim);color:var(--blue);padding:2px 7px;border-radius:6px;font-weight:600">${freqLabel(r)}</span></td>
       <td><span class="cell read-only ${due?'neg':''}" style="font-weight:${due?'700':'400'}">${r.nextDue}</span></td>
       <td><span class="type-chip chip-${r.type}">${r.type}</span></td>
       <td style="text-align:right"><span class="cell num ${r.type==='payment'?'pay-cell':'dep-cell'} read-only">${fmt(r.amount)}</span></td>
       <td><span style="font-size:11px;font-weight:600;color:${due?'var(--coral)':'var(--teal)'}">${due?'● DUE':'● Scheduled'}</span></td>
       <td>${due?`<button class="btn sm primary" onclick="postRecurring('${r.id}')">Post</button>`:'<span style="color:var(--text-light);font-size:11px">—</span>'}</td>
       <td style="text-align:center;display:flex;gap:2px;align-items:center;justify-content:center;height:var(--cell-h)">
-        <button class="icon-btn" onclick="openRecurringModal('${r.id}')" title="Edit" style="color:var(--purple)">✏️</button>
+        <button class="icon-btn" onclick="openRecurringModal('${r.id}')" title="Edit" style="color:var(--blue)">✏️</button>
         <button class="icon-btn del" onclick="deleteRecurring('${r.id}')" title="Delete">🗑</button>
       </td>
     `;
@@ -4077,12 +4321,12 @@ function updateReconcilePreview(){
     tr.innerHTML=`
       <td style="text-align:center;padding:0 8px">
         <input type="checkbox" ${checked?'checked':''} onchange="toggleReconcileCheck('${tx.id}',this.checked)"
-          style="width:15px;height:15px;cursor:pointer;accent-color:var(--purple)">
+          style="width:15px;height:15px;cursor:pointer;accent-color:var(--blue)">
       </td>
       <td style="padding:6px 10px;font-size:12px">${tx.date}</td>
       <td style="padding:6px 10px;font-size:12px">${tx.payee||'—'}</td>
-      <td style="text-align:right;padding:6px 10px;font-size:12px;font-family:'Courier New',monospace;color:var(--coral)">${tx.payment?'-'+fmt(tx.payment):''}</td>
-      <td style="text-align:right;padding:6px 10px;font-size:12px;font-family:'Courier New',monospace;color:var(--teal)">${tx.deposit?'+'+fmt(tx.deposit):''}</td>
+      <td style="text-align:right;padding:6px 10px;font-size:12px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--coral)">${tx.payment?'-'+fmt(tx.payment):''}</td>
+      <td style="text-align:right;padding:6px 10px;font-size:12px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--teal)">${tx.deposit?'+'+fmt(tx.deposit):''}</td>
     `;
     tr.style.background=checked?'rgba(56,189,248,0.08)':'';
     list.appendChild(tr);
@@ -4282,11 +4526,11 @@ function renderReports(){
         }).join('')}
       </svg>
       <div style="min-width:90px;text-align:right">
-        <div style="font-size:15px;font-weight:700;font-family:'Courier New',monospace;color:${currentBal>=0?'var(--teal)':'var(--coral)'}">${fmt(currentBal)}</div>
+        <div style="font-size:15px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${currentBal>=0?'var(--teal)':'var(--coral)'}">${fmt(currentBal)}</div>
         <div style="font-size:11px;color:${trendColor};margin-top:1px">${change>=0?'+':''}${fmt(change)} (${pctChange>=0?'+':''}${pctChange.toFixed(1)}%)</div>
       </div>
       <div style="min-width:80px">
-        ${months.map((m,i)=>`<div style="font-size:9px;color:var(--text-light);display:flex;justify-content:space-between"><span>${m.label}</span><span style="font-family:'Courier New',monospace;color:${monthBals[i]>=0?'var(--text)':'var(--coral)'}">${fmt(monthBals[i])}</span></div>`).join('')}
+        ${months.map((m,i)=>`<div style="font-size:9px;color:var(--text-light);display:flex;justify-content:space-between"><span>${m.label}</span><span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${monthBals[i]>=0?'var(--text)':'var(--coral)'}">${fmt(monthBals[i])}</span></div>`).join('')}
       </div>
     `;
     acctList.appendChild(row);
@@ -4333,14 +4577,14 @@ function renderReports(){
     tr.style.background=rowBg;
     if(isMobilePosted)tr.style.borderLeft='3px solid var(--teal)';
     tr.innerHTML=`
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-family:'Courier New',monospace;font-size:12px;white-space:nowrap">${tx.date}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-size:11px;color:var(--text-light);font-family:'Courier New',monospace">${tx.num||''}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;white-space:nowrap">${tx.date}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-size:11px;color:var(--text-light);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace">${tx.num||''}</td>
       <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-size:12px;color:var(--text-mid)">${a?a.name:''}</td>
       <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-size:12.5px;font-weight:500">${tx.payee||'—'}</td>
       <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);font-size:11px;color:var(--text-mid)">${tx.category||''}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'Courier New',monospace;font-size:12px;color:var(--coral)">${tx.payment?fmt(tx.payment):''}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'Courier New',monospace;font-size:12px;color:var(--teal)">${tx.deposit?fmt(tx.deposit):''}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:${runBals[tx.account]>=0?'var(--teal)':'var(--coral)'}">${fmt(runBals[tx.account])}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--coral)">${tx.payment?fmt(tx.payment):''}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--teal)">${tx.deposit?fmt(tx.deposit):''}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid var(--border-solid);text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;font-weight:700;color:${runBals[tx.account]>=0?'var(--teal)':'var(--coral)'}">${fmt(runBals[tx.account])}</td>
     `;
     body.appendChild(tr);
   });
@@ -4350,9 +4594,9 @@ function renderReports(){
   foot.innerHTML=`<tr style="border-top:2px solid var(--purple)">
     <td colspan="4" style="padding:10px;font-size:12px;font-weight:700;color:var(--text)">TOTALS — ${stmtTxs.length} transactions</td>
     <td></td>
-    <td style="padding:10px;text-align:right;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:var(--coral)">${fmt(totalPay)}</td>
-    <td style="padding:10px;text-align:right;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:var(--teal)">${fmt(totalDep)}</td>
-    <td style="padding:10px;text-align:right;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:${totalDep-totalPay>=0?'var(--teal)':'var(--coral)'}">${fmt(totalDep-totalPay)}</td>
+    <td style="padding:10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:13px;font-weight:700;color:var(--coral)">${fmt(totalPay)}</td>
+    <td style="padding:10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:13px;font-weight:700;color:var(--teal)">${fmt(totalDep)}</td>
+    <td style="padding:10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:13px;font-weight:700;color:${totalDep-totalPay>=0?'var(--teal)':'var(--coral)'}">${fmt(totalDep-totalPay)}</td>
   </tr>`;
 }
 
@@ -4409,7 +4653,7 @@ function renderTemplatesList(){
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span class="type-chip chip-${tmpl.type}">${tmpl.type}</span>
-          <span style="font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:${tmpl.type==='deposit'?'var(--teal)':'var(--coral)'}">${fmt(tmpl.amount||0)}</span>
+          <span style="font-size:13px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${tmpl.type==='deposit'?'var(--teal)':'var(--coral)'}">${fmt(tmpl.amount||0)}</span>
           <span style="font-size:11px;color:var(--text-light)">${a?a.name:'—'}</span>
         </div>
         <button class="btn sm primary" onclick="applyTemplate('${tmpl.id}')">Apply ↗</button>
@@ -4572,7 +4816,7 @@ function onGlobalSearch(input){
       icon:t.type==='deposit'?'💚':'🔴',
       title:highlightMatch(t.payee||'—',q),
       sub:`${t.date} · ${a?a.name:''} · ${t.category||''}`,
-      badge:`<span style="color:${t.deposit?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'Courier New',monospace;font-size:12px">${amt}</span>`,
+      badge:`<span style="color:${t.deposit?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px">${amt}</span>`,
       action:()=>{showPage('transactions');setTimeout(()=>{document.getElementById('tx-search').value=t.payee||'';renderTransactions();},50);}
     });
   });
@@ -4586,7 +4830,7 @@ function onGlobalSearch(input){
       icon:'🏦',
       title:highlightMatch(a.name,q),
       sub:`${a.type} · ${state.transactions.filter(t=>t.account===a.id).length} transactions`,
-      badge:`<span style="color:${bal>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'Courier New',monospace;font-size:12px">${fmt(bal)}</span>`,
+      badge:`<span style="color:${bal>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px">${fmt(bal)}</span>`,
       action:()=>viewAcctTxDash(a.id)
     });
   });
@@ -4601,7 +4845,7 @@ function onGlobalSearch(input){
       icon:'💼',
       title:highlightMatch(f.name,q),
       sub:`Category: ${f.category||'—'} · Goal: ${fmt(f.goal)}`,
-      badge:`<span style="color:${bal>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'Courier New',monospace;font-size:12px">${fmt(bal)}</span>`,
+      badge:`<span style="color:${bal>=0?'var(--teal)':'var(--coral)'};font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px">${fmt(bal)}</span>`,
       action:()=>showPage('funds')
     });
   });
@@ -4774,7 +5018,7 @@ function refreshCategoryPopup(){
   const diff=isIncome?actual-budget:budget-actual;
   const pct=budget>0?Math.min(actual/budget,1):0;
   const over=actual>budget&&budget>0;
-  const mainColor=isIncome?(actual>=budget?'var(--teal)':'var(--amber)'):(over?'var(--coral)':pct>0.8?'var(--amber)':'var(--purple)');
+  const mainColor=isIncome?(actual>=budget?'var(--teal)':'var(--amber)'):(over?'var(--coral)':pct>0.8?'var(--amber)':'var(--blue)');
 
   // Title + subtitle
   document.getElementById('cat-popup-title').textContent=cat.name;
@@ -4785,7 +5029,7 @@ function refreshCategoryPopup(){
   document.getElementById('cat-popup-stats').innerHTML=`
     <div class="stat-card" style="padding:12px 14px">
       <div class="stat-label">Budget</div>
-      <div class="stat-value" style="font-size:17px;color:var(--purple)">${fmt(budget)}</div>
+      <div class="stat-value" style="font-size:17px;color:var(--blue)">${fmt(budget)}</div>
     </div>
     <div class="stat-card" style="padding:12px 14px">
       <div class="stat-label">Actual</div>
@@ -4803,7 +5047,7 @@ function refreshCategoryPopup(){
   const dashArray=pct*circumference;
   const trackColor='rgba(255,255,255,0.07)';
   // resolve CSS vars to hex for SVG
-  const colorMap={'var(--teal)':'#34D399','var(--coral)':'#F87171','var(--amber)':'#FBBF24','var(--purple)':'#38BDF8'};
+  const colorMap={'var(--teal)':'#34D399','var(--coral)':'#F87171','var(--amber)':'#FBBF24','var(--blue)':'#38BDF8'};
   const resolvedColor=colorMap[mainColor]||'#38BDF8';
   document.getElementById('cat-donut-svg').innerHTML=`
     <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${trackColor}" stroke-width="${stroke}"/>
@@ -4822,16 +5066,16 @@ function refreshCategoryPopup(){
     <div style="display:flex;flex-direction:column;gap:8px">
       <div style="display:flex;justify-content:space-between;font-size:12px">
         <span style="color:var(--text-mid)">Budgeted</span>
-        <span style="font-family:'Courier New',monospace;font-weight:600">${fmt(budget)}</span>
+        <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:600">${fmt(budget)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:12px">
         <span style="color:var(--text-mid)">Spent / Received</span>
-        <span style="font-family:'Courier New',monospace;font-weight:600;color:${mainColor}">${fmt(actual)}</span>
+        <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:600;color:${mainColor}">${fmt(actual)}</span>
       </div>
       <div style="height:1px;background:var(--border-solid)"></div>
       <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700">
         <span>${diff>=0?'Remaining':'Over budget'}</span>
-        <span style="font-family:'Courier New',monospace;color:${diff>=0?'var(--teal)':'var(--coral)'}">${diff>=0?'+':'−'}${fmt(Math.abs(diff))}</span>
+        <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${diff>=0?'var(--teal)':'var(--coral)'}">${diff>=0?'+':'−'}${fmt(Math.abs(diff))}</span>
       </div>
       ${budget>0?`
       <div style="margin-top:4px">
@@ -4895,10 +5139,10 @@ function refreshCategoryPopup(){
         const a=getAcct(t.account);
         const amt=isIncome?t.deposit:t.payment;
         return `<tr style="border-top:1px solid var(--border-solid);${i%2===0?'background:rgba(255,255,255,0.02)':''}">
-          <td style="padding:7px 10px;font-family:'Courier New',monospace;font-size:11px">${t.date}</td>
+          <td style="padding:7px 10px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px">${t.date}</td>
           <td style="padding:7px 10px;font-weight:500">${t.payee||'—'}</td>
           <td style="padding:7px 10px;font-size:11px;color:var(--text-mid)">${a?a.name:''}</td>
-          <td style="padding:7px 10px;text-align:right;font-family:'Courier New',monospace;font-weight:700;color:${isIncome?'var(--teal)':'var(--coral)'}">${fmt(amt)}</td>
+          <td style="padding:7px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:${isIncome?'var(--teal)':'var(--coral)'}">${fmt(amt)}</td>
         </tr>`;
       }).join('')}
     </table>`;
@@ -4934,7 +5178,7 @@ function renderRRAccountList(){
     const a=getAcct(rule.triggerAccount);
     const btn=document.createElement('button');
     const isActive=_rrSelectedAccount===rule.triggerAccount;
-    btn.style.cssText=`width:100%;text-align:left;padding:8px 10px;border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;background:${isActive?'var(--purple)':'transparent'};color:${isActive?'#fff':'var(--text)'};margin-bottom:3px`;
+    btn.style.cssText=`width:100%;text-align:left;padding:8px 10px;border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;background:${isActive?'var(--blue)':'transparent'};color:${isActive?'#fff':'var(--text)'};margin-bottom:3px`;
     btn.innerHTML=`<div>${a?a.name:'Unknown'}</div><div style="font-size:10px;font-weight:400;opacity:.7;margin-top:1px">${rule.splits.length} fund${rule.splits.length!==1?'s':''} · ${rule.splits.reduce((s,r)=>s+r.pct,0)}%</div>`;
     btn.onclick=()=>{_rrSelectedAccount=rule.triggerAccount;renderRRAccountList();renderRREditor();};
     list.appendChild(btn);
@@ -4996,7 +5240,7 @@ function renderRREditor(){
       <button class="btn sm primary" onclick="addReplenishRule()" style="flex-shrink:0">＋</button>
     </div>
     <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:12px">
-      <span style="color:var(--text-mid)">Total: <b id="rr-total-pct" style="font-family:'Courier New',monospace;color:${totalColor}">${total}%</b></span>
+      <span style="color:var(--text-mid)">Total: <b id="rr-total-pct" style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${totalColor}">${total}%</b></span>
       <button class="btn sm primary" onclick="saveCurrentRRAccount()">Save</button>
     </div>
     <div id="rr-warning" style="display:none;margin-top:6px;padding:7px 10px;background:var(--coral-light);border-radius:7px;font-size:11px;color:var(--coral);font-weight:600"></div>
@@ -5126,7 +5370,7 @@ function openReplenishPreview(tx){
               ${s.fundName}
             </td>
             <td style="padding:9px 10px;text-align:center;color:var(--text-mid)">${s.pct}%</td>
-            <td style="padding:9px 10px;text-align:right;font-family:'Courier New',monospace;font-weight:700;color:var(--teal)">+${fmt(s.amount)}</td>
+            <td style="padding:9px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:var(--teal)">+${fmt(s.amount)}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -5139,15 +5383,15 @@ function openReplenishPreview(tx){
   document.getElementById('rp-summary').innerHTML=`
     <div style="display:flex;justify-content:space-between;margin-bottom:6px">
       <span style="color:var(--text-mid)">Total deposit</span>
-      <span style="font-family:'Courier New',monospace;font-weight:700">${fmt(_pendingReplenish.depositAmount)}</span>
+      <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700">${fmt(_pendingReplenish.depositAmount)}</span>
     </div>
     <div style="display:flex;justify-content:space-between;margin-bottom:6px">
       <span style="color:var(--text-mid)">Allocated to funds</span>
-      <span style="font-family:'Courier New',monospace;font-weight:700;color:var(--teal)">${fmt(total)}</span>
+      <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:var(--teal)">${fmt(total)}</span>
     </div>
     <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border-solid)">
       <span style="font-weight:600">${unalloc>=0?'Unallocated remainder':'Over-allocated'}</span>
-      <span style="font-family:'Courier New',monospace;font-weight:700;color:${unalloc>=0?'var(--text-mid)':'var(--coral)'}">${fmt(Math.abs(unalloc))}</span>
+      <span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-weight:700;color:${unalloc>=0?'var(--text-mid)':'var(--coral)'}">${fmt(Math.abs(unalloc))}</span>
     </div>
   `;
 
@@ -5225,14 +5469,14 @@ function exportPDF(){
     const bal=runBals[tx.account];
     const rowBg=i%2===0?'#F8F9FA':'#fff';
     return `<tr style="background:${rowBg};border-bottom:1px solid #E5E7EB">
-      <td style="padding:7px 10px;font-family:'Courier New',monospace;font-size:11px;white-space:nowrap">${tx.date}</td>
-      <td style="padding:7px 10px;font-family:'Courier New',monospace;font-size:11px;color:#6B7280">${tx.num||''}</td>
+      <td style="padding:7px 10px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px;white-space:nowrap">${tx.date}</td>
+      <td style="padding:7px 10px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px;color:#6B7280">${tx.num||''}</td>
       <td style="padding:7px 10px;font-size:12px;color:#374151">${a?a.name:''}</td>
       <td style="padding:7px 10px;font-size:12px;font-weight:500">${tx.payee||'—'}</td>
       <td style="padding:7px 10px;font-size:11px;color:#6B7280">${tx.category||''}</td>
-      <td style="padding:7px 10px;text-align:right;font-family:'Courier New',monospace;font-size:11px;color:#DC2626">${tx.payment?'-$'+tx.payment.toFixed(2):''}</td>
-      <td style="padding:7px 10px;text-align:right;font-family:'Courier New',monospace;font-size:11px;color:#059669">${tx.deposit?'+$'+tx.deposit.toFixed(2):''}</td>
-      <td style="padding:7px 10px;text-align:right;font-family:'Courier New',monospace;font-size:11px;font-weight:700;color:${bal>=0?'#059669':'#DC2626'}">$${bal.toFixed(2)}</td>
+      <td style="padding:7px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px;color:#DC2626">${tx.payment?'-$'+tx.payment.toFixed(2):''}</td>
+      <td style="padding:7px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px;color:#059669">${tx.deposit?'+$'+tx.deposit.toFixed(2):''}</td>
+      <td style="padding:7px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;color:${bal>=0?'#059669':'#DC2626'}">$${bal.toFixed(2)}</td>
     </tr>`;
   }).join('');
 
@@ -5243,7 +5487,7 @@ function exportPDF(){
     return `<tr style="border-bottom:1px solid #E5E7EB">
       <td style="padding:6px 10px;font-size:12px;font-weight:500">${a.name}</td>
       <td style="padding:6px 10px;font-size:11px;color:#6B7280;text-transform:capitalize">${a.type}</td>
-      <td style="padding:6px 10px;text-align:right;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:${bal>=0?'#059669':'#DC2626'}">$${bal.toFixed(2)}</td>
+      <td style="padding:6px 10px;text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;font-weight:700;color:${bal>=0?'#059669':'#DC2626'}">$${bal.toFixed(2)}</td>
     </tr>`;
   }).join('');
 
@@ -5261,7 +5505,7 @@ function exportPDF(){
   <title>${fileName}</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Times New Roman',Times,serif;color:#111;background:#fff;padding:32px;max-width:900px;margin:0 auto;font-size:13px}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#111;background:#fff;padding:32px;max-width:900px;margin:0 auto;font-size:13px}
     @page{margin:20mm;size:letter}
     @media print{
       body{padding:0}
@@ -5280,7 +5524,7 @@ function exportPDF(){
     .summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
     .summary-card{background:#F8FAFF;border:1px solid #DBEAFE;border-radius:8px;padding:12px 14px;border-left:3px solid #0F4C75}
     .summary-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6B7280;margin-bottom:4px}
-    .summary-value{font-size:18px;font-weight:700;font-family:'Courier New',monospace}
+    .summary-value{font-size:18px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
     .summary-value.pos{color:#059669}
     .summary-value.neg{color:#DC2626}
     .summary-value.blue{color:#0F4C75}
@@ -5293,7 +5537,7 @@ function exportPDF(){
     thead th{background:#0F4C75;color:#fff;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
     thead th:last-child,thead th:nth-last-child(2),thead th:nth-last-child(3){text-align:right}
     tfoot td{background:#F3F4F6;padding:9px 10px;font-weight:700;font-size:12px;border-top:2px solid #0F4C75}
-    tfoot td:last-child,tfoot td:nth-last-child(2),tfoot td:nth-last-child(3){text-align:right;font-family:'Courier New',monospace}
+    tfoot td:last-child,tfoot td:nth-last-child(2),tfoot td:nth-last-child(3){text-align:right;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace}
 
     /* Footer */
     .doc-footer{border-top:1px solid #E5E7EB;padding-top:12px;margin-top:8px;display:flex;justify-content:space-between;font-size:10px;color:#9CA3AF}
@@ -5311,7 +5555,7 @@ function exportPDF(){
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Meridian">
   <meta name="theme-color" content="#0F4C75">
-  <link rel="apple-touch-icon" href="icon-101.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
@@ -5495,7 +5739,7 @@ function toggleSyncInstructions(){
 function showSyncStatus(msg,type){
   const el=document.getElementById('sync-status-area');
   el.style.display='block';
-  const colors={success:'var(--teal)',error:'var(--coral)',info:'var(--purple)',loading:'var(--amber)'};
+  const colors={success:'var(--teal)',error:'var(--coral)',info:'var(--blue)',loading:'var(--amber)'};
   const icons={success:'✓',error:'✗',info:'ℹ',loading:'⟳'};
   el.innerHTML=`<span style="color:${colors[type]||'var(--text)'};font-weight:600">${icons[type]||''} ${msg}</span>`;
 }
@@ -5716,7 +5960,7 @@ function renderDashboard(){
         <div style="flex:1;min-width:0">
           <div style="display:flex;justify-content:space-between;margin-bottom:3px">
             <span style="font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.name}</span>
-            <span style="font-size:12px;font-weight:700;font-family:'Courier New',monospace;color:${col};margin-left:8px;flex-shrink:0">${fmt(bal)}</span>
+            <span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${col};margin-left:8px;flex-shrink:0">${fmt(bal)}</span>
           </div>
           <div class="prog-track"><div class="prog-fill" style="width:${pct*100}%;background:${col}"></div></div>
         </div>
@@ -5739,13 +5983,13 @@ function renderDashboard(){
     fundEl.innerHTML=fundData.slice(0,6).map(({f,bal,spent,goal,pctUsed})=>{
       const over=goal>0&&spent>goal;
       const warn=goal>0&&pctUsed>.8&&!over;
-      const dotColor=over?'var(--coral)':warn?'var(--amber)':'var(--purple)';
+      const dotColor=over?'var(--coral)':warn?'var(--amber)':'var(--blue)';
       return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
         <div style="width:8px;height:8px;border-radius:2px;background:${dotColor};flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
           <div style="display:flex;justify-content:space-between;margin-bottom:3px">
             <span style="font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" onclick="showPage('funds')">${f.name}</span>
-            <span style="font-size:12px;font-family:'Courier New',monospace;color:${bal>=0?'var(--teal)':'var(--coral)'};margin-left:8px;flex-shrink:0">${fmt(bal)}</span>
+            <span style="font-size:12px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${bal>=0?'var(--teal)':'var(--coral)'};margin-left:8px;flex-shrink:0">${fmt(bal)}</span>
           </div>
           ${goal>0?`<div class="prog-track"><div class="prog-fill" style="width:${Math.min(1,pctUsed)*100}%;background:${dotColor}"></div></div>`:''}
         </div>
@@ -5802,7 +6046,7 @@ function renderDashboard(){
         <div style="flex:1;min-width:0">
           <div style="display:flex;justify-content:space-between;margin-bottom:3px">
             <span style="font-size:11px;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cat.name}</span>
-            <span style="font-size:11px;font-family:'Courier New',monospace;color:${diff>=0?'var(--teal)':'var(--coral)'};margin-left:8px;flex-shrink:0">${diff>=0?'+':''}${fmt(diff)}</span>
+            <span style="font-size:11px;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${diff>=0?'var(--teal)':'var(--coral)'};margin-left:8px;flex-shrink:0">${diff>=0?'+':''}${fmt(diff)}</span>
           </div>
           ${budg>0?`<div class="prog-track"><div class="prog-fill" style="width:${pct*100}%;background:${barColor}"></div></div>`:''}
         </div>
@@ -5832,14 +6076,14 @@ function renderDashboard(){
       const a=getAcct(tx.account);
       const isTransfer=tx.type==='transfer';
       const amt=tx.deposit>0?tx.deposit:tx.payment;
-      const col=isTransfer?'var(--purple)':tx.deposit>0?'var(--teal)':'var(--coral)';
+      const col=isTransfer?'var(--blue)':tx.deposit>0?'var(--teal)':'var(--coral)';
       const sign=isTransfer?'⇄':tx.deposit>0?'+':'-';
       return`<tr${isTransfer?' class="transfer-row"':''}>
         <td><span class="cell read-only muted">${tx.date}</span></td>
         <td><span class="cell read-only">${a?a.name:''}</span></td>
         <td><span class="cell read-only">${tx.payee||'—'}</span></td>
         <td><span class="cell read-only muted">${tx.category||''}</span></td>
-        <td style="text-align:right;padding-right:12px"><span style="font-family:'Courier New',monospace;font-size:12px;font-weight:600;color:${col}">${sign}${fmt(amt)}</span></td>
+        <td style="text-align:right;padding-right:12px"><span style="font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;font-size:12px;font-weight:600;color:${col}">${sign}${fmt(amt)}</span></td>
       </tr>`;
     }).join('');
   }
@@ -5890,8 +6134,8 @@ function renderMobileHome(){
       const bal=acctBalance(a.id);
       const isDebt=a.type==='credit'||a.type==='loan';
       const col=isDebt?(bal<0?'var(--coral)':'var(--teal)'):(bal>=0?'var(--teal)':'var(--coral)');
-      return`<div class="m-account-card"><div><div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div><div style="font-size:11px;color:var(--text-light);text-transform:capitalize">${a.type}</div></div><div style="font-size:17px;font-weight:700;font-family:'Courier New',monospace;color:${col}">${fmt(bal)}</div></div>`;
-    }).join('')+(state.accounts.length>4?`<div onclick="setMobileTab('more');renderMobileMore()" style="text-align:center;padding:10px;font-size:12px;color:var(--purple);cursor:pointer">All ${state.accounts.length} accounts →</div>`:'');
+      return`<div class="m-account-card"><div><div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div><div style="font-size:11px;color:var(--text-light);text-transform:capitalize">${a.type}</div></div><div style="font-size:17px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${col}">${fmt(bal)}</div></div>`;
+    }).join('')+(state.accounts.length>4?`<div onclick="setMobileTab('more');renderMobileMore()" style="text-align:center;padding:10px;font-size:12px;color:var(--blue);cursor:pointer">All ${state.accounts.length} accounts →</div>`:'');
   }
   // Recent 5 transactions
   const recEl=el('m-recent-list');
@@ -5921,7 +6165,7 @@ function mTxCard(t){
   const a=getAcct(t.account);
   const isDeposit=t.deposit>0;
   const amt=isDeposit?t.deposit:t.payment;
-  const color=t.type==='transfer'?'var(--purple)':isDeposit?'var(--teal)':'var(--coral)';
+  const color=t.type==='transfer'?'var(--blue)':isDeposit?'var(--teal)':'var(--coral)';
   const sign=t.type==='transfer'?'⇄':isDeposit?'+':'-';
   const leftBorder=t.postedOnMobile?'border-left:3px solid var(--teal);':'';
   return`<div class="m-tx-card" style="${leftBorder}" onclick="openMobileTxDetail('${t.id}')">
@@ -5930,7 +6174,7 @@ function mTxCard(t){
       <div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.payee||'—'}</div>
       <div style="font-size:11px;color:var(--text-light);margin-top:2px">${t.date}${t.category?' · '+t.category:''}${t.memo?' · <em>'+t.memo+'</em>':''}</div>
     </div>
-    <div style="font-size:15px;font-weight:700;font-family:'Courier New',monospace;color:${color};flex-shrink:0">${sign}${fmt(amt)}</div>
+    <div style="font-size:15px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${color};flex-shrink:0">${sign}${fmt(amt)}</div>
   </div>`;
 }
 
@@ -5939,7 +6183,7 @@ function openMobileTxDetail(txId){
   const a=getAcct(tx.account);
   const isDeposit=tx.deposit>0;
   const amt=isDeposit?tx.deposit:tx.payment;
-  const color=tx.type==='transfer'?'var(--purple)':isDeposit?'var(--teal)':'var(--coral)';
+  const color=tx.type==='transfer'?'var(--blue)':isDeposit?'var(--teal)':'var(--coral)';
   const existing=document.getElementById('m-tx-detail-modal');
   if(existing)existing.remove();
   const modal=document.createElement('div');
@@ -5950,7 +6194,7 @@ function openMobileTxDetail(txId){
       <div style="font-size:16px;font-weight:700">${tx.payee||'Transaction'}</div>
       <button onclick="document.getElementById('m-tx-detail-modal').remove()" style="background:none;border:none;font-size:22px;color:var(--text-light);cursor:pointer;padding:4px">✕</button>
     </div>
-    <div style="font-size:30px;font-weight:700;font-family:'Courier New',monospace;color:${color};text-align:center;margin-bottom:18px">${isDeposit?'+':'-'}${fmt(amt)}</div>
+    <div style="font-size:30px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${color};text-align:center;margin-bottom:18px">${isDeposit?'+':'-'}${fmt(amt)}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;font-size:12px">
       <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px"><div style="color:var(--text-light)">Date</div><div style="font-weight:600;margin-top:3px">${tx.date}</div></div>
       <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px"><div style="color:var(--text-light)">Account</div><div style="font-weight:600;margin-top:3px">${a?a.name:'—'}</div></div>
@@ -5998,9 +6242,9 @@ function renderMobileTransactions(){
   const expenses=nonTx.reduce((s,t)=>s+t.payment,0);
   const statsEl=document.getElementById('m-tx-stats');
   if(statsEl)statsEl.innerHTML=`
-    <div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.25);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--teal)">Income</div><div style="font-size:16px;font-weight:700;color:var(--teal);font-family:'Courier New',monospace;margin-top:3px">${fmt(income)}</div></div>
-    <div style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--coral)">Expenses</div><div style="font-size:16px;font-weight:700;color:var(--coral);font-family:'Courier New',monospace;margin-top:3px">${fmt(expenses)}</div></div>
-    <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--purple)">Net</div><div style="font-size:16px;font-weight:700;color:${income>=expenses?'var(--teal)':'var(--coral)'};font-family:'Courier New',monospace;margin-top:3px">${fmt(income-expenses)}</div></div>`;
+    <div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.25);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--teal)">Income</div><div style="font-size:16px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;margin-top:3px">${fmt(income)}</div></div>
+    <div style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--coral)">Expenses</div><div style="font-size:16px;font-weight:700;color:var(--coral);font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;margin-top:3px">${fmt(expenses)}</div></div>
+    <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:10px 12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--blue)">Net</div><div style="font-size:16px;font-weight:700;color:${income>=expenses?'var(--teal)':'var(--coral)'};font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;margin-top:3px">${fmt(income-expenses)}</div></div>`;
   const listEl=document.getElementById('m-tx-list');
   if(listEl)listEl.innerHTML=txs.length?txs.map(t=>mTxCard(t)).join(''):'<div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px">No transactions found</div>';
 }
@@ -6014,7 +6258,7 @@ function renderMobileFunds(){
     const bal=fundBalanceWithContribs(f.id,'','');
     const goal=f.goal||0;
     const pct=goal>0?Math.min(1,Math.max(0,bal/goal)):0;
-    const color=bal<0?'var(--coral)':pct>=1?'var(--teal)':pct>.6?'var(--amber)':'var(--purple)';
+    const color=bal<0?'var(--coral)':pct>=1?'var(--teal)':pct>.6?'var(--amber)':'var(--blue)';
     const acctTotals={};
     state.transactions.filter(t=>txBelongsToFund(t,f.id)&&!isIntraFundTransfer(t)).forEach(t=>{if(!acctTotals[t.account])acctTotals[t.account]=0;acctTotals[t.account]+=t.deposit-t.payment;});
     (state.contributions||[]).filter(c=>c.fundId===f.id&&c.acctId&&c.type!=='fund-transfer').forEach(c=>{if(!acctTotals[c.acctId])acctTotals[c.acctId]=0;acctTotals[c.acctId]+=c.amount;});
@@ -6025,7 +6269,7 @@ function renderMobileFunds(){
     return`<div class="m-fund-card">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
         <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;color:var(--text)">${f.name}</div>${f.category?`<div style="font-size:11px;color:var(--text-light);margin-top:2px">${f.category}</div>`:''}</div>
-        <div style="text-align:right;margin-left:12px"><div style="font-size:20px;font-weight:700;font-family:'Courier New',monospace;color:${color}">${fmt(bal)}</div>${goal>0?`<div style="font-size:10px;color:var(--text-light)">of ${fmt(goal)}</div>`:''}</div>
+        <div style="text-align:right;margin-left:12px"><div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${color}">${fmt(bal)}</div>${goal>0?`<div style="font-size:10px;color:var(--text-light)">of ${fmt(goal)}</div>`:''}</div>
       </div>
       ${goal>0?`<div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:${pills?'10px':'0'}"><div style="height:100%;width:${pct*100}%;background:${color};border-radius:3px"></div></div>`:''}
       ${pills?`<div style="display:flex;flex-wrap:wrap;gap:5px">${pills}</div>`:''}
@@ -6058,12 +6302,12 @@ function renderMobileBudget(){
   if(sumEl)sumEl.innerHTML=`
     <div style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:10px;padding:12px">
       <div style="font-size:10px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.08em">Income</div>
-      <div style="font-size:20px;font-weight:700;font-family:'Courier New',monospace;color:var(--teal);margin-top:4px">${fmt(tIA)}</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--teal);margin-top:4px">${fmt(tIA)}</div>
       <div style="font-size:11px;color:var(--text-light);margin-top:2px">of ${fmt(tIB)} budgeted</div>
     </div>
     <div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:12px">
       <div style="font-size:10px;color:var(--coral);font-weight:700;text-transform:uppercase;letter-spacing:.08em">Expenses</div>
-      <div style="font-size:20px;font-weight:700;font-family:'Courier New',monospace;color:var(--coral);margin-top:4px">${fmt(tEA)}</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:var(--coral);margin-top:4px">${fmt(tEA)}</div>
       <div style="font-size:11px;color:var(--text-light);margin-top:2px">of ${fmt(tEB)} budgeted</div>
     </div>`;
 
@@ -6087,7 +6331,7 @@ function renderMobileBudget(){
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${budg>0?'6px':'0'}">
           <div style="font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:0;margin-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cat.name}</div>
           <div style="text-align:right;flex-shrink:0">
-            <div style="font-size:14px;font-weight:700;font-family:'Courier New',monospace;color:${barCol}">${fmt(actual)}</div>
+            <div style="font-size:14px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${barCol}">${fmt(actual)}</div>
             ${budg>0?`<div style="font-size:10px;color:${diff>=0?'var(--teal)':'var(--coral)'}">${diff>=0?'+':''}${fmt(diff)}</div>`:''}
           </div>
         </div>
@@ -6123,7 +6367,7 @@ function renderMobileRecurring(){
             <div style="font-size:11px;color:var(--text-light);margin-top:3px">${a?a.name:''} · ${freqLabel(r)}</div>
             <div style="font-size:11px;color:var(--coral);margin-top:2px">Due: ${r.nextDue}</div>
           </div>
-          <div style="font-size:20px;font-weight:700;font-family:'Courier New',monospace;color:${col};margin-left:12px">${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
+          <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${col};margin-left:12px">${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
         </div>
         <button onclick="postRecurringMobile('${r.id}')" style="width:100%;padding:13px;background:var(--coral);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">Post to Ledger</button>
       </div>`;
@@ -6140,7 +6384,7 @@ function renderMobileRecurring(){
           <div style="font-size:14px;font-weight:600;color:var(--text)">${r.payee}</div>
           <div style="font-size:11px;color:var(--text-light);margin-top:2px">${a?a.name:''} · ${freqLabel(r)} · Next: ${r.nextDue}</div>
         </div>
-        <div style="font-size:15px;font-weight:700;font-family:'Courier New',monospace;color:${col};flex-shrink:0">${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
+        <div style="font-size:15px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${col};flex-shrink:0">${r.type==='payment'?'-':'+'} ${fmt(r.amount)}</div>
       </div>`;
     });
   }
@@ -6176,7 +6420,7 @@ function renderMobileMore(){
     const bal=acctBalance(a.id);
     const isDebt=a.type==='credit'||a.type==='loan';
     const col=isDebt?(bal<0?'var(--coral)':'var(--teal)'):(bal>=0?'var(--teal)':'var(--coral)');
-    return`<div class="m-account-card"><div><div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div><div style="font-size:11px;color:var(--text-light);text-transform:capitalize">${a.type}</div></div><div style="font-size:17px;font-weight:700;font-family:'Courier New',monospace;color:${col}">${fmt(bal)}</div></div>`;
+    return`<div class="m-account-card"><div><div style="font-size:14px;font-weight:600;color:var(--text)">${a.name}</div><div style="font-size:11px;color:var(--text-light);text-transform:capitalize">${a.type}</div></div><div style="font-size:17px;font-weight:700;font-family:'JetBrains Mono','JetBrains Mono','Courier New',monospace;color:${col}">${fmt(bal)}</div></div>`;
   }).join('')||'<div style="text-align:center;padding:20px;color:var(--text-light)">No accounts yet</div>';
 }
 
