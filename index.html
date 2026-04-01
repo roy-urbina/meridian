@@ -125,7 +125,7 @@ body{
 .nav-item.active .nav-badge{background:rgba(255,255,255,0.25);color:#fff}
 
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:24px 28px}
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;padding:24px 28px;overflow-y:auto}
 .page{display:none;animation:pageIn .2s ease}
 .page.active{display:block}
 @keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -206,7 +206,7 @@ body{
   flex-wrap:wrap;
 }
 .sheet-label{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em}
-.sheet-scroll{overflow-x:auto;overflow-y:auto;max-height:520px}
+.sheet-scroll{overflow-x:auto;overflow-y:visible}
 .sheet-scroll::-webkit-scrollbar{width:5px;height:5px}
 .sheet-scroll::-webkit-scrollbar-track{background:transparent}
 .sheet-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
@@ -638,6 +638,26 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
 @media (max-width: 768px) {
   .toast { left: 16px !important; right: 16px !important; bottom: 82px !important; text-align: center !important; }
 }
+
+.ob-step-dot{flex:1;height:4px;border-radius:2px;background:var(--border-solid);transition:background .3s}
+.ob-step-dot.active{background:var(--blue)}
+.ob-step-dot.done{background:var(--green)}
+.ob-card{background:var(--surface-3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px}
+.ob-field{margin-bottom:12px}
+.ob-field label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mid);margin-bottom:5px}
+.ob-field input,.ob-field select{width:100%;padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1)}
+.ob-field input:focus,.ob-field select:focus{outline:none;border-color:var(--blue);background:rgba(14,165,233,0.06)}
+.ob-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ob-acct-row{display:grid;grid-template-columns:1fr 120px 110px 28px;gap:8px;align-items:center;margin-bottom:8px}
+.ob-budget-row{display:grid;grid-template-columns:1fr 130px 70px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.ob-budget-row:last-child{border-bottom:none}
+.ob-add-btn{background:none;border:1px dashed var(--border-solid);color:var(--text-mid);font-family:inherit;font-size:12px;padding:8px 16px;border-radius:var(--radius-xs);cursor:pointer;width:100%;margin-top:8px}
+.ob-add-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ob-del-btn{background:none;border:none;color:var(--text-light);font-size:16px;cursor:pointer;padding:0;line-height:1}
+.ob-del-btn:hover{color:var(--red)}
+.ob-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin:16px 0 8px}
+.ob-section-title:first-child{margin-top:0}
+
 </style>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -861,6 +881,10 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
       <span style="color:rgba(255,255,255,0.35);font-weight:600">T</span> templates &nbsp;
       <span style="color:rgba(255,255,255,0.35);font-weight:600">/</span> search
     </div>
+    <button onclick="openSetupAuth()" style="width:100%;display:flex;align-items:center;gap:8px;padding:7px 12px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;font-family:inherit;font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;transition:all .15s" onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.55)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.3)'">
+      <span style="font-size:12px">⚙</span>
+      <span>Setup Wizard</span>
+    </button>
   </div>
 </nav>
 
@@ -1248,7 +1272,22 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
   <div class="page" id="page-reports">
     <div class="page-header">
       <div class="page-heading"><h1>Reports</h1><p>Trends, account balances, and transaction statements</p></div>
-      <button class="btn primary" onclick="exportPDF()">⬇ Export PDF</button>
+      <div class="btn-row">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--surface-3);border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:4px 6px">
+          <button class="btn sm ghost" onclick="shiftReportMonth(-1)" style="padding:4px 8px">‹</button>
+          <span id="report-month-label" style="font-size:12px;font-weight:600;color:var(--text);min-width:100px;text-align:center;cursor:pointer" onclick="document.getElementById('report-month-picker').showPicker?.() || document.getElementById('report-month-picker').click()"></span>
+          <button class="btn sm ghost" onclick="shiftReportMonth(1)" style="padding:4px 8px">›</button>
+          <input type="month" id="report-month-picker" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" onchange="setReportMonth(this.value)">
+        </div>
+        <select id="report-range" onchange="setReportRange(this.value)" style="border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:6px 10px;font-family:inherit;font-size:12px;background:var(--surface-2);color:var(--text)">
+          <option value="month">This Month</option>
+          <option value="quarter">Last 3 Months</option>
+          <option value="half">Last 6 Months</option>
+          <option value="year">This Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+        <button class="btn primary" onclick="exportPDF()">⬇ Export PDF</button>
+      </div>
     </div>
     <!-- Trend chart -->
     <div class="dash-card" style="margin-bottom:16px">
@@ -1278,7 +1317,7 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
           <input type="date" id="stmt-from" onchange="localStorage.setItem('flair_stmt_from',this.value);renderReports()" style="border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:6px 10px;font-family:inherit;font-size:12px;background:var(--surface-2);color:var(--text)">
           <span style="font-size:12px;color:var(--text-light)">to</span>
           <input type="date" id="stmt-to" onchange="localStorage.setItem('flair_stmt_to',this.value);renderReports()" style="border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:6px 10px;font-family:inherit;font-size:12px;background:var(--surface-2);color:var(--text)">
-          <button class="btn sm ghost" onclick="clearStmtFilter()">Clear</button>
+
         </div>
       </div>
       <div id="print-meta" style="font-size:11px;color:var(--text-light);margin-bottom:10px"></div>
@@ -1868,7 +1907,69 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
 <div class="toast" id="toast"></div>
 
 
+<!-- ═══ SETUP AUTH MODAL ═══ -->
+<div id="setup-auth-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--surface-2);border:1px solid var(--border-solid);border-radius:16px;padding:28px;width:90%;max-width:360px;box-shadow:0 24px 60px rgba(0,0,0,0.7)">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px;margin-bottom:10px">🔒</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">Setup Wizard</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.6">Enter your password to open the setup wizard.<br>Your existing data will <b style="color:var(--text)">not</b> be changed unless you save.</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <input id="setup-auth-input" type="password" placeholder="Password"
+        onkeydown="if(event.key==='Enter')checkSetupAuth();if(event.key==='Escape')closeSetupAuth()"
+        style="width:100%;padding:11px 14px;border:1.5px solid var(--border-solid);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface-1);text-align:center;letter-spacing:4px;box-sizing:border-box">
+      <div id="setup-auth-error" style="display:none;color:var(--red);font-size:12px;text-align:center;margin-top:8px;font-weight:500">Incorrect password. Try again.</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeSetupAuth()" style="flex:1;padding:10px;background:var(--surface-3);border:1px solid var(--border-solid);border-radius:var(--radius-sm);color:var(--text-mid);font-family:inherit;font-size:13px;cursor:pointer">Cancel</button>
+      <button onclick="checkSetupAuth()" style="flex:1;padding:10px;background:linear-gradient(135deg,#0369A1,#0EA5E9);border:none;border-radius:var(--radius-sm);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Unlock</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>`);
+  win.document.close();
+}
+
+
+<!-- ═══ ONBOARDING WIZARD ═══ -->
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--surface-2);border:1px solid var(--border-solid);border-radius:20px;width:90%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.7);overflow:hidden">
+    <div style="padding:24px 28px 0;flex-shrink:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px;background:linear-gradient(135deg,#0369A1,#0EA5E9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;font-family:'Inter',sans-serif">M</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text)">Welcome to Meridian</div>
+        </div>
+        <button onclick="skipOnboarding()" style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;font-family:inherit;padding:4px 8px;border-radius:6px">Skip setup</button>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:16px">
+        <div class="ob-step-dot" id="ob-dot-0"></div>
+        <div class="ob-step-dot" id="ob-dot-1"></div>
+        <div class="ob-step-dot" id="ob-dot-2"></div>
+        <div class="ob-step-dot" id="ob-dot-3"></div>
+        <div class="ob-step-dot" id="ob-dot-4"></div>
+      </div>
+      <div style="height:1px;background:var(--border);margin-top:16px"></div>
+    </div>
+    <div id="onboarding-body" style="flex:1;overflow-y:auto;padding:24px 28px;scrollbar-width:thin"></div>
+    <div style="padding:16px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--surface-1)">
+      <button id="ob-back-btn" onclick="obBack()" style="background:none;border:1px solid var(--border-solid);color:var(--text-mid);font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;display:none">← Back</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+        <span id="ob-step-label" style="font-size:11px;color:var(--text-light)"></span>
+        <button id="ob-next-btn" onclick="obNext()" style="background:linear-gradient(135deg,#0369A1,#0EA5E9);border:none;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:9px 22px;border-radius:var(--radius-sm);cursor:pointer">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
+
+
 
 
 const today=new Date().toISOString().split('T')[0];
@@ -2248,15 +2349,15 @@ function renderTransactions(){
       </td>
       <td><span class="cell" contenteditable="true" data-field="date" data-id="${tx.id}">${tx.date}</span></td>
       <td><span class="cell muted" contenteditable="true" data-field="num" data-id="${tx.id}">${tx.num||''}</span></td>
-      <td class="autocomplete-wrap" style="position:relative">
-        <input class="cell" type="text" data-field="payee" data-id="${tx.id}"
+      <td class="autocomplete-wrap wrap-td" style="position:relative">
+        <input class="cell wrap" type="text" data-field="payee" data-id="${tx.id}"
           value="${(tx.payee||'').replace(/"/g,'&quot;')}"
           autocomplete="off"
           oninput="showPayeeSuggest(this)"
           onkeydown="handleAutoKey(event,this)"
           onblur="hidePayeeSuggest(this,event)"
           onfocus="showPayeeSuggest(this)"
-          style="line-height:normal;padding:0 8px;height:100%">
+          style="line-height:normal;padding:6px 8px;height:auto;min-height:var(--cell-h);white-space:normal;word-break:break-word;width:100%">
       </td>
       <td><span class="cell muted" contenteditable="true" data-field="memo" data-id="${tx.id}">${tx.memo||''}</span></td>
       <td><select class="cell-select" data-field="fund" data-id="${tx.id}" onchange="commitTxSelect(this)">
@@ -2596,6 +2697,28 @@ function renderAccounts(){
 }
 
 /* ═══ FUNDS ═══ */
+function toggleFundActionMenu(){
+  const menu=document.getElementById('fund-action-menu');
+  if(!menu)return;
+  const isOpen=menu.style.display==='block';
+  menu.style.display=isOpen?'none':'block';
+  if(!isOpen){
+    // Close on outside click
+    setTimeout(()=>{
+      document.addEventListener('click',function closeFAM(e){
+        if(!document.getElementById('fund-action-wrap')?.contains(e.target)){
+          menu.style.display='none';
+          document.removeEventListener('click',closeFAM);
+        }
+      });
+    },10);
+  }
+}
+function closeFundActionMenu(){
+  const menu=document.getElementById('fund-action-menu');
+  if(menu)menu.style.display='none';
+}
+
 function clearFundFilter(){
   document.getElementById('fund-start').value='';
   document.getElementById('fund-end').value='';
@@ -4201,6 +4324,74 @@ function getLastNMonths(n){
   return months;
 }
 
+let _reportYear=new Date().getFullYear();
+let _reportMonth=new Date().getMonth()+1;
+let _reportRange='month';
+
+function updateReportMonthLabel(){
+  const el=document.getElementById('report-month-label');
+  const picker=document.getElementById('report-month-picker');
+  if(!el)return;
+  const rangeSel=document.getElementById('report-range');
+  const range=rangeSel?rangeSel.value:'month';
+  if(range==='month'){
+    const d=new Date(_reportYear,_reportMonth-1,1);
+    el.textContent=d.toLocaleString('default',{month:'long',year:'numeric'});
+    if(picker)picker.value=`${_reportYear}-${String(_reportMonth).padStart(2,'0')}`;
+  } else if(range==='quarter'){
+    el.textContent='Last 3 Months';
+  } else if(range==='half'){
+    el.textContent='Last 6 Months';
+  } else if(range==='year'){
+    el.textContent=`Year ${_reportYear}`;
+  } else {
+    el.textContent='Custom Range';
+  }
+}
+function shiftReportMonth(dir){
+  _reportMonth+=dir;
+  if(_reportMonth>12){_reportMonth=1;_reportYear++;}
+  if(_reportMonth<1){_reportMonth=12;_reportYear--;}
+  const rangeSel=document.getElementById('report-range');
+  if(rangeSel)rangeSel.value='month';
+  _reportRange='month';
+  updateReportMonthLabel();
+  renderReports();
+}
+function setReportMonth(val){
+  const [y,m]=val.split('-').map(Number);
+  _reportYear=y;_reportMonth=m;
+  const rangeSel=document.getElementById('report-range');
+  if(rangeSel)rangeSel.value='month';
+  _reportRange='month';
+  updateReportMonthLabel();
+  renderReports();
+}
+function setReportRange(val){
+  _reportRange=val;
+  const now=new Date();
+  _reportYear=now.getFullYear();
+  _reportMonth=now.getMonth()+1;
+  updateReportMonthLabel();
+  renderReports();
+}
+function getReportDateRange(){
+  const now=new Date();
+  const yr=_reportYear,mo=_reportMonth;
+  if(_reportRange==='month'){
+    return{s:`${yr}-${String(mo).padStart(2,'0')}-01`,e:`${yr}-${String(mo).padStart(2,'0')}-31`};
+  } else if(_reportRange==='quarter'){
+    const d=new Date(now.getFullYear(),now.getMonth()-2,1);
+    return{s:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`,e:`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-31`};
+  } else if(_reportRange==='half'){
+    const d=new Date(now.getFullYear(),now.getMonth()-5,1);
+    return{s:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`,e:`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-31`};
+  } else if(_reportRange==='year'){
+    return{s:`${now.getFullYear()}-01-01`,e:`${now.getFullYear()}-12-31`};
+  }
+  return{s:'',e:''};
+}
+
 function renderReports(){
   // populate account dropdown — preserve existing selection
   const aSel=document.getElementById('stmt-account');
@@ -5464,9 +5655,7 @@ function exportPDF(){
     <span>Generated ${exportDate}</span>
     <span>${fileName}</span>
   </div>
-
-</body>
-</html>`);
+`);
   win.document.close();
 }
 
@@ -5567,7 +5756,8 @@ function showSyncStatus(msg,type){
   el.style.display='block';
   const colors={success:'var(--green)',error:'var(--red)',info:'var(--blue)',loading:'var(--amber)'};
   const icons={success:'✓',error:'✗',info:'ℹ',loading:'⟳'};
-  el.innerHTML=`<span style="color:${colors[type]||'var(--text)'};font-weight:600">${icons[type]||''} ${msg}</span>`;
+  el.textContent=(icons[type]||'')+' '+msg;
+  el.style.color=colors[type]||'var(--text)';
 }
 
 function updateSyncStatusLabel(){
@@ -6490,6 +6680,328 @@ document.addEventListener('keydown',e=>{
     return;
   }
 });
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ONBOARDING WIZARD — 5 steps
+   Step 0: Welcome
+   Step 1: Add Accounts
+   Step 2: Add Funds
+   Step 3: Set Income Budget
+   Step 4: Set Expense Budget (paginated by group)
+   Step 5: Done
+════════════════════════════════════════════════════════════════ */
+
+const OB_KEY='meridian_onboarding_done';
+let _obStep=0;
+let _obAccounts=[];
+let _obFunds=[];
+let _obBudgetExpenseIdx=0; // which expense group we're on
+
+function shouldShowOnboarding(){
+  return !localStorage.getItem(OB_KEY)&&state.accounts.length===0&&state.transactions.length===0;
+}
+
+function openOnboarding(){
+  _obStep=0;
+  _obAccounts=[{name:'',type:'checking',startBal:''}];
+  _obFunds=[{name:'',goal:'',category:''}];
+  document.getElementById('onboarding-overlay').style.display='flex';
+  renderObStep();
+}
+
+function skipOnboarding(){
+  localStorage.setItem(OB_KEY,'1');
+  document.getElementById('onboarding-overlay').style.display='none';
+}
+
+function obNext(){
+  saveObCurrentStep();
+  if(_obStep<4){
+    _obStep++;
+    renderObStep();
+  } else {
+    finishOnboarding();
+  }
+}
+
+function obBack(){
+  saveObCurrentStep();
+  if(_obStep>0){_obStep--;renderObStep();}
+}
+
+function saveObCurrentStep(){
+  if(_obStep===1){
+    // Save accounts from form
+    _obAccounts=[];
+    document.querySelectorAll('.ob-acct-entry').forEach(row=>{
+      const name=row.querySelector('[data-field="name"]')?.value.trim();
+      const type=row.querySelector('[data-field="type"]')?.value;
+      const bal=row.querySelector('[data-field="bal"]')?.value;
+      if(name)_obAccounts.push({name,type,startBal:parseFloat(bal)||0});
+    });
+  }
+  if(_obStep===2){
+    _obFunds=[];
+    document.querySelectorAll('.ob-fund-entry').forEach(row=>{
+      const name=row.querySelector('[data-field="name"]')?.value.trim();
+      const goal=row.querySelector('[data-field="goal"]')?.value;
+      const cat=row.querySelector('[data-field="cat"]')?.value.trim();
+      if(name)_obFunds.push({name,goal:parseFloat(goal)||0,category:cat});
+    });
+  }
+  if(_obStep===3){
+    // Save income budgets
+    document.querySelectorAll('.ob-budget-input').forEach(inp=>{
+      const catId=inp.dataset.catid;
+      const val=parseFloat(inp.value)||0;
+      const cat=state.budgetCategories.find(b=>b.id===catId);
+      if(cat&&val>0)cat.amount=val;
+    });
+  }
+  if(_obStep===4){
+    // Save expense budgets
+    document.querySelectorAll('.ob-budget-input').forEach(inp=>{
+      const catId=inp.dataset.catid;
+      const val=parseFloat(inp.value)||0;
+      const cat=state.budgetCategories.find(b=>b.id===catId);
+      if(cat&&val>0)cat.amount=val;
+    });
+  }
+}
+
+function renderObStep(){
+  // Update dots
+  for(let i=0;i<5;i++){
+    const dot=document.getElementById('ob-dot-'+i);
+    if(!dot)continue;
+    dot.className='ob-step-dot';
+    if(i<_obStep)dot.classList.add('done');
+    else if(i===_obStep)dot.classList.add('active');
+  }
+  document.getElementById('ob-step-label').textContent=`Step ${_obStep+1} of 5`;
+  document.getElementById('ob-back-btn').style.display=_obStep>0?'block':'none';
+  const nextBtn=document.getElementById('ob-next-btn');
+  nextBtn.textContent=_obStep===4?'Finish & Launch →':'Next →';
+
+  const body=document.getElementById('onboarding-body');
+  if(_obStep===0) body.innerHTML=obStepWelcome();
+  else if(_obStep===1) body.innerHTML=obStepAccounts();
+  else if(_obStep===2) body.innerHTML=obStepFunds();
+  else if(_obStep===3) body.innerHTML=obStepIncomeBudget();
+  else if(_obStep===4) body.innerHTML=obStepExpenseBudget();
+  body.scrollTop=0;
+}
+
+function obStepWelcome(){
+  return`<div style="text-align:center;padding:12px 0">
+    <div style="font-size:48px;margin-bottom:16px">💰</div>
+    <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:10px">Let's set up your finances</div>
+    <div style="font-size:14px;color:var(--text-mid);line-height:1.7;max-width:440px;margin:0 auto">
+      This wizard takes about 5 minutes. You'll set up your <b style="color:var(--text)">accounts</b>, <b style="color:var(--text)">savings funds</b>, and <b style="color:var(--text)">monthly budget</b> — all in one go.<br><br>
+      You can always add or change anything later.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px;text-align:left">
+      <div class="ob-card"><div style="font-size:20px;margin-bottom:6px">🏦</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Accounts</div><div style="font-size:12px;color:var(--text-mid)">Bank accounts, credit cards, loans, and cash</div></div>
+      <div class="ob-card"><div style="font-size:20px;margin-bottom:6px">💼</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Funds</div><div style="font-size:12px;color:var(--text-mid)">Virtual envelopes for earmarked money (emergency, vacation, etc)</div></div>
+      <div class="ob-card"><div style="font-size:20px;margin-bottom:6px">📈</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Income Budget</div><div style="font-size:12px;color:var(--text-mid)">Set your expected monthly income by category</div></div>
+      <div class="ob-card"><div style="font-size:20px;margin-bottom:6px">🎯</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Expense Budget</div><div style="font-size:12px;color:var(--text-mid)">Set spending targets for every category</div></div>
+    </div>
+  </div>`;
+}
+
+function obStepAccounts(){
+  const rows=_obAccounts.map((a,i)=>obAccountRow(a,i)).join('');
+  return`<div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">🏦 Your Accounts</div>
+    <div style="font-size:13px;color:var(--text-mid);margin-bottom:20px">Add every bank account, credit card, and loan. Use the balance from your most recent statement.</div>
+    <div style="display:grid;grid-template-columns:1fr 120px 110px 28px;gap:8px;margin-bottom:4px;padding:0 2px">
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Account Name</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Type</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Current Balance</span>
+      <span></span>
+    </div>
+    <div id="ob-accounts-list">${rows}</div>
+    <button class="ob-add-btn" onclick="obAddAccount()">＋ Add another account</button>
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-xs);font-size:12px;color:var(--text-mid)">
+      💡 <b>Tip:</b> For credit cards and loans, enter a <b>negative</b> balance (e.g. <code style="color:var(--amber)">-1500</code> if you owe $1,500).
+    </div>
+  </div>`;
+}
+
+function obAccountRow(a,i){
+  const types=['checking','savings','cash','credit','loan'];
+  const typeOpts=types.map(t=>`<option value="${t}"${a.type===t?' selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('');
+  return`<div class="ob-acct-row ob-acct-entry" style="margin-bottom:8px">
+    <input type="text" data-field="name" placeholder="e.g. Chase Checking" value="${a.name}" style="padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);width:100%">
+    <select data-field="type" style="padding:9px 8px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);width:100%">${typeOpts}</select>
+    <input type="number" data-field="bal" placeholder="0.00" step="0.01" value="${a.startBal||''}" style="padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);width:100%;font-family:'JetBrains Mono','Courier New',monospace">
+    <button class="ob-del-btn" onclick="this.closest('.ob-acct-entry').remove()" title="Remove">✕</button>
+  </div>`;
+}
+
+function obAddAccount(){
+  const list=document.getElementById('ob-accounts-list');
+  const div=document.createElement('div');
+  div.innerHTML=obAccountRow({name:'',type:'checking',startBal:''},Date.now());
+  list.appendChild(div.firstElementChild);
+}
+
+function obStepFunds(){
+  const rows=_obFunds.map((f,i)=>obFundRow(f,i)).join('');
+  return`<div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">💼 Savings Funds</div>
+    <div style="font-size:13px;color:var(--text-mid);margin-bottom:20px">Funds are virtual envelopes — earmarked money for specific purposes. Great for emergency funds, vacation savings, or any goal. <b style="color:var(--text)">Skip this step if you don't need funds yet.</b></div>
+    <div style="display:grid;grid-template-columns:1fr 110px 1fr 28px;gap:8px;margin-bottom:4px;padding:0 2px">
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Fund Name</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Goal ($)</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Linked Category (optional)</span>
+      <span></span>
+    </div>
+    <div id="ob-funds-list">${rows}</div>
+    <button class="ob-add-btn" onclick="obAddFund()">＋ Add another fund</button>
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.2);border-radius:var(--radius-xs);font-size:12px;color:var(--text-mid)">
+      💡 <b>Examples:</b> Emergency Fund, Vacation 2025, Car Repair, Holiday Gifts
+    </div>
+  </div>`;
+}
+
+function obFundRow(f,i){
+  const cats=state.budgetCategories.map(b=>`<option value="${b.name}"${b.name===f.category?' selected':''}>${b.name.replace(/^\d+ - /,'')}</option>`).join('');
+  return`<div style="display:grid;grid-template-columns:1fr 110px 1fr 28px;gap:8px;align-items:center;margin-bottom:8px" class="ob-fund-entry">
+    <input type="text" data-field="name" placeholder="e.g. Emergency Fund" value="${f.name}" style="padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);width:100%">
+    <input type="number" data-field="goal" placeholder="0" step="0.01" value="${f.goal||''}" style="padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);width:100%;font-family:'JetBrains Mono','Courier New',monospace">
+    <select data-field="cat" style="padding:9px 8px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);width:100%"><option value="">— none —</option>${cats}</select>
+    <button class="ob-del-btn" onclick="this.closest('.ob-fund-entry').remove()">✕</button>
+  </div>`;
+}
+
+function obAddFund(){
+  const list=document.getElementById('ob-funds-list');
+  const div=document.createElement('div');
+  div.innerHTML=obFundRow({name:'',goal:'',category:''},Date.now());
+  list.appendChild(div.firstElementChild);
+}
+
+function obStepIncomeBudget(){
+  const incCats=state.budgetCategories.filter(b=>b.type==='income');
+  const rows=incCats.map(cat=>`
+    <div class="ob-budget-row">
+      <div style="font-size:13px;color:var(--text)">${cat.name.replace(/^\d+ - /,'')}<div style="font-size:10px;color:var(--text-light)">${cat.name.split(' - ')[0]||''}</div></div>
+      <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:13px;pointer-events:none">$</span><input class="ob-budget-input" data-catid="${cat.id}" type="number" placeholder="0" step="0.01" min="0" value="${cat.amount||''}" style="width:100%;padding:8px 8px 8px 24px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:13px;color:var(--text);background:var(--surface-1)"></div>
+      <button onclick="this.previousElementSibling.querySelector('input').value='';this.previousElementSibling.querySelector('input').focus()" style="background:none;border:none;color:var(--text-light);font-size:11px;cursor:pointer;font-family:inherit;text-align:right">Skip</button>
+    </div>`).join('');
+  return`<div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">📈 Income Budget</div>
+    <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px">Enter your expected monthly income. Leave blank or click Skip for categories you don't use.</div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:20px">You can change these anytime on the Budget page.</div>
+    <div style="display:grid;grid-template-columns:1fr 130px 70px;gap:8px;margin-bottom:4px;padding:0 2px">
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Category</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Monthly Amount</span>
+      <span></span>
+    </div>
+    <div>${rows}</div>
+  </div>`;
+}
+
+function obStepExpenseBudget(){
+  const expCats=state.budgetCategories.filter(b=>b.type==='expense');
+  // Group by prefix (first 3 digits)
+  const groups={};
+  expCats.forEach(cat=>{
+    const prefix=cat.name.slice(0,3);
+    if(!groups[prefix])groups[prefix]=[];
+    groups[prefix].push(cat);
+  });
+  const groupNames={
+    '021':'Housing & Home','022':'Utilities','023':'Debt & Credit',
+    '024':'Subscriptions','025':'Vehicle & Transportation','026':'Personal & Lifestyle',
+    '027':'Entertainment & Dining','028':'Health & Fitness','029':'Travel','020':'Miscellaneous'
+  };
+  let html=`<div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">🎯 Expense Budget</div>
+    <div style="font-size:13px;color:var(--text-mid);margin-bottom:20px">Set monthly spending targets. Leave blank or Skip any category you don't use. These are just targets — not limits.</div>
+    <div style="display:grid;grid-template-columns:1fr 130px 70px;gap:8px;margin-bottom:4px;padding:0 2px">
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Category</span>
+      <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Monthly Budget</span>
+      <span></span>
+    </div>`;
+  Object.entries(groups).forEach(([prefix,cats])=>{
+    const label=groupNames[prefix]||('Group '+prefix);
+    html+=`<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">${label}</div>`;
+    cats.forEach(cat=>{
+      html+=`<div class="ob-budget-row">
+        <div style="font-size:13px;color:var(--text)">${cat.name.replace(/^\d+ - /,'')}<div style="font-size:10px;color:var(--text-light)">${cat.name.split(' - ')[0]||''}</div></div>
+        <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:13px;pointer-events:none">$</span><input class="ob-budget-input" data-catid="${cat.id}" type="number" placeholder="0" step="0.01" min="0" value="${cat.amount||''}" style="width:100%;padding:8px 8px 8px 24px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:13px;color:var(--text);background:var(--surface-1)"></div>
+        <button onclick="this.previousElementSibling.querySelector('input').value=''" style="background:none;border:none;color:var(--text-light);font-size:11px;cursor:pointer;font-family:inherit;text-align:right">Skip</button>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  return html;
+}
+
+function finishOnboarding(){
+  saveObCurrentStep();
+  // Apply accounts
+  _obAccounts.forEach((a,i)=>{
+    if(!a.name)return;
+    state.accounts.push({id:'a'+(Date.now()+i),name:a.name,type:a.type,startBal:a.startBal||0,goal:0});
+  });
+  // Apply funds
+  _obFunds.forEach((f,i)=>{
+    if(!f.name)return;
+    state.funds.push({id:'f'+(Date.now()+i),name:f.name,goal:f.goal||0,category:f.category||''});
+  });
+  localStorage.setItem(OB_KEY,'1');
+  saveState();
+  document.getElementById('onboarding-overlay').style.display='none';
+  toast('Setup complete! Welcome to Meridian 🎉','success');
+  showPage('dashboard');
+  renderDashboard();
+}
+
+// Show onboarding on first load
+window.addEventListener('load',()=>{
+  if(!isMobile()&&shouldShowOnboarding()){
+    setTimeout(openOnboarding,400);
+  }
+});
+
+
+/* ═══ SETUP AUTH ═══ */
+const SETUP_PASSWORD = 'meridian';   // ← change this to whatever password you want
+
+function openSetupAuth(){
+  const overlay = document.getElementById('setup-auth-overlay');
+  overlay.style.display = 'flex';
+  const inp = document.getElementById('setup-auth-input');
+  inp.value = '';
+  document.getElementById('setup-auth-error').style.display = 'none';
+  setTimeout(()=>inp.focus(), 100);
+}
+
+function closeSetupAuth(){
+  document.getElementById('setup-auth-overlay').style.display = 'none';
+}
+
+function checkSetupAuth(){
+  const val = document.getElementById('setup-auth-input').value;
+  if(val === SETUP_PASSWORD){
+    closeSetupAuth();
+    localStorage.removeItem('meridian_onboarding_done');
+    openOnboarding();
+  } else {
+    const err = document.getElementById('setup-auth-error');
+    err.style.display = 'block';
+    const inp = document.getElementById('setup-auth-input');
+    inp.value = '';
+    inp.style.borderColor = 'var(--red)';
+    setTimeout(()=>{ inp.style.borderColor = 'var(--border-solid)'; }, 1500);
+    inp.focus();
+  }
+}
+
 
 </script>
 </body>
