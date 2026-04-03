@@ -1301,6 +1301,15 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
       <div id="trend-chart" style="display:flex;align-items:flex-end;gap:8px;height:180px;padding-bottom:24px;position:relative"></div>
       <div id="trend-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>
     </div>
+    <!-- Income Breakdown Summary -->
+    <div class="dash-card" style="margin-bottom:16px" id="income-breakdown-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h3>Income Breakdown</h3>
+        <div style="font-size:11px;color:var(--text-light)">Transactions with breakdown logged</div>
+      </div>
+      <div id="income-breakdown-report"></div>
+    </div>
+
     <!-- Account sparklines -->
     <div class="dash-card" style="margin-bottom:16px">
       <h3 style="margin-bottom:14px">Account Balance Trends</h3>
@@ -1335,6 +1344,7 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
               <th style="min-width:100px;text-align:right">Balance</th>
             </tr></thead>
             <tbody id="stmt-body"></tbody>
+            <tfoot id="stmt-foot"></tfoot>
           </table>
         </div>
       </div>
@@ -1645,7 +1655,8 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeReconcileModal()">Cancel</button>
-      <button class="btn primary" id="rec-finish-btn" onclick="finishReconcile()" disabled>Mark Reconciled</button>
+      <button class="btn" id="rec-partial-btn" onclick="finishReconcile(true)" style="display:none;border-color:var(--amber);color:var(--amber)">Reconcile Checked ⚠</button>
+      <button class="btn primary" id="rec-finish-btn" onclick="finishReconcile(false)">Mark Reconciled</button>
     </div>
   </div>
 </div>
@@ -1928,10 +1939,84 @@ mark{background:rgba(14,165,233,0.2);color:var(--blue);border-radius:2px;padding
   </div>
 </div>
 
+
+<!-- ═══ INCOME BREAKDOWN MODAL ═══ -->
+<div id="income-breakdown-overlay" style="display:none;position:fixed;inset:0;z-index:450;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center">
+  <div style="background:var(--surface-2);border:1px solid var(--border-solid);border-radius:18px;width:90%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.6);overflow:hidden">
+    <div style="padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text)">💰 Income Breakdown</div>
+          <div style="font-size:12px;color:var(--text-mid);margin-top:2px" id="ib-tx-desc">Break down this deposit into gross pay, taxes, and deductions</div>
+        </div>
+        <button onclick="skipIncomeBreakdown()" style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;font-family:inherit;padding:4px 8px;border-radius:6px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-light)'">Skip</button>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px 24px">
+      <!-- Gross & Net -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mid);margin-bottom:5px">Gross Amount</div>
+          <div style="position:relative">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:13px">$</span>
+            <input id="ib-gross" type="number" step="0.01" min="0" placeholder="0.00"
+              oninput="ibRecalc()"
+              style="width:100%;padding:9px 9px 9px 24px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:14px;color:var(--text);background:var(--surface-1);box-sizing:border-box">
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--green);margin-bottom:5px">Net (Deposited)</div>
+          <div style="position:relative">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:13px">$</span>
+            <input id="ib-net" type="number" step="0.01" min="0" placeholder="0.00" readonly
+              style="width:100%;padding:9px 9px 9px 24px;border:1px solid var(--green);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:14px;color:var(--green);background:rgba(34,197,94,0.06);box-sizing:border-box;cursor:not-allowed">
+          </div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:3px">Auto-filled from transaction</div>
+        </div>
+      </div>
+
+      <!-- Deduction lines -->
+      <div style="margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light)">Deductions & Taxes</div>
+          <button onclick="ibAddLine()" style="background:none;border:1px solid var(--border-solid);color:var(--blue);font-family:inherit;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;cursor:pointer">＋ Add line</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 120px 28px;gap:6px;margin-bottom:4px;padding:0 2px">
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Description</span>
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light)">Amount</span>
+          <span></span>
+        </div>
+        <div id="ib-lines"></div>
+      </div>
+
+      <!-- Summary bar -->
+      <div id="ib-summary" style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px;border:1px solid var(--border)">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
+          <div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:4px">Gross</div>
+            <div id="ib-sum-gross" style="font-size:16px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--text)">—</div>
+          </div>
+          <div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:4px">Total Deducted</div>
+            <div id="ib-sum-deductions" style="font-size:16px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--red)">—</div>
+          </div>
+          <div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:4px">Net</div>
+            <div id="ib-sum-net" style="font-size:16px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--green)">—</div>
+          </div>
+        </div>
+        <div id="ib-diff-warning" style="display:none;margin-top:10px;padding:8px 10px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;font-size:11px;color:var(--amber);text-align:center"></div>
+      </div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;background:var(--surface-1)">
+      <button onclick="skipIncomeBreakdown()" style="padding:8px 18px;background:var(--surface-3);border:1px solid var(--border-solid);border-radius:var(--radius-sm);color:var(--text-mid);font-family:inherit;font-size:13px;cursor:pointer">Skip</button>
+      <button onclick="saveIncomeBreakdown()" style="padding:8px 22px;background:linear-gradient(135deg,#0369A1,#0EA5E9);border:none;border-radius:var(--radius-sm);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Save Breakdown</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
-
-
 <!-- ═══ ONBOARDING WIZARD ═══ -->
 <div id="onboarding-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
   <div style="background:var(--surface-2);border:1px solid var(--border-solid);border-radius:20px;width:90%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.7);overflow:hidden">
@@ -2463,7 +2548,7 @@ function commitTx(id,field,val){
     tx[field]=parseFloat(val.replace(/[^0-9.\-]/g,''))||0;
     saveState();renderTransactions();
     if(field==='deposit'&&tx.deposit>0&&prev===0){
-      setTimeout(()=>checkReplenishment(id),200);
+      setTimeout(()=>{checkReplenishment(id);maybeOfferIncomeBreakdown(id);},200);
     }
     return;
   }
@@ -4074,7 +4159,7 @@ function postRecurring(id){
   });
   r.nextDue=nextDueDate(r.startDate,r.freq,r.customDays,r.nextDue);
   saveState();toast(`Posted: ${r.payee} ✓`);renderRecurring();renderTransactions();
-  if(r.type==='deposit')setTimeout(()=>checkReplenishment(txId),300);
+  if(r.type==='deposit'){setTimeout(()=>checkReplenishment(txId),300);setTimeout(()=>maybeOfferIncomeBreakdown(txId),500);}
 }
 function postAllDue(){
   (state.recurring||[]).filter(isDue).forEach(r=>postRecurring(r.id));
@@ -4246,16 +4331,35 @@ function updateReconcilePreview(){
   const diffEl=document.getElementById('rec-diff-display');
   const msgEl=document.getElementById('rec-status-msg');
   const btn=document.getElementById('rec-finish-btn');
+  const partialBtn=document.getElementById('rec-partial-btn');
+  const checkedCount=Object.values(reconcileChecked).filter(Boolean).length;
   if(diff!==null){
     diffEl.textContent=fmt(Math.abs(diff));
-    diffEl.style.color=Math.abs(diff)<0.01?'var(--green)':'var(--red)';
     if(Math.abs(diff)<0.01){
-      msgEl.textContent='✓ Balanced — ready to reconcile';msgEl.style.color='var(--green)';btn.disabled=false;
+      diffEl.style.color='var(--green)';
+      msgEl.innerHTML='✓ Balanced — ready to reconcile';
+      msgEl.style.color='var(--green)';
+      btn.disabled=false;
+      if(partialBtn)partialBtn.style.display='none';
     } else {
-      msgEl.textContent=`Difference of ${fmt(Math.abs(diff))} — check off matching transactions below`;
-      msgEl.style.color='var(--amber)';btn.disabled=true;
+      diffEl.style.color='var(--red)';
+      const checkedAmt=Object.entries(reconcileChecked).filter(([,v])=>v).reduce((s,[id])=>{
+        const tx=state.transactions.find(t=>t.id===id);
+        return s+(tx?tx.deposit-tx.payment:0);
+      },0);
+      msgEl.innerHTML=`<span style="color:var(--amber)">⚠ ${fmt(Math.abs(diff))} unaccounted</span> — transactions may be missing from your ledger.<br>
+        <span style="font-size:11px;color:var(--text-mid)">You can reconcile the ${checkedCount} checked transaction${checkedCount!==1?'s':''} now and handle the difference later.</span>`;
+      msgEl.style.color='var(--text)';
+      btn.disabled=true;
+      btn.title="Statement balance doesn't match — use Reconcile Checked to handle the difference";
+      if(partialBtn)partialBtn.style.display=checkedCount>0?'inline-flex':'none';
     }
-  } else {diffEl.textContent='—';msgEl.textContent='';btn.disabled=true;}
+  } else {
+    diffEl.textContent='—';
+    msgEl.textContent='';
+    btn.disabled=true;
+    if(partialBtn)partialBtn.style.display='none';
+  }
 
   // Build uncleared transaction list
   const list=document.getElementById('reconcile-tx-list');
@@ -4286,9 +4390,33 @@ function toggleReconcileCheck(txId,checked){
   if(tx)tx._tempCleared=checked?'C':tx.cleared;
   updateReconcilePreview();
 }
-function finishReconcile(){
+function finishReconcile(partial=false){
+  const acctId=document.getElementById('rec-account').value;
+  const stmtVal=parseFloat(document.getElementById('rec-statement').value)||0;
+  const isDebt=acctId?isDebtAccount(acctId):false;
+  const stmt=isDebt?-Math.abs(stmtVal):stmtVal;
+  const clearedBal=acctId?acctClearedBalance(acctId):0;
+  const diff=stmt-clearedBal;
+
+  // If not partial and there's a difference, block
+  if(!partial&&Math.abs(diff)>0.01){
+    toast("Statement doesn't balance — use Reconcile Checked or keep checking transactions","warning");
+    return;
+  }
+  // If partial, warn but proceed
+  if(partial&&Math.abs(diff)>0.01){
+    const proceed=confirm(
+      `You are ${fmt(Math.abs(diff))} ${diff<0?'over':'short'} of your statement balance.
+
+`+
+      `This usually means transactions are missing from your ledger.
+
+`+
+      `Reconcile the ${Object.values(reconcileChecked).filter(Boolean).length} checked transactions now anyway?`
+    );
+    if(!proceed)return;
+  }
   let count=0;
-  // Mark all checked transactions as Reconciled and clean up _tempCleared
   Object.entries(reconcileChecked).forEach(([id,checked])=>{
     const tx=state.transactions.find(t=>t.id===id);
     if(tx){
@@ -4296,10 +4424,10 @@ function finishReconcile(){
       delete tx._tempCleared;
     }
   });
-  // Clean up any remaining _tempCleared on unchecked transactions
   state.transactions.forEach(t=>{if(t.hasOwnProperty('_tempCleared'))delete t._tempCleared;});
   reconcileChecked={};
-  saveState();closeReconcileModal();toast(`${count} transaction${count!==1?'s':''} reconciled ✓`);
+  saveState();closeReconcileModal();
+  toast(`${count} transaction${count!==1?'s':''} reconciled${partial&&Math.abs(diff)>0.01?' (partial — '+fmt(Math.abs(diff))+' remaining)':' ✓'}`,partial&&Math.abs(diff)>0.01?'warning':'success');
   renderTransactions();
 }
 
@@ -4700,7 +4828,7 @@ function applyTemplate(id){
   closeTemplatesPanel();
   toast(`Applied: ${tmpl.name} ✓`);
   renderTransactions();
-  if(tmpl.type==='deposit')setTimeout(()=>checkReplenishment(txId),300);
+  if(tmpl.type==='deposit'){setTimeout(()=>checkReplenishment(txId),300);setTimeout(()=>maybeOfferIncomeBreakdown(txId),500);}
   // scroll to the new row
   setTimeout(()=>{
     const rows=document.querySelectorAll('#tx-body tr:not(.add-row-tr)');
@@ -5419,6 +5547,7 @@ function closeReplenishPreview(){
 }
 
 function applyReplenishment(){
+  const _repTxId=_pendingReplenish?.txId; // save before it gets cleared
   if(!_pendingReplenish)return;
   if(!state.contributions)state.contributions=[];
   if(!state.contribCounter)state.contribCounter=1;
@@ -5438,14 +5567,19 @@ function applyReplenishment(){
   });
 
   saveState();
-  closeReplenishPreview();
-  toast(`Replenishment applied — ${_pendingReplenish.splits.length} fund${_pendingReplenish.splits.length!==1?'s':''} updated ✓`);
+  // Capture splits before closeReplenishPreview nulls _pendingReplenish
+  const _splits=[..._pendingReplenish.splits];
+  const _splitCount=_pendingReplenish.splits.length;
+  closeReplenishPreview();  // sets _pendingReplenish = null
+  toast(`Replenishment applied — ${_splitCount} fund${_splitCount!==1?'s':''} updated ✓`);
   renderFunds();
-  // refresh any open inline logs
-  _pendingReplenish.splits.forEach(s=>{
+  // Refresh any open inline logs (use captured _splits, not _pendingReplenish)
+  _splits.forEach(s=>{
     const row=document.getElementById(`fund-history-row-${s.fundId}`);
     if(row&&row.style.display!=='none')renderInlineFundLog(s.fundId);
   });
+  // Open income breakdown after replenishment
+  if(_repTxId)setTimeout(()=>openIncomeBreakdown(_repTxId),400);
 }
 
 /* ═══ PDF EXPORT ═══ */
@@ -5679,7 +5813,7 @@ function scrollToSection(id){
 }
 
 /* ═══ PWA SERVICE WORKER REGISTRATION ═══ */
-if('serviceWorker' in navigator){
+if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('./sw.js')
       .then(reg=>console.log('Meridian SW registered',reg.scope))
@@ -6469,7 +6603,7 @@ function postRecurringMobile(id){
   saveState();
   toast(`Posted: ${r.payee} ✓`);
   renderMobileRecurring();
-  if(r.type==='deposit')setTimeout(()=>checkReplenishment(txId),300);
+  if(r.type==='deposit'){setTimeout(()=>checkReplenishment(txId),300);setTimeout(()=>maybeOfferIncomeBreakdown(txId),500);}
 }
 
 /* ── MORE / ACCOUNTS ── */
@@ -6596,7 +6730,7 @@ function saveMobileAddTx(){
   toast(`Saved: ${payee||fmt(amount)} ✓`);
   if(_mActiveTab==='home')renderMobileHome();
   else if(_mActiveTab==='transactions')renderMobileTransactions();
-  if(_mobileType==='deposit')setTimeout(()=>checkReplenishment(id),300);
+  if(_mobileType==='deposit'){setTimeout(()=>checkReplenishment(id),300);setTimeout(()=>maybeOfferIncomeBreakdown(id),500);}
 }
 function showMobilePayeeSuggest(input){
   const val=input.value.toLowerCase();
@@ -7000,6 +7134,217 @@ function checkSetupAuth(){
   }
 }
 
+
+
+/* ═══ INCOME BREAKDOWN ═══ */
+let _ibTxId = null;
+const IB_DEFAULT_LINES = [
+  {label:'Federal Tax',amount:''},
+  {label:'State Tax',amount:''},
+  {label:'Social Security',amount:''},
+  {label:'Medicare',amount:''},
+];
+
+function openIncomeBreakdown(txId){
+  const tx=state.transactions.find(t=>t.id===txId);
+  if(!tx||!tx.deposit)return;
+  _ibTxId=txId;
+  document.getElementById('ib-tx-desc').textContent=
+    `${tx.payee||'Income'} · ${tx.date} · ${fmt(tx.deposit)}`;
+  document.getElementById('ib-net').value=tx.deposit.toFixed(2);
+
+  // Restore existing breakdown if present
+  const existing=tx.incomeBreakdown;
+  document.getElementById('ib-gross').value=existing?.gross||'';
+  renderIbLines(existing?.lines||IB_DEFAULT_LINES);
+  ibRecalc();
+  document.getElementById('income-breakdown-overlay').style.display='flex';
+  setTimeout(()=>document.getElementById('ib-gross').focus(),100);
+}
+
+function skipIncomeBreakdown(){
+  document.getElementById('income-breakdown-overlay').style.display='none';
+  _ibTxId=null;
+}
+
+function renderIbLines(lines){
+  const el=document.getElementById('ib-lines');
+  el.innerHTML='';
+  lines.forEach((l,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1fr 120px 28px;gap:6px;align-items:center;margin-bottom:6px';
+    row.innerHTML=`
+      <input type="text" placeholder="e.g. Federal Tax" value="${l.label||''}"
+        oninput="ibRecalc()"
+        style="padding:8px 10px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);width:100%;box-sizing:border-box">
+      <div style="position:relative">
+        <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:12px">$</span>
+        <input type="number" step="0.01" min="0" placeholder="0.00" value="${l.amount||''}"
+          oninput="ibRecalc()"
+          style="width:100%;padding:8px 8px 8px 20px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--red);background:var(--surface-1);box-sizing:border-box">
+      </div>
+      <button onclick="this.closest('div').remove();ibRecalc()" style="background:none;border:none;color:var(--text-light);font-size:16px;cursor:pointer;padding:0" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-light)'">✕</button>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function ibAddLine(){
+  const el=document.getElementById('ib-lines');
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;grid-template-columns:1fr 120px 28px;gap:6px;align-items:center;margin-bottom:6px';
+  row.innerHTML=`
+    <input type="text" placeholder="Description" oninput="ibRecalc()"
+      style="padding:8px 10px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);width:100%;box-sizing:border-box">
+    <div style="position:relative">
+      <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:12px">$</span>
+      <input type="number" step="0.01" min="0" placeholder="0.00" oninput="ibRecalc()"
+        style="width:100%;padding:8px 8px 8px 20px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--red);background:var(--surface-1);box-sizing:border-box">
+    </div>
+    <button onclick="this.closest('div').remove();ibRecalc()" style="background:none;border:none;color:var(--text-light);font-size:16px;cursor:pointer;padding:0" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-light)'">✕</button>
+  `;
+  el.appendChild(row);
+  row.querySelector('input[type="text"]').focus();
+}
+
+function ibRecalc(){
+  const gross=parseFloat(document.getElementById('ib-gross').value)||0;
+  const net=parseFloat(document.getElementById('ib-net').value)||0;
+  const rows=[...document.getElementById('ib-lines').children];
+  const totalDed=rows.reduce((s,row)=>{
+    const amt=parseFloat(row.querySelectorAll('input')[1].value)||0;
+    return s+amt;
+  },0);
+
+  document.getElementById('ib-sum-gross').textContent=gross?fmt(gross):'—';
+  document.getElementById('ib-sum-deductions').textContent=totalDed?fmt(totalDed):'—';
+  document.getElementById('ib-sum-net').textContent=net?fmt(net):'—';
+
+  const warn=document.getElementById('ib-diff-warning');
+  if(gross>0&&totalDed>0){
+    const calcNet=gross-totalDed;
+    const diff=Math.abs(calcNet-net);
+    if(diff>0.02){
+      warn.style.display='block';
+      warn.textContent=`Gross minus deductions = ${fmt(calcNet)}, but deposited amount is ${fmt(net)} (${fmt(diff)} difference)`;
+    } else {
+      warn.style.display='none';
+    }
+  } else {
+    warn.style.display='none';
+  }
+}
+
+function saveIncomeBreakdown(){
+  const tx=state.transactions.find(t=>t.id===_ibTxId);
+  if(!tx)return;
+  const gross=parseFloat(document.getElementById('ib-gross').value)||0;
+  const rows=[...document.getElementById('ib-lines').children];
+  const lines=rows.map(row=>{
+    const inputs=row.querySelectorAll('input');
+    return{label:inputs[0].value.trim(),amount:parseFloat(inputs[1].value)||0};
+  }).filter(l=>l.label||l.amount);
+  const totalDed=lines.reduce((s,l)=>s+l.amount,0);
+  tx.incomeBreakdown={gross,lines,totalDeductions:totalDed,net:tx.deposit};
+  saveState();
+  skipIncomeBreakdown();
+  toast('Income breakdown saved ✓','success');
+  renderTransactions();
+}
+
+// Helper: offer income breakdown for deposits without replenishment rules
+function maybeOfferIncomeBreakdown(txId){
+  const tx=state.transactions.find(t=>t.id===txId);
+  if(!tx||!tx.deposit)return;
+  const hasRule=state.replenishRules&&state.replenishRules.find(r=>r.triggerAccount===tx.account);
+  if(!hasRule){
+    setTimeout(()=>openIncomeBreakdown(txId),300);
+  }
+  // If there IS a rule, openIncomeBreakdown gets called after applyReplenishment
+}
+
+
+function renderIncomeBreakdownReport(mStart, mEnd){
+  const el=document.getElementById('income-breakdown-report');
+  if(!el)return;
+
+  // Get all transactions with income breakdown in the date range
+  const txs=state.transactions.filter(t=>
+    t.incomeBreakdown&&t.deposit>0&&
+    (!mStart||t.date>=mStart)&&(!mEnd||t.date<=mEnd)
+  ).sort((a,b)=>b.date.localeCompare(a.date));
+
+  const card=document.getElementById('income-breakdown-card');
+  if(card)card.style.display=txs.length?'block':'none';
+  if(!txs.length){el.innerHTML='<p style="color:var(--text-light);font-size:12px;padding:8px 0">No income breakdowns in this period. They appear when you log a breakdown on a deposit transaction.</p>';return;}
+
+  // Aggregate totals
+  const totals={};
+  let totalGross=0,totalNet=0,totalDed=0;
+  txs.forEach(tx=>{
+    const bd=tx.incomeBreakdown;
+    totalGross+=bd.gross||0;
+    totalNet+=bd.net||0;
+    totalDed+=bd.totalDeductions||0;
+    (bd.lines||[]).forEach(l=>{
+      if(!l.label)return;
+      totals[l.label]=(totals[l.label]||0)+l.amount;
+    });
+  });
+
+  // Summary strip
+  let html=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+    <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px;text-align:center">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:6px">Gross Earnings</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--text)">${fmt(totalGross)}</div>
+    </div>
+    <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px;text-align:center">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:6px">Total Deducted</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--red)">${fmt(totalDed)}</div>
+    </div>
+    <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px;text-align:center">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:6px">Net Deposited</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--green)">${fmt(totalNet)}</div>
+    </div>
+    <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px;text-align:center">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:6px">Effective Tax Rate</div>
+      <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono','Courier New',monospace;color:var(--amber)">${totalGross>0?((totalDed/totalGross)*100).toFixed(1)+'%':'—'}</div>
+    </div>
+  </div>`;
+
+  // Deduction breakdown table
+  if(Object.keys(totals).length){
+    html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light);margin-bottom:8px">Deduction Breakdown</div>
+        ${Object.entries(totals).sort((a,b)=>b[1]-a[1]).map(([label,amt])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;color:var(--text-mid)">${label}</span>
+          <div style="text-align:right">
+            <span style="font-size:13px;font-weight:600;font-family:'JetBrains Mono','Courier New',monospace;color:var(--red)">${fmt(amt)}</span>
+            ${totalGross>0?`<span style="font-size:10px;color:var(--text-light);margin-left:6px">${((amt/totalGross)*100).toFixed(1)}%</span>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light);margin-bottom:8px">Paycheck Log (${txs.length})</div>
+        ${txs.map(tx=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
+          <div>
+            <div style="font-size:12px;color:var(--text)">${tx.payee||'Income'}</div>
+            <div style="font-size:10px;color:var(--text-light)">${tx.date}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;font-weight:600;font-family:'JetBrains Mono','Courier New',monospace;color:var(--green)">${fmt(tx.deposit)}</div>
+            ${tx.incomeBreakdown.gross?`<div style="font-size:10px;color:var(--text-light)">Gross: ${fmt(tx.incomeBreakdown.gross)}</div>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML=html;
+}
 
 </script>
 </body>
