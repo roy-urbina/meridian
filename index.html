@@ -672,6 +672,48 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
 .flagged-row:hover{background:rgba(255,191,13,0.12)!important}
 @keyframes flagPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,191,13,0.4)}50%{box-shadow:0 0 0 6px rgba(255,191,13,0)}}
 
+
+/* ── SIDEBAR NUDGES ── */
+.sb-nudge{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:8px 10px;border-radius:var(--radius-xs);
+  border:1px solid transparent;
+  font-size:11px;line-height:1.4;cursor:default;
+  transition:background .15s;
+}
+.sb-nudge:hover{filter:brightness(1.1)}
+.sb-nudge-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.sb-nudge-text{color:var(--text-mid);flex:1}
+.sb-nudge-text b{display:block;font-weight:700;margin-bottom:1px}
+.sb-nudge.warn{background:rgba(196,59,26,0.12);border-color:rgba(196,59,26,0.2)}
+.sb-nudge.warn .sb-nudge-text b{color:var(--ember)}
+.sb-nudge.alert{background:rgba(232,21,35,0.1);border-color:rgba(232,21,35,0.18)}
+.sb-nudge.alert .sb-nudge-text b{color:var(--signal)}
+.sb-nudge.info{background:rgba(255,191,13,0.08);border-color:rgba(255,191,13,0.15)}
+.sb-nudge.info .sb-nudge-text b{color:var(--gold)}
+.sb-nudge.good{background:rgba(139,204,0,0.1);border-color:rgba(139,204,0,0.18)}
+.sb-nudge.good .sb-nudge-text b{color:var(--lime)}
+/* ── JOURNAL ── */
+.journal-entry{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;
+  transition:border-color .15s;
+}
+.journal-entry:hover{border-color:rgba(255,191,13,0.2)}
+.journal-entry-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.journal-tag{
+  display:inline-block;padding:2px 9px;border-radius:20px;
+  font-size:9px;font-weight:700;letter-spacing:.05em;
+  background:rgba(255,191,13,0.12);color:var(--gold);
+}
+.journal-tag.followup{background:rgba(232,21,35,0.12);color:var(--signal)}
+.journal-tag.decision{background:rgba(38,191,191,0.12);color:var(--lagoon)}
+.journal-tag.goal{background:rgba(139,204,0,0.12);color:var(--lime)}
+.journal-tag.review{background:rgba(138,15,120,0.12);color:var(--berry)}
+.journal-tag.win{background:rgba(255,191,13,0.18);color:var(--gold)}
+.journal-entry-text{font-size:13px;color:var(--text);line-height:1.65;white-space:pre-wrap}
+.journal-entry-meta{font-size:10px;color:var(--text-light);margin-top:8px;display:flex;gap:14px;align-items:center}
+
 </style>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -867,6 +909,9 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
   <div class="nav-item" onclick="showPage('budget')"><span class="nav-icon">🎯</span><span>Budgets</span></div>
   <div class="nav-item" onclick="showPage('accounts')"><span class="nav-icon">🏦</span><span>Accounts</span></div>
   <div class="nav-label">Tools</div>
+  <!-- Smart sidebar nudges -->
+  <div id="sidebar-nudges" style="margin:8px 8px 4px;display:flex;flex-direction:column;gap:5px"></div>
+
   <div class="nav-item" onclick="showPage('funds')"><span class="nav-icon">💼</span><span>Funds</span></div>
   <div class="nav-item" onclick="showPage('recurring')" style="position:relative">
     <span class="nav-icon">🔁</span><span>Recurring</span>
@@ -878,10 +923,19 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
   <div class="nav-item" onclick="showPage('reports')">
     <span class="nav-icon">📈</span><span>Reports</span>
   </div>
+  <div class="nav-item" onclick="showPage('journal')">
+    <span class="nav-icon">📓</span><span>Journal</span>
+  </div>
   <div class="nav-item" onclick="showPage('help')">
     <span class="nav-icon">❓</span><span>Help & Guide</span>
   </div>
   <div style="margin-top:auto;padding:10px 8px 0">
+    <button onclick="openWeeklyReview()"
+      style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,191,13,0.08);border:1px solid rgba(255,191,13,0.2);border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;color:rgba(255,191,13,0.8);margin-bottom:6px;transition:all .15s"
+      onmouseover="this.style.background='rgba(255,191,13,0.15)'" onmouseout="this.style.background='rgba(255,191,13,0.08)'">
+      <span style="font-size:14px">📋</span>
+      <div style="text-align:left"><div style="font-weight:600">Weekly Review</div></div>
+    </button>
     <button onclick="openSyncModal()" style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:8px;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
       <span style="font-size:14px">☁️</span>
       <div style="text-align:left">
@@ -1212,7 +1266,7 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
         <button class="btn" onclick="openManageCategoriesModal()" style="border-color:var(--lagoon);color:var(--lagoon)">⋮ Manage</button>
       </div>
       <div class="btn-row" id="budget-paycheck-controls" style="display:none">
-        <button class="btn primary" onclick="openNewPaycheckModal()">＋ New Paycheck Session</button>
+        <button class="btn primary" onclick="openAddPayPeriodModal()">＋ New Paycheck Session</button>
         <select id="paycheck-session-select" onchange="loadPaycheckSession(this.value)"
           style="border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:7px 12px;font-family:inherit;font-size:13px;background:var(--surface-2);color:var(--text)">
           <option value="">— select paycheck —</option>
@@ -1334,7 +1388,7 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
         <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
           <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light)">Pay Periods</div>
-            <button onclick="openNewPaycheckModal()" style="padding:3px 10px;background:rgba(255,191,13,0.1);border:1px solid rgba(255,191,13,0.25);border-radius:5px;color:var(--gold);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer">＋ Add</button>
+            <button onclick="openAddPayPeriodModal()" style="padding:3px 10px;background:rgba(255,191,13,0.1);border:1px solid rgba(255,191,13,0.25);border-radius:5px;color:var(--gold);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer">＋ Add</button>
           </div>
           <div id="pay-period-list" style="max-height:320px;overflow-y:auto"></div>
         </div>
@@ -1892,6 +1946,52 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
         </table>
       </div>
     </div>
+  </div>
+
+
+  <!-- JOURNAL -->
+  <div class="page" id="page-journal">
+    <div class="page-header">
+      <div class="page-heading">
+        <h1>Journal</h1>
+        <p>Notes, context, and follow-ups — searchable and dated</p>
+      </div>
+      <div class="btn-row">
+        <input type="text" id="journal-search" placeholder="Search entries…"
+          oninput="renderJournal()"
+          style="padding:7px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;background:var(--surface-2);color:var(--text);width:200px">
+        <button class="btn primary" onclick="openNewJournalEntry()">＋ New Entry</button>
+      </div>
+    </div>
+
+    <!-- Quick write area at top -->
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:10px">
+        Quick Note
+        <span id="journal-quick-date" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-mid);margin-left:8px"></span>
+      </div>
+      <textarea id="journal-quick-text" rows="3" placeholder="What happened today? Follow up on something? Note a decision you made…"
+        style="width:100%;border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:10px 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);background:var(--surface-1);resize:vertical;line-height:1.6;box-sizing:border-box;outline:none"
+        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border-solid)'"></textarea>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+        <select id="journal-quick-tag" style="padding:6px 10px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1)">
+          <option value="">No tag</option>
+          <option value="note">📝 Note</option>
+          <option value="followup">🔔 Follow-up</option>
+          <option value="decision">💡 Decision</option>
+          <option value="goal">🎯 Goal</option>
+          <option value="review">📊 Review</option>
+          <option value="win">🏆 Win</option>
+        </select>
+        <select id="journal-quick-tx" style="padding:6px 10px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);flex:1">
+          <option value="">Link to transaction (optional)</option>
+        </select>
+        <button onclick="saveQuickJournalEntry()" style="padding:7px 18px;background:linear-gradient(135deg,rgba(160,110,0,.95),rgba(255,191,13,.9));border:none;border-radius:var(--radius-sm);color:#07050A;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">Save →</button>
+      </div>
+    </div>
+
+    <!-- Entry list -->
+    <div id="journal-entries"></div>
   </div>
 
 </main>
@@ -2670,6 +2770,81 @@ mark{background:rgba(255,191,13,0.15);color:var(--gold);border-radius:2px;paddin
   </div>
 </div>
 
+
+<!-- ADD PAYCHECK MODAL -->
+<div id="add-pay-period-overlay" onclick="if(event.target===this)closeAddPayPeriodModal()"
+  style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);align-items:center;justify-content:center">
+  <div style="background:var(--surface-2);border:1px solid rgba(255,191,13,0.22);border-radius:18px;width:92%;max-width:430px;box-shadow:0 24px 64px rgba(0,0,0,0.7);overflow:hidden">
+    <div style="padding:18px 24px;border-bottom:1px solid var(--border)">
+      <div style="font-size:16px;font-weight:700;color:var(--text)">💰 Log a Paycheck</div>
+      <div style="font-size:12px;color:var(--text-mid);margin-top:2px">Salary, freelance, bonus — any income, any day</div>
+    </div>
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Amount received *</label>
+        <div style="position:relative">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-mid);font-size:20px;pointer-events:none">$</span>
+          <input id="app-amount" type="number" step="0.01" min="0" placeholder="0.00"
+            style="width:100%;padding:12px 14px 12px 38px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;font-size:26px;color:var(--lime);font-weight:700;background:var(--surface-1);box-sizing:border-box;outline:none">
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Label</label>
+        <input id="app-label" type="text" placeholder="e.g. April 15 Paycheck, Bonus, Freelance"
+          style="width:100%;padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);box-sizing:border-box;outline:none">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Payday *</label>
+        <input id="app-payday" type="date"
+          style="width:100%;padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-1);box-sizing:border-box;outline:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:4px">Period Start</label>
+          <input id="app-start" type="date" style="width:100%;padding:7px 10px;border:1px solid var(--border-solid);border-radius:5px;font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);box-sizing:border-box">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:4px">Period End</label>
+          <input id="app-end" type="date" style="width:100%;padding:7px 10px;border:1px solid var(--border-solid);border-radius:5px;font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1);box-sizing:border-box">
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Link to deposit <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <select id="app-link-tx" style="width:100%;padding:9px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-xs);font-family:inherit;font-size:12px;color:var(--text);background:var(--surface-1)">
+          <option value="">— none —</option>
+        </select>
+      </div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--surface-1)">
+      <button onclick="closeAddPayPeriodModal()" style="padding:9px 18px;background:var(--surface-3);border:1px solid var(--border-solid);border-radius:var(--radius-sm);color:var(--text-mid);font-family:inherit;font-size:13px;cursor:pointer">Cancel</button>
+      <button onclick="saveAddPayPeriod()" style="padding:9px 24px;background:linear-gradient(135deg,rgba(160,110,0,.95),rgba(255,191,13,.9));border:none;border-radius:var(--radius-sm);color:#07050A;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">Add Paycheck →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- WEEKLY REVIEW MODAL -->
+<div id="weekly-review-overlay" onclick="if(event.target===this)closeWeeklyReview()"
+  style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto">
+  <div style="background:var(--surface-2);border:1px solid rgba(255,191,13,0.2);border-radius:18px;width:92%;max-width:640px;box-shadow:0 24px 64px rgba(0,0,0,0.7);overflow:hidden;margin-bottom:40px">
+    <div style="background:linear-gradient(135deg,var(--surface-3),var(--surface-2));padding:20px 26px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text)">📊 Weekly Review</div>
+        <div id="wr-date-range" style="font-size:12px;color:var(--text-mid);margin-top:3px"></div>
+      </div>
+      <button onclick="closeWeeklyReview()" style="background:none;border:none;color:var(--text-light);font-size:20px;cursor:pointer;padding:0;line-height:1">✕</button>
+    </div>
+    <div id="weekly-review-content" style="padding:22px 26px;display:flex;flex-direction:column;gap:18px"></div>
+    <div style="padding:14px 26px;border-top:1px solid var(--border);background:var(--surface-1);display:flex;gap:8px;justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:var(--text-light)">Review saved to Journal automatically</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="closeWeeklyReview()" style="padding:8px 18px;background:var(--surface-3);border:1px solid var(--border-solid);border-radius:var(--radius-sm);color:var(--text-mid);font-family:inherit;font-size:13px;cursor:pointer">Close</button>
+        <button onclick="saveWeeklyReview()" style="padding:8px 22px;background:linear-gradient(135deg,rgba(160,110,0,.95),rgba(255,191,13,.9));border:none;border-radius:var(--radius-sm);color:#07050A;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">Save Review →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
 
@@ -2821,7 +2996,8 @@ const DEFAULT_STATE={
   projectionAnchor:null,
   paycheckSessions:[],    // [{id,date,payee,amount,linkedTxId,notes,allocations{}}]
   payPeriods:[],          // [{id,startDate,endDate,payDate,amount,label,cycle}]
-  payCycleConfig:null,    // {freq:'biweekly'|'semimonthly'|'monthly'|'weekly', anchorDate, amount}
+  payCycleConfig:null,
+  journalEntries:[],   // [{id,date,text,tag,linkedTxId}]    // {freq:'biweekly'|'semimonthly'|'monthly'|'weekly', anchorDate, amount}
 };
 
 function loadState(){
@@ -2840,6 +3016,7 @@ function loadState(){
         if(!parsed.replenishRules)parsed.replenishRules=[];
         if(!parsed.hasOwnProperty('projectionAnchor'))parsed.projectionAnchor=null;
         if(!parsed.paycheckSessions)parsed.paycheckSessions=[];
+        if(!parsed.journalEntries)parsed.journalEntries=[];
         if(!parsed.payPeriods)parsed.payPeriods=[];
         if(!parsed.payCycleConfig)parsed.payCycleConfig=null;
         if(parsed.budgetCategories)parsed.budgetCategories.forEach(b=>{if(!b.sortOrder&&b.sortOrder!==0)b.sortOrder=0;});
@@ -2868,6 +3045,7 @@ function saveState(){
       invalidateBalCache();
       localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
       if(dot)dot.style.background='var(--green)';
+      renderSidebarNudges();
       if(lbl)lbl.textContent='All changes saved';
       clearTimeout(saveState._t);
       saveState._t=setTimeout(()=>{
@@ -3041,7 +3219,7 @@ function showPage(p){
   document.getElementById('page-'+p).classList.add('active');
   const order=['dashboard','transactions','budget','accounts','funds'];
   document.querySelectorAll('.nav-item').forEach((el,i)=>{if(order[i]===p)el.classList.add('active');});
-  const renderMap={transactions:renderTransactions,accounts:renderAccounts,funds:renderFunds,budget:()=>{if(_budgetTab==='yearly')renderYearlyBudget();else renderBudget();},dashboard:renderDashboard,recurring:renderRecurring,reports:renderReports,help:()=>{}};
+  const renderMap={transactions:renderTransactions,accounts:renderAccounts,funds:renderFunds,budget:()=>{if(_budgetTab==='yearly')renderYearlyBudget();else renderBudget();},dashboard:renderDashboard,recurring:renderRecurring,reports:renderReports,help:()=>{},debt:renderDebt,journal:renderJournal};
   renderMap[p]?.();
   mobileShowPageHook(p);
 }
@@ -10160,6 +10338,8 @@ function updatePaycheckAllocLive(sessionId,type,id,val){
   if(amount<=0)delete session.allocations[key];
   else session.allocations[key]=amount;
   updatePaycheckBanner(session);
+  renderPayPeriodList();
+  saveState();
 }
 
 // Legacy alias
@@ -10177,6 +10357,7 @@ function paycheckFillFromBudget(sessionId,catId){
   const budget=getMonthBudget(cat,mk);
   if(!budget)return;
   session.allocations[catId]=budget;
+  saveState();
   const inp=document.querySelector(`[data-cat-id="${catId}"]`);
   if(inp){inp.value=budget.toFixed(2);inp.style.color='var(--gold)';inp.style.borderColor='rgba(255,191,13,0.4)';}
   updatePaycheckBanner(session);
@@ -10202,6 +10383,7 @@ function paycheckClearAll(){
   if(!session)return;
   if(!confirm('Clear all allocations?'))return;
   session.allocations={};
+  saveState();
   renderPaycheckView();
 }
 
@@ -10598,6 +10780,536 @@ function unmarkPaycheckReceived(sessionId){
   renderPaycheckView();
   renderDashboardPaycheck();
 }
+
+
+/* ═══ PAYCHECK MODAL (Add Period) ═══ */
+function openAddPayPeriodModal(){
+  ensurePaycheckState();
+  const t   = new Date();
+  const end = t.toISOString().split('T')[0];
+  const s   = new Date(t); s.setDate(s.getDate()-13);
+  const start = s.toISOString().split('T')[0];
+  const el = document.getElementById('add-pay-period-overlay');
+  if(!el){
+    // Fallback: use old new-paycheck-overlay if add-pay-period-overlay missing
+    const el2 = document.getElementById('new-paycheck-overlay');
+    if(el2) el2.style.display='flex';
+    return;
+  }
+  const set = (id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+  set('app-amount',''); set('app-payday',end);
+  set('app-start',start); set('app-end',end); set('app-label','');
+  const sel = document.getElementById('app-link-tx');
+  if(sel){
+    while(sel.options.length>1) sel.remove(1);
+    state.transactions.filter(t=>t.deposit>0&&t.type!=='transfer')
+      .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30)
+      .forEach(t=>{
+        const a=getAcct(t.account);
+        sel.add(new Option(`${t.date}  ${t.payee||'Deposit'}  ${fmt(t.deposit)}`,t.id));
+      });
+    sel.onchange=()=>{
+      const tx=state.transactions.find(t=>t.id===sel.value);
+      if(!tx)return;
+      set('app-amount',tx.deposit.toFixed(2));
+      set('app-payday',tx.date); set('app-end',tx.date);
+      const ps=new Date(tx.date); ps.setDate(ps.getDate()-13);
+      set('app-start',ps.toISOString().split('T')[0]);
+      if(!document.getElementById('app-label').value) set('app-label',tx.payee||'');
+    };
+  }
+  el.style.display='flex';
+  setTimeout(()=>document.getElementById('app-amount')?.focus(),80);
+}
+
+function closeAddPayPeriodModal(){
+  const el=document.getElementById('add-pay-period-overlay');
+  if(el) el.style.display='none';
+  const el2=document.getElementById('new-paycheck-overlay');
+  if(el2) el2.style.display='none';
+}
+
+function saveAddPayPeriod(){
+  const get=id=>document.getElementById(id)?.value||'';
+  const amount=parseFloat(get('app-amount'))||0;
+  if(!amount){toast('Enter the amount received','warning');return;}
+  const payday=get('app-payday')||today;
+  const start=get('app-start')||payday;
+  const end=get('app-end')||payday;
+  const label=get('app-label').trim()||
+    new Date(payday).toLocaleDateString('en-US',{month:'short',day:'numeric'})+' Paycheck';
+  ensurePaycheckState();
+  const session={
+    id:'pc'+(Date.now()),
+    date:payday, startDate:start, endDate:end, label,
+    amount, linkedTxId:get('app-link-tx'), allocations:{},
+  };
+  state.paycheckSessions.push(session);
+  _activePaycheckId=session.id;
+  saveState();
+  closeAddPayPeriodModal();
+  renderPaycheckView();
+  toast(`${label} — ${fmt(amount)} ready to assign`,'success');
+}
+
+function selectPaycheckSession(id){
+  _activePaycheckId=id;
+  renderPaycheckView();
+}
+
+function deletePaycheckSession(id){
+  const s=state.paycheckSessions.find(s=>s.id===id);
+  if(!confirm(`Delete "${s?.label||s?.date}"?`))return;
+  state.paycheckSessions=state.paycheckSessions.filter(s=>s.id!==id);
+  if(_activePaycheckId===id)_activePaycheckId=null;
+  saveState();
+  renderPaycheckView();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SMART SIDEBAR NUDGES
+   Runs after every render cycle — surfaces the 3-4 most important
+   things happening in your finances right now
+════════════════════════════════════════════════════════════════ */
+
+function renderSidebarNudges(){
+  const el = document.getElementById('sidebar-nudges');
+  if(!el) return;
+
+  const nudges = [];
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const yr  = now.getFullYear();
+  const mo  = String(now.getMonth()+1).padStart(2,'0');
+  const mStart = `${yr}-${mo}-01`;
+  const mEnd   = `${yr}-${mo}-31`;
+  const dayOfMonth = now.getDate();
+  const daysInMonth = new Date(yr, now.getMonth()+1, 0).getDate();
+  const monthPct = dayOfMonth / daysInMonth;
+
+  // ── 1. Recurring due within 7 days ──────────────────────
+  const in7 = new Date(now); in7.setDate(in7.getDate()+7);
+  const in7Str = in7.toISOString().split('T')[0];
+  const dueSoon = (state.recurring||[]).filter(r =>
+    r.active && r.nextDue && r.nextDue >= todayStr && r.nextDue <= in7Str
+  );
+  const overdue = (state.recurring||[]).filter(r =>
+    r.active && r.nextDue && r.nextDue < todayStr
+  );
+  if(overdue.length){
+    nudges.push({
+      type:'alert', icon:'🚨',
+      title:`${overdue.length} bill${overdue.length>1?'s':''} overdue`,
+      text: overdue.slice(0,2).map(r=>r.payee).join(', ') + (overdue.length>2?'…':''),
+      action:()=>showPage('recurring'),
+    });
+  } else if(dueSoon.length){
+    nudges.push({
+      type:'warn', icon:'🔔',
+      title:`${dueSoon.length} due this week`,
+      text: dueSoon.slice(0,2).map(r=>`${r.payee} (${r.nextDue?.slice(5)})`).join(', '),
+      action:()=>showPage('recurring'),
+    });
+  }
+
+  // ── 2. Budget over/near-limit categories ────────────────
+  const txThisMonth = state.transactions.filter(t =>
+    t.date>=mStart && t.date<=mEnd && t.type!=='transfer' && t.payment>0
+  );
+  const catActual = {};
+  txThisMonth.forEach(t => {
+    if(t.splits&&t.splits.length){
+      t.splits.forEach(s => { catActual[s.category]=(catActual[s.category]||0)+s.amount; });
+    } else {
+      catActual[t.category]=(catActual[t.category]||0)+t.payment;
+    }
+  });
+  const overspent = [];
+  const nearLimit = [];
+  state.budgetCategories.filter(b=>b.type==='expense').forEach(cat => {
+    const budget = getMonthBudget(cat, `${yr}-${mo}`);
+    if(!budget) return;
+    const actual = catActual[cat.name]||0;
+    const pct = actual/budget;
+    if(pct > 1) overspent.push({name:cat.name.replace(/^\d+ - /,''), over:actual-budget});
+    else if(pct > 0.85 && monthPct < 0.85) nearLimit.push({name:cat.name.replace(/^\d+ - /,''), pct:Math.round(pct*100)});
+  });
+  if(overspent.length){
+    nudges.push({
+      type:'alert', icon:'📊',
+      title:`Over budget in ${overspent.length} categor${overspent.length>1?'ies':'y'}`,
+      text: overspent.slice(0,2).map(c=>`${c.name} +${fmt(c.over)}`).join(', '),
+      action:()=>showPage('budget'),
+    });
+  } else if(nearLimit.length){
+    nudges.push({
+      type:'warn', icon:'📊',
+      title:`${nearLimit[0].name} at ${nearLimit[0].pct}%`,
+      text:`${Math.round((1-monthPct)*100)}% of month left`,
+      action:()=>showPage('budget'),
+    });
+  }
+
+  // ── 3. Fund goal progress ────────────────────────────────
+  const lowFunds = (state.funds||[]).filter(f => {
+    if(!f.goal) return false;
+    const bal = fundBalanceWithContribs(f.id,'','');
+    return bal/f.goal < 0.15 && f.goal > 0;
+  });
+  if(lowFunds.length){
+    const f = lowFunds[0];
+    const bal = fundBalanceWithContribs(f.id,'','');
+    const pct = Math.round(bal/f.goal*100);
+    nudges.push({
+      type:'info', icon:'💼',
+      title:`${f.name} at ${pct}% of goal`,
+      text:`${fmt(f.goal-bal)} to go`,
+      action:()=>showPage('funds'),
+    });
+  }
+
+  // ── 4. Paycheck status ───────────────────────────────────
+  if(state.paycheckSessions&&state.paycheckSessions.length){
+    const sessions = [...state.paycheckSessions].sort((a,b)=>b.date.localeCompare(a.date));
+    const latest = sessions[0];
+    const totalAssigned = Object.values(latest.allocations||{}).reduce((s,v)=>s+(v||0),0);
+    const available = Math.round((latest.amount-totalAssigned)*100)/100;
+    if(available > 0.01){
+      nudges.push({
+        type:'info', icon:'💰',
+        title:`${fmt(available)} unassigned`,
+        text:`${latest.label} paycheck`,
+        action:()=>{showPage('budget');setTimeout(()=>switchBudgetTab('paycheck'),50);},
+      });
+    }
+  }
+
+  // ── 5. Flagged transactions ──────────────────────────────
+  const flagged = state.transactions.filter(t=>(t.memo||'').toUpperCase().includes('FLAG'));
+  if(flagged.length){
+    nudges.push({
+      type:'warn', icon:'🚩',
+      title:`${flagged.length} flagged transaction${flagged.length>1?'s':''}`,
+      text:'Pending follow-up',
+      action:()=>{showPage('transactions');setTimeout(openFlaggedModal,100);},
+    });
+  }
+
+  // ── 6. Positive: net positive this month ─────────────────
+  if(nudges.length < 3){
+    const monthIncome  = state.transactions.filter(t=>t.date>=mStart&&t.date<=mEnd&&t.deposit>0&&t.type!=='transfer').reduce((s,t)=>s+t.deposit,0);
+    const monthExpense = state.transactions.filter(t=>t.date>=mStart&&t.date<=mEnd&&t.payment>0&&t.type!=='transfer').reduce((s,t)=>s+t.payment,0);
+    const net = monthIncome - monthExpense;
+    if(net > 0 && monthIncome > 0){
+      nudges.push({
+        type:'good', icon:'✅',
+        title:`+${fmt(net)} net this month`,
+        text:`${Math.round(net/monthIncome*100)}% savings rate`,
+        action:()=>showPage('reports'),
+      });
+    }
+  }
+
+  // ── Weekly review prompt (Sundays) ───────────────────────
+  if(now.getDay()===0){
+    nudges.push({
+      type:'info', icon:'📋',
+      title:'Weekly review',
+      text:'Sunday — time to check in',
+      action:()=>openWeeklyReview(),
+    });
+  }
+
+  // Render — max 4 nudges
+  el.innerHTML = nudges.slice(0,4).map(n => `
+    <div class="sb-nudge ${n.type}" onclick="${n.action?'('+n.action.toString()+')()'  : ''}"
+      style="cursor:${n.action?'pointer':'default'}"
+      title="${n.text}">
+      <span class="sb-nudge-icon">${n.icon}</span>
+      <div class="sb-nudge-text"><b>${n.title}</b>${n.text}</div>
+    </div>`).join('');
+
+  // Attach click handlers properly
+  const nudgeDivs = el.querySelectorAll('.sb-nudge');
+  nudges.slice(0,4).forEach((n,i)=>{
+    if(n.action) nudgeDivs[i].onclick = n.action;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   JOURNAL
+════════════════════════════════════════════════════════════════ */
+
+function renderJournal(){
+  // Set quick-note date
+  const qd = document.getElementById('journal-quick-date');
+  if(qd) qd.textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  // Populate tx link dropdown
+  const txSel = document.getElementById('journal-quick-tx');
+  if(txSel && txSel.options.length <= 1){
+    state.transactions.slice(0,30).forEach(t=>{
+      txSel.add(new Option(`${t.date} · ${t.payee||'—'} · ${fmt(t.payment||t.deposit)}`, t.id));
+    });
+  }
+
+  // Search filter
+  const q = (document.getElementById('journal-search')?.value||'').toLowerCase();
+  const entries = [...(state.journalEntries||[])]
+    .sort((a,b)=>b.date.localeCompare(a.date))
+    .filter(e=>!q||e.text.toLowerCase().includes(q)||(e.tag||'').includes(q));
+
+  const el = document.getElementById('journal-entries');
+  if(!el) return;
+
+  if(!entries.length){
+    el.innerHTML = `<div style="text-align:center;padding:48px 24px;color:var(--text-light)">
+      <div style="font-size:32px;margin-bottom:12px">📓</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-mid);margin-bottom:6px">${q?'No entries match':'No journal entries yet'}</div>
+      <div style="font-size:12px">${q?'Try a different search':'Use the Quick Note above to add your first entry'}</div>
+    </div>`;
+    return;
+  }
+
+  const tagLabels = {note:'📝 Note',followup:'🔔 Follow-up',decision:'💡 Decision',goal:'🎯 Goal',review:'📊 Review',win:'🏆 Win'};
+
+  el.innerHTML = entries.map(e=>{
+    const tx = e.linkedTxId ? state.transactions.find(t=>t.id===e.linkedTxId) : null;
+    const dateStr = new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const tag = e.tag && e.tag !== '' ? `<span class="journal-tag ${e.tag}">${tagLabels[e.tag]||e.tag}</span>` : '';
+    const txLink = tx ? `<span style="font-size:10px;color:var(--lagoon);cursor:pointer" onclick="showPage('transactions')"
+      title="Linked transaction">🔗 ${tx.payee||'Tx'} · ${fmt(tx.payment||tx.deposit)}</span>` : '';
+    const preview = e.text.length > 280 ? e.text.slice(0,280)+'…' : e.text;
+    return `<div class="journal-entry">
+      <div class="journal-entry-header">
+        ${tag}
+        <span style="font-size:10px;color:var(--text-light);margin-left:auto">${dateStr}</span>
+      </div>
+      <div class="journal-entry-text">${preview.replace(/</g,'&lt;')}</div>
+      <div class="journal-entry-meta">
+        ${txLink}
+        <span style="margin-left:auto;display:flex;gap:10px">
+          <button onclick="editJournalEntry('${e.id}')"
+            style="background:none;border:none;color:var(--text-light);font-family:inherit;font-size:10px;cursor:pointer;padding:0"
+            onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-light)'">Edit</button>
+          <button onclick="deleteJournalEntry('${e.id}')"
+            style="background:none;border:none;color:var(--text-light);font-family:inherit;font-size:10px;cursor:pointer;padding:0"
+            onmouseover="this.style.color='var(--signal)'" onmouseout="this.style.color='var(--text-light)'">Delete</button>
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewJournalEntry(){
+  document.getElementById('journal-quick-text')?.focus();
+}
+
+function saveQuickJournalEntry(){
+  const text = document.getElementById('journal-quick-text')?.value?.trim();
+  if(!text){ toast('Write something first','warning'); return; }
+  const tag     = document.getElementById('journal-quick-tag')?.value||'';
+  const linkedTxId = document.getElementById('journal-quick-tx')?.value||'';
+  if(!state.journalEntries) state.journalEntries=[];
+  state.journalEntries.push({
+    id:'j'+(Date.now()),
+    date: new Date().toISOString().split('T')[0],
+    text, tag, linkedTxId,
+  });
+  saveState();
+  document.getElementById('journal-quick-text').value='';
+  document.getElementById('journal-quick-tag').value='';
+  document.getElementById('journal-quick-tx').value='';
+  renderJournal();
+  toast('Entry saved ✓','success');
+}
+
+function deleteJournalEntry(id){
+  if(!confirm('Delete this journal entry?')) return;
+  state.journalEntries = state.journalEntries.filter(e=>e.id!==id);
+  saveState();
+  renderJournal();
+}
+
+function editJournalEntry(id){
+  const entry = state.journalEntries.find(e=>e.id===id);
+  if(!entry) return;
+  const newText = prompt('Edit entry:', entry.text);
+  if(newText===null) return;
+  entry.text = newText.trim();
+  saveState();
+  renderJournal();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WEEKLY REVIEW
+════════════════════════════════════════════════════════════════ */
+
+function openWeeklyReview(){
+  const el = document.getElementById('weekly-review-overlay');
+  if(!el) return;
+
+  // Calculate this week (Mon-Sun)
+  const now = new Date();
+  const mon = new Date(now); mon.setDate(now.getDate()-((now.getDay()+6)%7));
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const weekStart = mon.toISOString().split('T')[0];
+  const weekEnd   = sun.toISOString().split('T')[0];
+
+  const wr = document.getElementById('wr-date-range');
+  if(wr) wr.textContent = `${mon.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${sun.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+
+  // Gather data
+  const weekTxs = state.transactions.filter(t=>t.date>=weekStart&&t.date<=weekEnd&&t.type!=='transfer');
+  const weekIncome  = weekTxs.reduce((s,t)=>s+t.deposit,0);
+  const weekExpense = weekTxs.reduce((s,t)=>s+t.payment,0);
+  const weekNet     = weekIncome - weekExpense;
+
+  // Top spending categories this week
+  const catSpend = {};
+  weekTxs.filter(t=>t.payment>0).forEach(t=>{
+    if(t.splits&&t.splits.length) t.splits.forEach(s=>{ catSpend[s.category||'Other']=(catSpend[s.category||'Other']||0)+s.amount; });
+    else catSpend[t.category||'Uncategorized']=(catSpend[t.category||'Uncategorized']||0)+t.payment;
+  });
+  const topCats = Object.entries(catSpend).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Month budget status
+  const yr = now.getFullYear(), mo = String(now.getMonth()+1).padStart(2,'0');
+  const mStart=`${yr}-${mo}-01`, mEnd=`${yr}-${mo}-31`;
+  const monthTxs = state.transactions.filter(t=>t.date>=mStart&&t.date<=mEnd&&t.payment>0&&t.type!=='transfer');
+  const monthActual = monthTxs.reduce((s,t)=>s+t.payment,0);
+  const monthBudget = state.budgetCategories.filter(b=>b.type==='expense').reduce((s,b)=>s+getMonthBudget(b,`${yr}-${mo}`),0);
+  const budgetPct = monthBudget>0 ? Math.round(monthActual/monthBudget*100) : 0;
+  const dayOfMonth = now.getDate();
+  const daysInMonth = new Date(yr,now.getMonth()+1,0).getDate();
+  const monthPacePct = Math.round(dayOfMonth/daysInMonth*100);
+
+  // Upcoming recurring next 7 days
+  const next7 = new Date(now); next7.setDate(now.getDate()+7);
+  const next7Str = next7.toISOString().split('T')[0];
+  const upcoming = (state.recurring||[]).filter(r=>r.active&&r.nextDue&&r.nextDue>=weekEnd&&r.nextDue<=next7Str);
+
+  // Flagged transactions
+  const flagged = state.transactions.filter(t=>(t.memo||'').toUpperCase().includes('FLAG'));
+
+  const content = document.getElementById('weekly-review-content');
+  if(!content) return;
+
+  content.innerHTML = `
+    <!-- KPI strip -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px">Week Income</div>
+        <div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--lime)">${fmt(weekIncome)}</div>
+      </div>
+      <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px">Week Expenses</div>
+        <div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--signal)">${fmt(weekExpense)}</div>
+      </div>
+      <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px">Net</div>
+        <div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:${weekNet>=0?'var(--lime)':'var(--signal)'}">
+          ${weekNet>=0?'+':''}${fmt(weekNet)}
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget pace -->
+    <div style="background:var(--surface-3);border-radius:var(--radius-sm);padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--text)">Month Budget Pace</div>
+        <div style="font-size:12px;font-family:'DM Mono',monospace;color:${budgetPct>monthPacePct+10?'var(--signal)':budgetPct<monthPacePct-10?'var(--lime)':'var(--gold)'};font-weight:700">
+          ${budgetPct}% spent · ${monthPacePct}% through month
+        </div>
+      </div>
+      <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;position:relative">
+        <div style="height:100%;width:${Math.min(100,budgetPct)}%;background:${budgetPct>100?'var(--signal)':budgetPct>monthPacePct+10?'var(--ember)':'var(--gold)'};border-radius:4px;transition:width .4s"></div>
+        <!-- Pace marker -->
+        <div style="position:absolute;top:0;left:${monthPacePct}%;width:2px;height:100%;background:rgba(255,255,255,0.5)"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-light);margin-top:5px">
+        ${budgetPct>monthPacePct+10?'⚠ Spending ahead of pace — consider slowing down':budgetPct<monthPacePct-10?'✓ Under pace — good discipline this month':'On track'}
+      </div>
+    </div>
+
+    <!-- Top categories -->
+    ${topCats.length?`
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:8px">Top Spending This Week</div>
+      ${topCats.map(([cat,amt])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;color:var(--text)">${cat.replace(/^\d+ - /,'')}</span>
+          <span style="font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--signal)">${fmt(amt)}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <!-- Upcoming bills -->
+    ${upcoming.length?`
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:8px">Bills Due Next 7 Days</div>
+      ${upcoming.map(r=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <span style="font-size:12px;color:var(--text)">${r.payee}</span>
+            <span style="font-size:10px;color:var(--text-light);margin-left:8px">${r.nextDue}</span>
+          </div>
+          <span style="font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--ember)">${fmt(r.amount)}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <!-- Flagged -->
+    ${flagged.length?`
+    <div style="background:rgba(255,191,13,0.07);border:1px solid rgba(255,191,13,0.2);border-radius:var(--radius-sm);padding:12px 14px">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px">🚩 ${flagged.length} Flagged Transaction${flagged.length>1?'s':''} Need Follow-up</div>
+      ${flagged.slice(0,3).map(t=>`<div style="font-size:11px;color:var(--text-mid);padding:3px 0">${t.date} · ${t.payee||'—'} · ${fmt(t.payment||t.deposit)}</div>`).join('')}
+    </div>`:''}
+
+    <!-- Reflection -->
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:8px">Reflection (saved to Journal)</div>
+      <textarea id="wr-reflection" rows="3" placeholder="What went well this week? What would you do differently? Any decisions to note?"
+        style="width:100%;border:1px solid var(--border-solid);border-radius:var(--radius-sm);padding:10px 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);background:var(--surface-1);resize:vertical;line-height:1.6;box-sizing:border-box;outline:none"
+        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border-solid)'"></textarea>
+    </div>
+  `;
+
+  el.style.display = 'flex';
+}
+
+function closeWeeklyReview(){
+  const el = document.getElementById('weekly-review-overlay');
+  if(el) el.style.display='none';
+}
+
+function saveWeeklyReview(){
+  const reflection = document.getElementById('wr-reflection')?.value?.trim();
+  const dateRange  = document.getElementById('wr-date-range')?.textContent||'';
+
+  // Build a summary text for the journal
+  const weekTxs = (() => {
+    const now=new Date();
+    const mon=new Date(now); mon.setDate(now.getDate()-((now.getDay()+6)%7));
+    const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    return state.transactions.filter(t=>t.date>=mon.toISOString().split('T')[0]&&t.date<=sun.toISOString().split('T')[0]&&t.type!=='transfer');
+  })();
+  const income  = weekTxs.reduce((s,t)=>s+t.deposit,0);
+  const expense = weekTxs.reduce((s,t)=>s+t.payment,0);
+
+  const summaryText = `Weekly Review — ${dateRange}\n\nIncome: ${fmt(income)} | Expenses: ${fmt(expense)} | Net: ${income>=expense?'+':''}${fmt(income-expense)}\n\n${reflection||'No reflection added.'}`;
+
+  if(!state.journalEntries) state.journalEntries=[];
+  state.journalEntries.push({
+    id:'j'+(Date.now()),
+    date:new Date().toISOString().split('T')[0],
+    text:summaryText,
+    tag:'review',
+    linkedTxId:'',
+  });
+  saveState();
+  closeWeeklyReview();
+  toast('Weekly review saved to Journal ✓','success');
+}
+
 
 </script>
 </body>
